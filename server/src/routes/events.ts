@@ -1,0 +1,420 @@
+import { Router } from 'express'
+import { z } from 'zod'
+import { db, tx } from '../db.ts'
+import { ah, badRequest, id, notFound, parseBody } from '../lib/http.ts'
+import { isPastDate, todayLocal } from '../lib/date.ts'
+import { computeRequirement } from '../services/calc.ts'
+import type { DecorEvent, EventPackage, PackageItem } from '../../../shared/types.ts'
+
+const router = Router()
+
+const DATE = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Ngày phải theo định dạng YYYY-MM-DD')
+
+/** Ngày tổ chức không được nằm trước hôm nay. */
+function assertNotPast(date: string) {
+  if (isPastDate(date)) {
+    throw badRequest(
+      `Không thể xếp sự kiện vào ngày đã qua (${fmt(date)}). Chỉ chọn được từ hôm nay (${fmt(todayLocal())}) trở đi.`,
+    )
+  }
+}
+
+function fmt(iso: string): string {
+  const [y, m, d] = iso.split('-')
+  return `${d}/${m}/${y}`
+}
+
+const eventSchema = z.object({
+  event_date: DATE,
+  title: z.string().trim().min(1, 'Tên tiệc không được để trống'),
+  hall: z.string().trim().nullable().optional(),
+  time_slot: z.string().trim().nullable().optional(),
+  status: z.enum(['DU_KIEN', 'DA_CHOT', 'DA_XONG', 'HUY']).default('DU_KIEN'),
+  note: z.string().trim().nullable().optional(),
+})
+
+/** Danh sách sự kiện trong khoảng ngày — dùng cho lưới lịch. */
+router.get(
+  '/',
+  ah((req, res) => {
+    const { from, to, hall } = req.query as Record<string, string | undefined>
+    const where: string[] = []
+    const params: any[] = []
+    if (from && to) {
+      where.push('e.event_date BETWEEN ? AND ?')
+      params.push(from, to)
+    }
+    if (hall) {
+      where.push('e.hall = ?')
+      params.push(hall)
+    }
+    const rows = db
+      .prepare(
+        `SELECT e.*,
+                (SELECT GROUP_CONCAT(p.name, ', ')
+                   FROM event_packages ep JOIN packages p ON p.id = ep.package_id
+                  WHERE ep.event_id = e.id) AS package_names
+           FROM events e
+          ${where.length ? 'WHERE ' + where.join(' AND ') : ''}
+          ORDER BY e.event_date, e.time_slot, e.id`,
+      )
+      .all(...params) as DecorEvent[]
+    res.json(rows)
+  }),
+)
+
+router.get(
+  '/:id',
+  ah((req, res) => {
+    res.json(loadEvent(id(req.params.id)))
+  }),
+)
+
+/** Tổng hợp hoa của riêng một sự kiện (không trừ tồn kho). */
+router.get(
+  '/:id/requirement',
+  ah((req, res) => {
+    const eventId = id(req.params.id)
+    const ev = db.prepare('SELECT event_date FROM events WHERE id = ?').get(eventId) as
+      | { event_date: string }
+      | undefined
+    if (!ev) throw notFound('Không tìm thấy sự kiện này')
+    res.json(computeRequirement(ev.event_date, ev.event_date, { eventId, useStock: false }))
+  }),
+)
+
+router.post(
+  '/',
+  ah((req, res) => {
+    const data = parseBody(eventSchema, req.body)
+    assertNotPast(data.event_date)
+    const info = db
+      .prepare('INSERT INTO events (event_date, title, hall, time_slot, status, note) VALUES (?, ?, ?, ?, ?, ?)')
+      .run(data.event_date, data.title, data.hall ?? null, data.time_slot ?? null, data.status, data.note ?? null)
+    res.status(201).json(loadEvent(Number(info.lastInsertRowid)))
+  }),
+)
+
+router.put(
+  '/:id',
+  ah((req, res) => {
+    const eventId = id(req.params.id)
+    const data = parseBody(eventSchema.partial(), req.body)
+    const cur = db.prepare('SELECT * FROM events WHERE id = ?').get(eventId) as DecorEvent | undefined
+    if (!cur) throw notFound('Không tìm thấy sự kiện này')
+
+    // Chỉ chặn khi thực sự DỜI sang một ngày đã qua. Sự kiện cũ vẫn phải sửa
+    // được tên, ghi chú, trạng thái… mà không bị chặn oan.
+    if (data.event_date && data.event_date !== cur.event_date) assertNotPast(data.event_date)
+
+    db.prepare(
+      `UPDATE events SET event_date = ?, title = ?, hall = ?, time_slot = ?, status = ?, note = ?,
+              updated_at = datetime('now','localtime') WHERE id = ?`,
+    ).run(
+      data.event_date ?? cur.event_date,
+      data.title ?? cur.title,
+      data.hall !== undefined ? data.hall : cur.hall,
+      data.time_slot !== undefined ? data.time_slot : cur.time_slot,
+      data.status ?? cur.status,
+      data.note !== undefined ? data.note : cur.note,
+      eventId,
+    )
+    res.json(loadEvent(eventId))
+  }),
+)
+
+router.delete(
+  '/:id',
+  ah((req, res) => {
+    db.prepare('DELETE FROM events WHERE id = ?').run(id(req.params.id))
+    res.json({ ok: true })
+  }),
+)
+
+/**
+ * Nhân bản sự kiện sang ngày khác — giữ nguyên mọi tuỳ chỉnh riêng của tiệc gốc:
+ * các gói đã gắn, số lần áp dụng, và trạng thái từng hạng mục (đã bỏ chọn / đã nhân đôi).
+ *
+ * Bản sao luôn ở trạng thái "Dự kiến" vì chưa được chốt với khách.
+ * Điều chỉnh linh động mặc định KHÔNG chép theo, vì nó gắn với lượng hoa dư
+ * của đúng ngày hôm đó.
+ */
+router.post(
+  '/:id/duplicate',
+  ah((req, res) => {
+    const sourceId = id(req.params.id)
+    const data = parseBody(
+      z.object({
+        event_date: DATE,
+        title: z.string().trim().min(1).optional(),
+        hall: z.string().trim().nullable().optional(),
+        time_slot: z.string().trim().nullable().optional(),
+        copy_adjustments: z.boolean().default(false),
+      }),
+      req.body,
+    )
+
+    assertNotPast(data.event_date)
+
+    const src = db.prepare('SELECT * FROM events WHERE id = ?').get(sourceId) as DecorEvent | undefined
+    if (!src) throw notFound('Không tìm thấy sự kiện cần nhân bản')
+
+    const newId = tx(() => {
+      const info = db
+        .prepare('INSERT INTO events (event_date, title, hall, time_slot, status, note) VALUES (?, ?, ?, ?, ?, ?)')
+        .run(
+          data.event_date,
+          data.title ?? src.title,
+          data.hall !== undefined ? data.hall : src.hall,
+          data.time_slot !== undefined ? data.time_slot : src.time_slot,
+          'DU_KIEN',
+          src.note,
+        )
+      const targetId = Number(info.lastInsertRowid)
+
+      const eps = db
+        .prepare('SELECT * FROM event_packages WHERE event_id = ? ORDER BY sort_order, id')
+        .all(sourceId) as EventPackage[]
+
+      for (const ep of eps) {
+        const newEp = db
+          .prepare('INSERT INTO event_packages (event_id, package_id, quantity, sort_order) VALUES (?, ?, ?, ?)')
+          .run(targetId, ep.package_id, ep.quantity, ep.sort_order)
+        db.prepare(
+          `INSERT INTO event_package_items
+             (event_package_id, package_item_id, name_snapshot, quantity, is_included, sort_order)
+           SELECT ?, package_item_id, name_snapshot, quantity, is_included, sort_order
+             FROM event_package_items WHERE event_package_id = ?`,
+        ).run(Number(newEp.lastInsertRowid), ep.id)
+      }
+
+      if (data.copy_adjustments) {
+        db.prepare(
+          `INSERT INTO event_adjustments (event_id, flower_id, delta, reason)
+           SELECT ?, flower_id, delta, reason FROM event_adjustments WHERE event_id = ?`,
+        ).run(targetId, sourceId)
+      }
+
+      return targetId
+    })
+
+    res.status(201).json(loadEvent(newId))
+  }),
+)
+
+/* ------------------------ GẮN GÓI VÀO SỰ KIỆN ---------------------------- */
+
+/**
+ * Gắn gói vào sự kiện — đồng thời chụp lại danh sách hạng mục hiện tại của gói
+ * để người dùng bỏ bớt / nhân đôi từng hạng mục cho riêng sự kiện này.
+ */
+router.post(
+  '/:id/packages',
+  ah((req, res) => {
+    const eventId = id(req.params.id)
+    const { package_id, quantity } = parseBody(
+      z.object({ package_id: z.number().int().positive(), quantity: z.number().min(0).default(1) }),
+      req.body,
+    )
+    const pkg = db.prepare('SELECT id FROM packages WHERE id = ?').get(package_id)
+    if (!pkg) throw notFound('Không tìm thấy gói trang trí này')
+
+    tx(() => {
+      const maxOrder = (
+        db.prepare('SELECT COALESCE(MAX(sort_order), 0) AS m FROM event_packages WHERE event_id = ?').get(eventId) as {
+          m: number
+        }
+      ).m
+      const info = db
+        .prepare('INSERT INTO event_packages (event_id, package_id, quantity, sort_order) VALUES (?, ?, ?, ?)')
+        .run(eventId, package_id, quantity, maxOrder + 10)
+      const epId = Number(info.lastInsertRowid)
+
+      const items = db
+        .prepare('SELECT * FROM package_items WHERE package_id = ? ORDER BY sort_order, id')
+        .all(package_id) as PackageItem[]
+      const stmt = db.prepare(
+        `INSERT INTO event_package_items (event_package_id, package_item_id, name_snapshot, quantity, is_included, sort_order)
+         VALUES (?, ?, ?, 1, 1, ?)`,
+      )
+      items.forEach((it, i) => stmt.run(epId, it.id, it.name, (i + 1) * 10))
+    })
+
+    res.status(201).json(loadEvent(eventId))
+  }),
+)
+
+router.put(
+  '/packages/:epId',
+  ah((req, res) => {
+    const epId = id(req.params.epId)
+    const { quantity } = parseBody(z.object({ quantity: z.number().min(0) }), req.body)
+    const ep = db.prepare('SELECT event_id FROM event_packages WHERE id = ?').get(epId) as
+      | { event_id: number }
+      | undefined
+    if (!ep) throw notFound('Không tìm thấy gói trong sự kiện này')
+    db.prepare('UPDATE event_packages SET quantity = ? WHERE id = ?').run(quantity, epId)
+    res.json(loadEvent(ep.event_id))
+  }),
+)
+
+router.delete(
+  '/packages/:epId',
+  ah((req, res) => {
+    const epId = id(req.params.epId)
+    const ep = db.prepare('SELECT event_id FROM event_packages WHERE id = ?').get(epId) as
+      | { event_id: number }
+      | undefined
+    if (!ep) throw notFound('Không tìm thấy gói trong sự kiện này')
+    db.prepare('DELETE FROM event_packages WHERE id = ?').run(epId)
+    res.json(loadEvent(ep.event_id))
+  }),
+)
+
+/** Bỏ chọn / nhân số lượng một hạng mục trong sự kiện. */
+router.put(
+  '/package-items/:epiId',
+  ah((req, res) => {
+    const epiId = id(req.params.epiId)
+    const data = parseBody(
+      z.object({ quantity: z.number().min(0).optional(), is_included: z.boolean().optional() }),
+      req.body,
+    )
+    const cur = db
+      .prepare(
+        `SELECT epi.*, ep.event_id FROM event_package_items epi
+           JOIN event_packages ep ON ep.id = epi.event_package_id WHERE epi.id = ?`,
+      )
+      .get(epiId) as { quantity: number; is_included: number; event_id: number } | undefined
+    if (!cur) throw notFound('Không tìm thấy hạng mục này trong sự kiện')
+    db.prepare('UPDATE event_package_items SET quantity = ?, is_included = ? WHERE id = ?').run(
+      data.quantity ?? cur.quantity,
+      data.is_included !== undefined ? (data.is_included ? 1 : 0) : cur.is_included,
+      epiId,
+    )
+    res.json(loadEvent(cur.event_id))
+  }),
+)
+
+/** Đồng bộ lại hạng mục của gói trong sự kiện với catalog hiện tại. */
+router.post(
+  '/packages/:epId/resync',
+  ah((req, res) => {
+    const epId = id(req.params.epId)
+    const ep = db.prepare('SELECT * FROM event_packages WHERE id = ?').get(epId) as EventPackage | undefined
+    if (!ep) throw notFound('Không tìm thấy gói trong sự kiện này')
+
+    tx(() => {
+      const items = db
+        .prepare('SELECT * FROM package_items WHERE package_id = ? ORDER BY sort_order, id')
+        .all(ep.package_id) as PackageItem[]
+      const existing = db
+        .prepare('SELECT package_item_id FROM event_package_items WHERE event_package_id = ?')
+        .all(epId) as { package_item_id: number | null }[]
+      const have = new Set(existing.map((e) => e.package_item_id))
+
+      const insert = db.prepare(
+        `INSERT INTO event_package_items (event_package_id, package_item_id, name_snapshot, quantity, is_included, sort_order)
+         VALUES (?, ?, ?, 1, 1, ?)`,
+      )
+      items.forEach((it, i) => {
+        if (!have.has(it.id)) insert.run(epId, it.id, it.name, (i + 1) * 10)
+        else db.prepare('UPDATE event_package_items SET name_snapshot = ? WHERE event_package_id = ? AND package_item_id = ?').run(it.name, epId, it.id)
+      })
+      // Hạng mục đã bị xoá khỏi catalog → gỡ khỏi sự kiện
+      db.prepare('DELETE FROM event_package_items WHERE event_package_id = ? AND package_item_id IS NULL').run(epId)
+    })
+
+    res.json(loadEvent(ep.event_id))
+  }),
+)
+
+/* --------------------------- ĐIỀU CHỈNH HOA ------------------------------ */
+
+router.post(
+  '/:id/adjustments',
+  ah((req, res) => {
+    const eventId = id(req.params.id)
+    const data = parseBody(
+      z.object({
+        flower_id: z.number().int().positive(),
+        delta: z.number(),
+        reason: z.string().trim().nullable().optional(),
+      }),
+      req.body,
+    )
+    if (data.delta === 0) throw badRequest('Số điều chỉnh phải khác 0')
+    db.prepare('INSERT INTO event_adjustments (event_id, flower_id, delta, reason) VALUES (?, ?, ?, ?)').run(
+      eventId,
+      data.flower_id,
+      data.delta,
+      data.reason ?? null,
+    )
+    res.status(201).json(loadEvent(eventId))
+  }),
+)
+
+router.put(
+  '/adjustments/:adjId',
+  ah((req, res) => {
+    const adjId = id(req.params.adjId)
+    const data = parseBody(
+      z.object({ delta: z.number().optional(), reason: z.string().trim().nullable().optional() }),
+      req.body,
+    )
+    const cur = db.prepare('SELECT * FROM event_adjustments WHERE id = ?').get(adjId) as
+      | { event_id: number; delta: number; reason: string | null }
+      | undefined
+    if (!cur) throw notFound('Không tìm thấy điều chỉnh này')
+    db.prepare('UPDATE event_adjustments SET delta = ?, reason = ? WHERE id = ?').run(
+      data.delta ?? cur.delta,
+      data.reason !== undefined ? data.reason : cur.reason,
+      adjId,
+    )
+    res.json(loadEvent(cur.event_id))
+  }),
+)
+
+router.delete(
+  '/adjustments/:adjId',
+  ah((req, res) => {
+    const adjId = id(req.params.adjId)
+    const cur = db.prepare('SELECT event_id FROM event_adjustments WHERE id = ?').get(adjId) as
+      | { event_id: number }
+      | undefined
+    if (!cur) throw notFound('Không tìm thấy điều chỉnh này')
+    db.prepare('DELETE FROM event_adjustments WHERE id = ?').run(adjId)
+    res.json(loadEvent(cur.event_id))
+  }),
+)
+
+export function loadEvent(eventId: number): DecorEvent {
+  const ev = db.prepare('SELECT * FROM events WHERE id = ?').get(eventId) as DecorEvent | undefined
+  if (!ev) throw notFound('Không tìm thấy sự kiện này')
+
+  ev.packages = db
+    .prepare(
+      `SELECT ep.*, p.name AS package_name
+         FROM event_packages ep JOIN packages p ON p.id = ep.package_id
+        WHERE ep.event_id = ? ORDER BY ep.sort_order, ep.id`,
+    )
+    .all(eventId) as EventPackage[]
+
+  for (const ep of ev.packages) {
+    ep.items = db
+      .prepare('SELECT * FROM event_package_items WHERE event_package_id = ? ORDER BY sort_order, id')
+      .all(ep.id) as any[]
+  }
+
+  ev.adjustments = db
+    .prepare(
+      `SELECT a.*, f.name AS flower_name, f.unit AS flower_unit
+         FROM event_adjustments a JOIN flowers f ON f.id = a.flower_id
+        WHERE a.event_id = ? ORDER BY a.id`,
+    )
+    .all(eventId) as any[]
+
+  return ev
+}
+
+export default router

@@ -1,0 +1,57 @@
+import Database from 'better-sqlite3'
+import { readFileSync, mkdirSync } from 'node:fs'
+import { dirname, resolve } from 'node:path'
+import { fileURLToPath } from 'node:url'
+
+const __dirname = dirname(fileURLToPath(import.meta.url))
+
+export const ROOT_DIR = resolve(__dirname, '../..')
+export const DATA_DIR = resolve(ROOT_DIR, 'data')
+export const DB_PATH = process.env.CALLARY_DB ?? resolve(DATA_DIR, 'callary.db')
+
+mkdirSync(DATA_DIR, { recursive: true })
+
+export const db = new Database(DB_PATH)
+
+db.pragma('journal_mode = WAL')
+db.pragma('foreign_keys = ON')
+
+/** Chạy DDL — idempotent, an toàn khi gọi mỗi lần khởi động. */
+export function migrate() {
+  const schema = readFileSync(resolve(__dirname, 'schema.sql'), 'utf8')
+  db.exec(schema)
+  seedSettings()
+}
+
+function seedSettings() {
+  const defaults: Record<string, string> = {
+    halls: JSON.stringify(['Lầu 1', 'Lầu 2', 'Lầu 3', 'Lầu 4', 'Lầu 5', 'Lầu 6']),
+    time_slots: JSON.stringify(['Trưa', 'Tối']),
+    units: JSON.stringify(['cành', 'bó', 'kg', 'cây', 'chiếc', 'mét']),
+  }
+  const stmt = db.prepare('INSERT OR IGNORE INTO settings (key, value) VALUES (?, ?)')
+  for (const [key, value] of Object.entries(defaults)) stmt.run(key, value)
+}
+
+/** Bọc một hàm trong transaction. */
+export function tx<T>(fn: () => T): T {
+  return db.transaction(fn)()
+}
+
+export function getSetting<T>(key: string, fallback: T): T {
+  const row = db.prepare('SELECT value FROM settings WHERE key = ?').get(key) as
+    | { value: string }
+    | undefined
+  if (!row) return fallback
+  try {
+    return JSON.parse(row.value) as T
+  } catch {
+    return fallback
+  }
+}
+
+export function setSetting(key: string, value: unknown) {
+  db.prepare(
+    'INSERT INTO settings (key, value) VALUES (?, ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value',
+  ).run(key, JSON.stringify(value))
+}

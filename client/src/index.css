@@ -1,0 +1,115 @@
+@import 'tailwindcss';
+
+@theme {
+  --color-brand-50: #f5f3ff;
+  --color-brand-100: #ede9fe;
+  --color-brand-200: #ddd6fe;
+  --color-brand-300: #c4b5fd;
+  --color-brand-400: #a78bfa;
+  --color-brand-500: #8b5cf6;
+  --color-brand-600: #7c3aed;
+  --color-brand-700: #6d28d9;
+  --color-brand-800: #5b21b6;
+  --color-brand-900: #4c1d95;
+
+  --font-sans: 'Segoe UI', 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    @apply bg-zinc-50 text-zinc-900 antialiased;
+  }
+  /* Ẩn mũi tên tăng/giảm của input number để bảng gọn hơn */
+  input[type='number']::-webkit-outer-spin-button,
+  input[type='number']::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  input[type='number'] {
+    -moz-appearance: textfield;
+  }
+}
+
+/*
+ * Tailwind v4 không cho phép `@apply` một class tự định nghĩa, nên các biến thể
+ * nút / ô nhập đều liệt kê đầy đủ utility thay vì kế thừa từ `.btn` / `.input`.
+ */
+@layer components {
+  .btn,
+  .btn-primary,
+  .btn-secondary,
+  .btn-ghost,
+  .btn-danger {
+    @apply inline-flex items-center justify-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium
+           transition-colors disabled:cursor-not-allowed disabled:opacity-50;
+  }
+  .btn-primary {
+    @apply bg-brand-600 text-white hover:bg-brand-700;
+  }
+  .btn-secondary {
+    @apply border border-zinc-300 bg-white text-zinc-700 hover:bg-zinc-50;
+  }
+  .btn-ghost {
+    @apply text-zinc-600 hover:bg-zinc-100;
+  }
+  .btn-danger {
+    @apply border border-red-200 bg-white text-red-600 hover:bg-red-50;
+  }
+  .btn-sm {
+    @apply px-2 py-1 text-xs;
+  }
+
+  .input {
+    @apply w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm
+           outline-none transition placeholder:text-zinc-400
+           focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20
+           disabled:bg-zinc-100 disabled:text-zinc-500;
+  }
+  .input-sm {
+    @apply px-2 py-1 text-sm;
+  }
+  .label {
+    @apply mb-1 block text-xs font-semibold uppercase tracking-wide text-zinc-500;
+  }
+
+  .card {
+    @apply rounded-xl border border-zinc-200 bg-white shadow-sm;
+  }
+  .card-head {
+    @apply flex flex-wrap items-center justify-between gap-3 border-b border-zinc-200 px-4 py-3;
+  }
+  .card-title {
+    @apply text-sm font-semibold text-zinc-800;
+  }
+
+  .table {
+    @apply w-full border-collapse text-sm;
+  }
+  .table thead th {
+    @apply sticky top-0 z-10 border-b border-zinc-200 bg-zinc-50 px-3 py-2 text-left
+           text-xs font-semibold uppercase tracking-wide text-zinc-500;
+  }
+  .table tbody td {
+    @apply border-b border-zinc-100 px-3 py-2 align-middle;
+  }
+  .table tbody tr:hover {
+    @apply bg-brand-50/40;
+  }
+
+  .badge {
+    @apply inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium;
+  }
+
+  .rdp-root {
+    --rdp-accent-color: var(--color-brand-600);
+    --rdp-accent-background-color: var(--color-brand-50);
+    --rdp-today-color: var(--color-brand-600);
+    --rdp-day-width: 2.25rem;
+    --rdp-day-height: 2.25rem;
+    --rdp-day_button-width: 2.125rem;
+    --rdp-day_button-height: 2.125rem;
+  }
+}
