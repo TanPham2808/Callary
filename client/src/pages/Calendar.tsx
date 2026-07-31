@@ -170,9 +170,8 @@ export default function CalendarPage() {
               {(['month', 'week'] as View[]).map((v) => (
                 <button
                   key={v}
-                  className={`px-3 py-1 text-xs font-medium transition ${
-                    view === v ? 'bg-brand-600 text-white' : 'bg-white text-zinc-600 hover:bg-zinc-50'
-                  }`}
+                  className={`px-3 py-1 text-xs font-medium transition ${view === v ? 'bg-brand-600 text-white' : 'bg-white text-zinc-600 hover:bg-zinc-50'
+                    }`}
                   onClick={() => setView(v)}
                 >
                   {v === 'month' ? 'Tháng' : 'Tuần'}
@@ -234,35 +233,33 @@ export default function CalendarPage() {
                 onDrop={(e) => handleDrop(e, iso)}
                 className={`group relative border-b border-r border-zinc-100 p-1.5 transition
                             ${view === 'week' ? 'min-h-64' : 'min-h-28'}
-                            ${
-                              isDropTarget
-                                ? 'bg-brand-50 ring-2 ring-inset ring-brand-400'
-                                : past
-                                  ? 'bg-zinc-100/70'
-                                  : inPeriod
-                                    ? 'bg-white'
-                                    : 'bg-zinc-50/60'
-                            }`}
+                            ${isDropTarget
+                    ? 'bg-brand-50 ring-2 ring-inset ring-brand-400'
+                    : past
+                      ? 'bg-zinc-100/70'
+                      : inPeriod
+                        ? 'bg-white'
+                        : 'bg-zinc-50/60'
+                  }`}
               >
                 <div className="mb-1 flex items-center justify-between">
                   <span
                     className={`flex h-6 w-6 items-center justify-center rounded-full text-xs font-semibold
-                                ${
-                                  isToday
-                                    ? 'bg-brand-600 text-white'
-                                    : past
-                                      ? 'text-zinc-400'
-                                      : inPeriod
-                                        ? 'text-zinc-700'
-                                        : 'text-zinc-300'
-                                }`}
+                                ${isToday
+                        ? 'bg-brand-600 text-white'
+                        : past
+                          ? 'text-zinc-400'
+                          : inPeriod
+                            ? 'text-zinc-700'
+                            : 'text-zinc-300'
+                      }`}
                   >
                     {d.getDate()}
                   </span>
                   {!past && (
                     <button
-                      className="rounded px-1.5 text-sm leading-none text-zinc-300 opacity-0 transition
-                                 hover:bg-brand-50 hover:text-brand-600 group-hover:opacity-100"
+                      className="rounded px-1.5 text-sm leading-none text-zinc-400 transition
+                                 hover:bg-brand-50 hover:text-brand-600"
                       title="Thêm sự kiện ngày này"
                       onClick={() => setCreatingOn(iso)}
                     >
@@ -463,9 +460,9 @@ export function CreateEventModal({
 
   const conflicts = date
     ? conflictsWith(
-        { event_date: date, hall: hall || null, time_slot: timeSlot || null, status },
-        sameDay.data ?? [],
-      )
+      { event_date: date, hall: hall || null, time_slot: timeSlot || null, status },
+      sameDay.data ?? [],
+    )
     : []
 
   const create = useMutation({
