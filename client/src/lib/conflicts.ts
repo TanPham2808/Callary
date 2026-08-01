@@ -56,7 +56,7 @@ export function conflictsWith(
   return events.filter((e) => e.id !== ignoreId && conflictKey(e) === key)
 }
 
-/** "Lầu 3 · Tối" — mô tả ngắn chỗ bị trùng, dùng trong câu cảnh báo. */
+/** "Lầu 3 · Chiều" — mô tả ngắn chỗ bị trùng, dùng trong câu cảnh báo. */
 export function slotLabel(e: Pick<DecorEvent, 'hall' | 'time_slot'>): string {
   return [e.hall, e.time_slot].filter(Boolean).join(' · ')
 }

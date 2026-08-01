@@ -147,7 +147,7 @@ export function DuplicateEventModal({
             </datalist>
           </div>
           <div>
-            <label className="label">Giờ / Ca</label>
+            <label className="label">Tiệc buổi</label>
             <input
               className="input"
               list="dup-slots"

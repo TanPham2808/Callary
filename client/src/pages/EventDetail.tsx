@@ -227,11 +227,11 @@ export default function EventDetail() {
                 />
               </div>
               <div>
-                <label className="label">Giờ / Ca</label>
+                <label className="label">Tiệc buổi</label>
                 <InlineInput
                   className="input"
                   value={ev.time_slot ?? ''}
-                  placeholder="VD: Trưa"
+                  placeholder="VD: Sáng"
                   onCommit={(v) => updateEvent.mutate({ time_slot: v.trim() || null })}
                 />
               </div>
@@ -478,9 +478,8 @@ function AdjustmentsCard({
                     <InlineInput
                       type="number"
                       step={0.5}
-                      className={`input input-sm w-20 text-right font-semibold ${
-                        a.delta >= 0 ? 'text-emerald-700' : 'text-red-600'
-                      }`}
+                      className={`input input-sm w-20 text-right font-semibold ${a.delta >= 0 ? 'text-emerald-700' : 'text-red-600'
+                        }`}
                       value={a.delta}
                       onCommit={(v) => update.mutate({ adjId: a.id, patch: { delta: Number(v) || 0 } })}
                     />

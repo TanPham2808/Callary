@@ -21,12 +21,23 @@ export function migrate() {
   const schema = readFileSync(resolve(__dirname, 'schema.sql'), 'utf8')
   db.exec(schema)
   seedSettings()
+  renameLegacyTimeSlots()
+}
+
+/** Đổi tên ca "Trưa/Tối" cũ thành "Sáng/Chiều" — một lần, idempotent. */
+function renameLegacyTimeSlots() {
+  db.prepare("UPDATE settings SET value = ? WHERE key = 'time_slots' AND value = ?").run(
+    JSON.stringify(['Sáng', 'Chiều']),
+    JSON.stringify(['Trưa', 'Tối']),
+  )
+  db.prepare("UPDATE events SET time_slot = 'Sáng' WHERE time_slot = 'Trưa'").run()
+  db.prepare("UPDATE events SET time_slot = 'Chiều' WHERE time_slot = 'Tối'").run()
 }
 
 function seedSettings() {
   const defaults: Record<string, string> = {
     halls: JSON.stringify(['Lầu 1', 'Lầu 2', 'Lầu 3', 'Lầu 4', 'Lầu 5', 'Lầu 6']),
-    time_slots: JSON.stringify(['Trưa', 'Tối']),
+    time_slots: JSON.stringify(['Sáng', 'Chiều']),
     units: JSON.stringify(['cành', 'bó', 'kg', 'cây', 'chiếc', 'mét']),
   }
   const stmt = db.prepare('INSERT OR IGNORE INTO settings (key, value) VALUES (?, ?)')

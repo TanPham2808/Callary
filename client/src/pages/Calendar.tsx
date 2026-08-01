@@ -558,13 +558,13 @@ export function CreateEventModal({
             </datalist>
           </div>
           <div>
-            <label className="label">Giờ / Ca</label>
+            <label className="label">Tiệc buổi</label>
             <input
               className="input"
               list="slots"
               value={timeSlot}
               onChange={(e) => setTimeSlot(e.target.value)}
-              placeholder="Trưa"
+              placeholder="Sáng"
             />
             <datalist id="slots">
               {(settings.data?.time_slots ?? []).map((s) => (

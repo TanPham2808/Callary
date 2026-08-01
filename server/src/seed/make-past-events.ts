@@ -34,7 +34,7 @@ const rows: [string, string, string][] = [
 const stmt = db.prepare(
   'INSERT INTO events (event_date, title, hall, time_slot, status) VALUES (?, ?, ?, ?, ?)',
 )
-for (const [date, title, status] of rows) stmt.run(date, title, 'Lầu 1', 'Trưa', status)
+for (const [date, title, status] of rows) stmt.run(date, title, 'Lầu 1', 'Sáng', status)
 
 console.log(`Đã tạo ${rows.length} sự kiện thử nghiệm (hôm nay = ${today}):`)
 for (const [date, title, status] of rows) console.log(`  ${date}  ${status.padEnd(8)} ${title}`)

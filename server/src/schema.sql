@@ -73,7 +73,7 @@ CREATE TABLE IF NOT EXISTS events (
   event_date TEXT    NOT NULL,                    -- YYYY-MM-DD
   title      TEXT    NOT NULL,                    -- tên tiệc / Cô dâu - Chú rể
   hall       TEXT,                                -- sảnh
-  time_slot  TEXT,                                -- giờ / ca (VD "11:00" hoặc "Tối")
+  time_slot  TEXT,                                -- giờ / ca (VD "11:00" hoặc "Chiều")
   status     TEXT    NOT NULL DEFAULT 'DU_KIEN',  -- DU_KIEN | DA_CHOT | DA_XONG | HUY
   note       TEXT,
   created_at TEXT    NOT NULL DEFAULT (datetime('now','localtime')),
