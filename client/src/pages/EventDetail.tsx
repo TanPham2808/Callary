@@ -392,9 +392,16 @@ function AdjustmentsCard({
   onChanged: () => void
   onError: (e: Error) => void
 }) {
+  const [mode, setMode] = useState<'delta' | 'replace'>('delta')
+
   const [flowerId, setFlowerId] = useState<number | null>(null)
   const [delta, setDelta] = useState('')
   const [reason, setReason] = useState('')
+
+  const [fromId, setFromId] = useState<number | null>(null)
+  const [toId, setToId] = useState<number | null>(null)
+  const [replaceQty, setReplaceQty] = useState('')
+  const [replaceReason, setReplaceReason] = useState('')
 
   const add = useMutation({
     mutationFn: () =>
@@ -408,6 +415,23 @@ function AdjustmentsCard({
       setFlowerId(null)
       setDelta('')
       setReason('')
+    },
+    onError,
+  })
+  const replace = useMutation({
+    mutationFn: () =>
+      api.post(`/api/events/${event.id}/adjustments/replace`, {
+        from_flower_id: fromId,
+        to_flower_id: toId,
+        quantity: Number(replaceQty),
+        reason: replaceReason.trim() || null,
+      }),
+    onSuccess: () => {
+      onChanged()
+      setFromId(null)
+      setToId(null)
+      setReplaceQty('')
+      setReplaceReason('')
     },
     onError,
   })
@@ -425,6 +449,8 @@ function AdjustmentsCard({
 
   const rows = event.adjustments ?? []
   const canAdd = flowerId !== null && Number(delta) !== 0 && !Number.isNaN(Number(delta))
+  const canReplace =
+    fromId !== null && toId !== null && fromId !== toId && Number(replaceQty) > 0 && !Number.isNaN(Number(replaceQty))
 
   return (
     <div className="card">
@@ -480,35 +506,91 @@ function AdjustmentsCard({
         </table>
       )}
 
-      <div className="flex flex-wrap items-end gap-2 border-t border-zinc-100 px-4 py-3">
-        <div className="min-w-48 flex-1">
-          <label className="label">Loại hoa</label>
-          <FlowerPicker value={flowerId} onChange={(fid) => setFlowerId(fid)} />
-        </div>
-        <div className="w-28">
-          <label className="label">+ / − số lượng</label>
-          <input
-            className="input input-sm text-right"
-            type="number"
-            step={0.5}
-            value={delta}
-            onChange={(e) => setDelta(e.target.value)}
-            placeholder="VD: -3"
-          />
-        </div>
-        <div className="min-w-48 flex-1">
-          <label className="label">Lý do</label>
-          <input
-            className="input input-sm"
-            value={reason}
-            onChange={(e) => setReason(e.target.value)}
-            placeholder="VD: dùng lại hoa dư của tiệc trước"
-          />
-        </div>
-        <button className="btn-primary btn-sm" disabled={!canAdd || add.isPending} onClick={() => add.mutate()}>
-          Thêm điều chỉnh
+      <div className="flex gap-1 border-t border-zinc-100 px-4 pt-3">
+        <button
+          className={`btn-sm rounded-full px-3 ${mode === 'delta' ? 'btn-primary' : 'btn-ghost'}`}
+          onClick={() => setMode('delta')}
+        >
+          Cộng / Trừ
+        </button>
+        <button
+          className={`btn-sm rounded-full px-3 ${mode === 'replace' ? 'btn-primary' : 'btn-ghost'}`}
+          onClick={() => setMode('replace')}
+        >
+          Thay thế
         </button>
       </div>
+
+      {mode === 'delta' ? (
+        <div className="flex flex-wrap items-end gap-2 px-4 py-3">
+          <div className="min-w-48 flex-1">
+            <label className="label">Loại hoa</label>
+            <FlowerPicker value={flowerId} onChange={(fid) => setFlowerId(fid)} />
+          </div>
+          <div className="w-28">
+            <label className="label">+ / − số lượng</label>
+            <input
+              className="input input-sm text-right"
+              type="number"
+              step={0.5}
+              value={delta}
+              onChange={(e) => setDelta(e.target.value)}
+              placeholder="VD: -3"
+            />
+          </div>
+          <div className="min-w-48 flex-1">
+            <label className="label">Lý do</label>
+            <input
+              className="input input-sm"
+              value={reason}
+              onChange={(e) => setReason(e.target.value)}
+              placeholder="VD: dùng lại hoa dư của tiệc trước"
+            />
+          </div>
+          <button className="btn-primary btn-sm" disabled={!canAdd || add.isPending} onClick={() => add.mutate()}>
+            Thêm điều chỉnh
+          </button>
+        </div>
+      ) : (
+        <div className="flex flex-wrap items-end gap-2 px-4 py-3">
+          <div className="min-w-48 flex-1">
+            <label className="label">Hoa cũ</label>
+            <FlowerPicker value={fromId} onChange={(fid) => setFromId(fid)} />
+          </div>
+          <div className="min-w-48 flex-1">
+            <label className="label">Hoa mới</label>
+            <FlowerPicker value={toId} onChange={(fid) => setToId(fid)} excludeIds={fromId ? [fromId] : []} />
+          </div>
+          <div className="w-28">
+            <label className="label">Số lượng</label>
+            <input
+              className="input input-sm text-right"
+              type="number"
+              step={0.5}
+              min={0}
+              value={replaceQty}
+              onChange={(e) => setReplaceQty(e.target.value)}
+              placeholder="VD: 20"
+            />
+          </div>
+          <div className="min-w-48 flex-1">
+            <label className="label">Lý do</label>
+            <input
+              className="input input-sm"
+              value={replaceReason}
+              onChange={(e) => setReplaceReason(e.target.value)}
+              placeholder="VD: đổi màu theo yêu cầu khách"
+            />
+          </div>
+          <button
+            className="btn-primary btn-sm"
+            disabled={!canReplace || replace.isPending}
+            onClick={() => replace.mutate()}
+          >
+            Thay thế
+          </button>
+        </div>
+      )}
     </div>
   )
 }

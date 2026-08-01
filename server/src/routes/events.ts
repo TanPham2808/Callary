@@ -354,6 +354,31 @@ router.post(
   }),
 )
 
+router.post(
+  '/:id/adjustments/replace',
+  ah((req, res) => {
+    const eventId = id(req.params.id)
+    const data = parseBody(
+      z.object({
+        from_flower_id: z.number().int().positive(),
+        to_flower_id: z.number().int().positive(),
+        quantity: z.number().positive(),
+        reason: z.string().trim().nullable().optional(),
+      }),
+      req.body,
+    )
+    if (data.from_flower_id === data.to_flower_id) throw badRequest('Hoa cũ và hoa mới phải khác nhau')
+    tx(() => {
+      const insert = db.prepare(
+        'INSERT INTO event_adjustments (event_id, flower_id, delta, reason) VALUES (?, ?, ?, ?)',
+      )
+      insert.run(eventId, data.from_flower_id, -data.quantity, data.reason ?? null)
+      insert.run(eventId, data.to_flower_id, data.quantity, data.reason ?? null)
+    })
+    res.status(201).json(loadEvent(eventId))
+  }),
+)
+
 router.put(
   '/adjustments/:adjId',
   ah((req, res) => {
