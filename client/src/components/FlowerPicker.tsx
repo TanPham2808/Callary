@@ -114,7 +114,7 @@ export default function FlowerPicker({
             <button
               key={f.id}
               type="button"
-              className={`flex w-full items-center justify-between gap-2 px-3 py-1.5 text-left text-sm ${
+              className={`flex w-full items-center justify-between gap-2 px-3 py-2 text-left text-sm ${
                 i === highlight ? 'bg-brand-50 text-brand-800' : 'hover:bg-zinc-50'
               }`}
               onMouseEnter={() => setHighlight(i)}

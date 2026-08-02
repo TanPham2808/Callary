@@ -106,7 +106,7 @@ export default function Inventory() {
         </span>
       </div>
 
-      <div className="mt-4 grid gap-5 xl:grid-cols-[1fr_24rem]">
+      <div className="mt-4 grid gap-5 lg:grid-cols-[1fr_24rem]">
         <div className="card overflow-hidden">
           <div className="card-head">
             <h2 className="card-title">Tồn kho hiện tại</h2>
@@ -142,7 +142,7 @@ export default function Inventory() {
 
           {rows.length > 0 && (
             <div className="max-h-[65vh] overflow-auto">
-              <table className="table">
+              <table className="table min-w-[620px]">
                 <thead>
                   <tr>
                     <th>Loại hoa</th>

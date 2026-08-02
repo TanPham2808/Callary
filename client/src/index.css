@@ -45,7 +45,7 @@
   .btn-danger,
   .btn-success {
     @apply inline-flex items-center justify-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium
-           transition-colors disabled:cursor-not-allowed disabled:opacity-50;
+           transition-colors disabled:cursor-not-allowed disabled:opacity-50 pointer-coarse:min-h-10;
   }
   .btn-primary {
     @apply bg-brand-600 text-white hover:bg-brand-700;
@@ -63,17 +63,17 @@
     @apply bg-emerald-600 text-white hover:bg-emerald-700;
   }
   .btn-sm {
-    @apply px-2 py-1 text-xs;
+    @apply px-2 py-1 text-xs pointer-coarse:min-h-9 pointer-coarse:px-2.5;
   }
 
   .input {
     @apply w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm
            outline-none transition placeholder:text-zinc-400
            focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20
-           disabled:bg-zinc-100 disabled:text-zinc-500;
+           disabled:bg-zinc-100 disabled:text-zinc-500 pointer-coarse:min-h-10;
   }
   .input-sm {
-    @apply px-2 py-1 text-sm;
+    @apply px-2 py-1 text-sm pointer-coarse:min-h-9;
   }
   .label {
     @apply mb-1 block text-xs font-semibold uppercase tracking-wide text-zinc-500;
@@ -111,9 +111,9 @@
     --rdp-accent-color: var(--color-brand-600);
     --rdp-accent-background-color: var(--color-brand-50);
     --rdp-today-color: var(--color-brand-600);
-    --rdp-day-width: 2.25rem;
-    --rdp-day-height: 2.25rem;
-    --rdp-day_button-width: 2.125rem;
-    --rdp-day_button-height: 2.125rem;
+    --rdp-day-width: 2.5rem;
+    --rdp-day-height: 2.5rem;
+    --rdp-day_button-width: 2.375rem;
+    --rdp-day_button-height: 2.375rem;
   }
 }

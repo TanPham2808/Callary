@@ -205,7 +205,7 @@ export default function Reports() {
                   <thead>
                     <tr>
                       <th className="w-10 text-right">#</th>
-                      <th className="min-w-48">Tên hoa</th>
+                      <th className="sticky left-0 z-20 min-w-48 bg-zinc-50">Tên hoa</th>
                       <th className="w-16">ĐVT</th>
                       <th className="w-28 text-right">Định lượng gói</th>
                       <th className="w-24 text-right">Điều chỉnh</th>
@@ -231,7 +231,7 @@ export default function Reports() {
                         ...catRows.map((r, i) => (
                           <tr key={r.flower_id}>
                             <td className="text-right text-xs text-zinc-400">{i + 1}</td>
-                            <td className="font-medium">{r.name}</td>
+                            <td className="sticky left-0 z-10 bg-white font-medium">{r.name}</td>
                             <td className="text-xs text-zinc-500">{r.unit}</td>
                             <td className="text-right tabular-nums text-zinc-500">{num(r.base)}</td>
                             <td

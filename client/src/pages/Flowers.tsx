@@ -145,7 +145,7 @@ export default function Flowers() {
             <table className="table">
               <thead>
                 <tr>
-                  <th className="min-w-52">Tên hoa / vật tư</th>
+                  <th className="sticky left-0 z-20 min-w-52 bg-zinc-50">Tên hoa / vật tư</th>
                   <th className="w-28">Nhóm</th>
                   <th className="w-24">ĐVT</th>
                   <th className="w-32 text-right">Đơn giá</th>
@@ -158,7 +158,7 @@ export default function Flowers() {
               <tbody>
                 {rows.map((f) => (
                   <tr key={f.id} className={f.needs_review === 1 ? 'bg-amber-50/50' : undefined}>
-                    <td>
+                    <td className={`sticky left-0 z-10 ${f.needs_review === 1 ? 'bg-amber-50' : 'bg-white'}`}>
                       <div className="flex items-center gap-2">
                         <InlineInput
                           value={f.name}

@@ -172,14 +172,14 @@ export default function EventDetail() {
         </div>
       )}
 
-      <div className="grid gap-5 xl:grid-cols-[1fr_22rem]">
+      <div className="grid gap-5 lg:grid-cols-[1fr_22rem]">
         <div className="space-y-5">
           {/* Thông tin chung */}
           <div className="card">
             <div className="card-head">
               <h2 className="card-title">Thông tin sự kiện</h2>
             </div>
-            <div className="grid gap-4 px-4 py-4 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-4 px-4 py-4 sm:grid-cols-2 xl:grid-cols-3">
               <div>
                 <label className="label">Tên tiệc / Cô dâu — Chú rể</label>
                 <InlineInput
@@ -235,7 +235,7 @@ export default function EventDetail() {
                   onCommit={(v) => updateEvent.mutate({ time_slot: v.trim() || null })}
                 />
               </div>
-              <div className="sm:col-span-2 lg:col-span-1">
+              <div className="sm:col-span-2 xl:col-span-1">
                 <label className="label">Ghi chú</label>
                 <InlineInput
                   className="input"
@@ -322,7 +322,7 @@ export default function EventDetail() {
                     </ConfirmButton>
                   </div>
 
-                  <div className="grid gap-1.5 sm:grid-cols-2 lg:grid-cols-3">
+                  <div className="grid gap-1.5 sm:grid-cols-2 xl:grid-cols-3">
                     {(ep.items ?? []).map((item) => (
                       <div
                         key={item.id}
@@ -363,7 +363,7 @@ export default function EventDetail() {
         </div>
 
         {/* Panel tổng hợp */}
-        <aside className="xl:sticky xl:top-5 xl:self-start">
+        <aside className="lg:sticky lg:top-5 lg:self-start">
           <RequirementPanel data={requirement.data} loading={requirement.isFetching} />
         </aside>
       </div>
@@ -460,7 +460,8 @@ function AdjustmentsCard({
       </div>
 
       {rows.length > 0 && (
-        <table className="table">
+        <div className="overflow-x-auto">
+        <table className="table min-w-[480px]">
           <thead>
             <tr>
               <th>Loại hoa</th>
@@ -503,6 +504,7 @@ function AdjustmentsCard({
             ))}
           </tbody>
         </table>
+        </div>
       )}
 
       <div className="flex gap-1 border-t border-zinc-100 px-4 pt-3">

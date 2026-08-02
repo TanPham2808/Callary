@@ -108,17 +108,25 @@ export function Modal({
   return (
     <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/40 p-4 sm:p-6">
       <div
-        className={`card my-4 w-full ${wide ? 'max-w-3xl' : 'max-w-lg'} shadow-xl`}
+        className={`card my-4 flex max-h-[90vh] w-full flex-col ${wide ? 'max-w-3xl' : 'max-w-lg'} shadow-xl`}
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="card-head">
+        <div className="card-head shrink-0">
           <h2 className="text-base font-semibold text-zinc-900">{title}</h2>
-          <button className="btn-ghost btn-sm" onClick={onClose} aria-label="Đóng">
+          <button
+            className="btn-ghost flex h-9 w-9 shrink-0 p-0 text-base"
+            onClick={onClose}
+            aria-label="Đóng"
+          >
             ✕
           </button>
         </div>
-        <div className="px-4 py-4">{children}</div>
-        {footer && <div className="flex justify-end gap-2 border-t border-zinc-200 px-4 py-3">{footer}</div>}
+        <div className="overflow-y-auto px-4 py-4">{children}</div>
+        {footer && (
+          <div className="flex shrink-0 flex-wrap justify-end gap-2 border-t border-zinc-200 px-4 py-3">
+            {footer}
+          </div>
+        )}
       </div>
     </div>
   )

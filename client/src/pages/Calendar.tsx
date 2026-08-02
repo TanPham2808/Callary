@@ -258,7 +258,7 @@ export default function CalendarPage() {
                   </span>
                   {!past && (
                     <button
-                      className="rounded px-1.5 text-sm leading-none text-zinc-400 transition
+                      className="flex h-7 w-7 items-center justify-center rounded text-sm leading-none text-zinc-400 transition
                                  hover:bg-brand-50 hover:text-brand-600"
                       title="Thêm sự kiện ngày này"
                       onClick={() => setCreatingOn(iso)}
@@ -286,7 +286,7 @@ export default function CalendarPage() {
       </div>
 
       <p className="mt-2 text-xs text-zinc-400">
-        Mẹo: kéo một tiệc thả sang ô ngày khác để đổi ngày tổ chức.
+        Mẹo: kéo một tiệc thả sang ô ngày khác để đổi ngày tổ chức (trên máy tính). Trên iPad/máy tính bảng, mở tiệc rồi đổi ở ô "Ngày tổ chức".
       </p>
 
       {periodEvents.length > 0 && (

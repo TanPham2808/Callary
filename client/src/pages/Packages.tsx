@@ -59,7 +59,7 @@ export default function Packages() {
         </div>
       )}
 
-      <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {(query.data ?? []).map((p) => (
           <div key={p.id} className="card flex flex-col transition hover:border-brand-300 hover:shadow-md">
             <Link to={`/packages/${p.id}`} className="flex-1 px-4 py-4">
@@ -77,7 +77,7 @@ export default function Packages() {
                 </span>
               </div>
             </Link>
-            <div className="flex items-center justify-end gap-1 border-t border-zinc-100 px-3 py-2">
+            <div className="flex flex-wrap items-center justify-end gap-1 border-t border-zinc-100 px-3 py-2">
               <Link to={`/packages/${p.id}`} className="btn-ghost btn-sm">
                 Xem chi tiết
               </Link>

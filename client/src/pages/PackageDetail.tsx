@@ -146,7 +146,7 @@ export default function PackageDetail() {
         </div>
       </div>
 
-      <div className="grid gap-5 xl:grid-cols-[1fr_20rem]">
+      <div className="grid gap-5 lg:grid-cols-[1fr_20rem]">
         <div className="space-y-4">
           {(pkg.items ?? []).map((item) => (
             <ItemCard key={item.id} item={item} onChanged={invalidate} onError={onError} />
@@ -180,7 +180,7 @@ export default function PackageDetail() {
           </div>
         </div>
 
-        <aside className="xl:sticky xl:top-5 xl:self-start">
+        <aside className="lg:sticky lg:top-5 lg:self-start">
           <div className="card">
             <div className="card-head">
               <h2 className="card-title">Tổng hợp cả gói</h2>
@@ -280,61 +280,63 @@ function ItemCard({
       </div>
 
       {rows.length > 0 && (
-        <table className="table">
-          <thead>
-            <tr>
-              <th className="w-24">Số lượng</th>
-              <th>Loại hoa</th>
-              <th className="w-28">Nhóm</th>
-              <th className="w-36">Tuỳ chọn</th>
-              <th className="w-16"></th>
-            </tr>
-          </thead>
-          <tbody>
-            {rows.map((row) => (
-              <tr key={row.id} className={row.is_optional ? 'text-zinc-400 italic' : undefined}>
-                <td>
-                  <div className="flex items-center gap-1">
-                    <InlineInput
-                      type="number"
-                      min={0}
-                      step={0.1}
-                      className="input input-sm w-16 text-right"
-                      value={row.quantity}
-                      onCommit={(v) => updateRow.mutate({ rowId: row.id, patch: { quantity: Number(v) || 0 } })}
-                    />
-                    <span className="text-xs text-zinc-400">{row.flower_unit}</span>
-                  </div>
-                </td>
-                <td>
-                  <FlowerPicker
-                    value={row.flower_id}
-                    onChange={(fid) => updateRow.mutate({ rowId: row.id, patch: { flower_id: fid } })}
-                  />
-                </td>
-                <td>{row.flower_category && <CategoryBadge category={row.flower_category} />}</td>
-                <td>
-                  <label className="flex cursor-pointer items-center gap-2 text-xs text-zinc-600">
-                    <input
-                      type="checkbox"
-                      className="h-3.5 w-3.5 rounded border-zinc-300 accent-brand-600"
-                      checked={row.is_optional === 1}
-                      onChange={(e) =>
-                        updateRow.mutate({ rowId: row.id, patch: { is_optional: e.target.checked } as any })
-                      }
-                    />
-                    Phương án thay thế
-                  </label>
-                </td>
-                <td className="text-right">
-                  <button className="btn-ghost btn-sm text-red-600" onClick={() => removeRow.mutate(row.id)}>
-                    ✕
-                  </button>
-                </td>
+        <div className="overflow-x-auto">
+          <table className="table min-w-[600px]">
+            <thead>
+              <tr>
+                <th className="w-24">Số lượng</th>
+                <th>Loại hoa</th>
+                <th className="w-28">Nhóm</th>
+                <th className="w-36">Tuỳ chọn</th>
+                <th className="w-16"></th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {rows.map((row) => (
+                <tr key={row.id} className={row.is_optional ? 'text-zinc-400 italic' : undefined}>
+                  <td>
+                    <div className="flex items-center gap-1">
+                      <InlineInput
+                        type="number"
+                        min={0}
+                        step={0.1}
+                        className="input input-sm w-16 text-right"
+                        value={row.quantity}
+                        onCommit={(v) => updateRow.mutate({ rowId: row.id, patch: { quantity: Number(v) || 0 } })}
+                      />
+                      <span className="text-xs text-zinc-400">{row.flower_unit}</span>
+                    </div>
+                  </td>
+                  <td>
+                    <FlowerPicker
+                      value={row.flower_id}
+                      onChange={(fid) => updateRow.mutate({ rowId: row.id, patch: { flower_id: fid } })}
+                    />
+                  </td>
+                  <td>{row.flower_category && <CategoryBadge category={row.flower_category} />}</td>
+                  <td>
+                    <label className="flex cursor-pointer items-center gap-2 whitespace-nowrap text-xs text-zinc-600">
+                      <input
+                        type="checkbox"
+                        className="h-3.5 w-3.5 rounded border-zinc-300 accent-brand-600"
+                        checked={row.is_optional === 1}
+                        onChange={(e) =>
+                          updateRow.mutate({ rowId: row.id, patch: { is_optional: e.target.checked } as any })
+                        }
+                      />
+                      Phương án thay thế
+                    </label>
+                  </td>
+                  <td className="text-right">
+                    <button className="btn-ghost btn-sm text-red-600" onClick={() => removeRow.mutate(row.id)}>
+                      ✕
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
 
       <div className="border-t border-zinc-100 px-4 py-2.5">
