@@ -549,7 +549,7 @@ export function CreateEventModal({
               list="halls"
               value={hall}
               onChange={(e) => setHall(e.target.value)}
-              placeholder="Lầu 1"
+              placeholder="Lầu 2"
             />
             <datalist id="halls">
               {(settings.data?.halls ?? []).map((h) => (

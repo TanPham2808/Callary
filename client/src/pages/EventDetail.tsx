@@ -222,7 +222,7 @@ export default function EventDetail() {
                 <InlineInput
                   className="input"
                   value={ev.hall ?? ''}
-                  placeholder="VD: Lầu 1"
+                  placeholder="VD: Lầu 2"
                   onCommit={(v) => updateEvent.mutate({ hall: v.trim() || null })}
                 />
               </div>

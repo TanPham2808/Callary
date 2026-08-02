@@ -36,7 +36,7 @@ function renameLegacyTimeSlots() {
 
 function seedSettings() {
   const defaults: Record<string, string> = {
-    halls: JSON.stringify(['Lầu 1', 'Lầu 2', 'Lầu 3', 'Lầu 4', 'Lầu 5', 'Lầu 6']),
+    halls: JSON.stringify(['Lầu 2', 'Lầu 3', 'Lầu 4', 'Lầu 5', 'Lầu 6']),
     time_slots: JSON.stringify(['Sáng', 'Chiều']),
     units: JSON.stringify(['cành', 'bó', 'kg', 'cây', 'chiếc', 'mét']),
   }
