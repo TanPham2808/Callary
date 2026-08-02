@@ -42,7 +42,8 @@
   .btn-primary,
   .btn-secondary,
   .btn-ghost,
-  .btn-danger {
+  .btn-danger,
+  .btn-success {
     @apply inline-flex items-center justify-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium
            transition-colors disabled:cursor-not-allowed disabled:opacity-50;
   }
@@ -57,6 +58,9 @@
   }
   .btn-danger {
     @apply border border-red-200 bg-white text-red-600 hover:bg-red-50;
+  }
+  .btn-success {
+    @apply bg-emerald-600 text-white hover:bg-emerald-700;
   }
   .btn-sm {
     @apply px-2 py-1 text-xs;

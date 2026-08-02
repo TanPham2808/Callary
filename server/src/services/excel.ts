@@ -349,7 +349,7 @@ function styleHeader(row: ExcelJS.Row) {
   })
 }
 
-function fmtDate(iso: string): string {
+export function fmtDate(iso: string): string {
   const [y, m, d] = iso.split('-')
   return `${d}/${m}/${y}`
 }

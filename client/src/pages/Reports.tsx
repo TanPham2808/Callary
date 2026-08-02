@@ -61,6 +61,7 @@ export default function Reports() {
   }, [report.data, search])
 
   const exportUrl = '/api/export' + qs(args)
+  const exportWordUrl = '/api/export/word' + qs(args)
 
   const totals = useMemo(() => {
     const src = report.data?.rows ?? []
@@ -81,15 +82,26 @@ export default function Reports() {
             : undefined
         }
         actions={
-          <a
-            className="btn-primary"
-            href={exportUrl}
-            onClick={() => {
-              setParams({ from, to })
-            }}
-          >
-            ⬇ Xuất file Excel
-          </a>
+          <div className="flex gap-2">
+            <a
+              className="btn-primary"
+              href={exportUrl}
+              onClick={() => {
+                setParams({ from, to })
+              }}
+            >
+              ⬇ Xuất file Excel
+            </a>
+            <a
+              className="btn-success"
+              href={exportWordUrl}
+              onClick={() => {
+                setParams({ from, to })
+              }}
+            >
+              ⬇ Xuất file Word
+            </a>
+          </div>
         }
       />
 
