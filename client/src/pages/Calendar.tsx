@@ -412,13 +412,10 @@ function EventChip({
       <div className="flex items-center gap-1">
         {hasConflict && <span className="shrink-0 text-red-600">⚠</span>}
         {event.time_slot && <span className="shrink-0 opacity-70">{event.time_slot}</span>}
-        <span className="truncate">{event.title}</span>
+        <span className="truncate">{event.hall || '—'}</span>
       </div>
-      {detailed && (
-        <>
-          {event.hall && <div className="mt-0.5 truncate opacity-70">{event.hall}</div>}
-          {event.package_names && <div className="mt-0.5 truncate opacity-60">🎀 {event.package_names}</div>}
-        </>
+      {detailed && event.package_names && (
+        <div className="mt-0.5 truncate opacity-60">🎀 {event.package_names}</div>
       )}
     </Link>
   )
