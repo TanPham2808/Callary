@@ -139,7 +139,7 @@ export default function CalendarPage() {
   return (
     <>
       <PageHeader
-        title="Lịch sự kiện"
+        title="Lịch tiệc"
         subtitle={`${periodEvents.length} sự kiện trong ${periodLabel}`}
         actions={
           <>

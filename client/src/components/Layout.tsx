@@ -4,7 +4,7 @@ import { CommandPalette, useCommandPalette } from './CommandPalette'
 
 const NAV = [
   { to: '/', label: 'Tổng quan', icon: '📊', end: true },
-  { to: '/calendar', label: 'Lịch sự kiện', icon: '📅' },
+  { to: '/calendar', label: 'Lịch tiệc', icon: '📅' },
   { to: '/packages', label: 'Gói trang trí', icon: '🎀' },
   { to: '/flowers', label: 'Danh mục hoa', icon: '🌸' },
   { to: '/inventory', label: 'Kho hoa dư', icon: '📦' },

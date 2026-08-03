@@ -58,7 +58,7 @@ export function CommandPalette({ open, onClose }: { open: boolean; onClose: () =
   const items = useMemo<Item[]>(() => {
     if (!query) {
       const shortcuts: Item[] = [
-        { key: 'nav-cal', group: 'Truy cập nhanh', label: 'Lịch sự kiện', icon: '📅', to: '/calendar' },
+        { key: 'nav-cal', group: 'Truy cập nhanh', label: 'Lịch tiệc', icon: '📅', to: '/calendar' },
         {
           key: 'nav-rep',
           group: 'Truy cập nhanh',

@@ -111,7 +111,7 @@ export default function PackageDetail() {
         actions={
           <>
             <button className="btn-secondary" onClick={() => duplicate.mutate()}>
-              Nhân bản gói
+              Copy gói
             </button>
             <ConfirmButton
               className="btn-danger"

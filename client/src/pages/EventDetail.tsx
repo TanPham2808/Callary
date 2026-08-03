@@ -136,7 +136,7 @@ export default function EventDetail() {
     <>
       <div className="mb-3 text-sm">
         <Link to="/calendar" className="text-brand-600 hover:underline">
-          ← Lịch sự kiện
+          ← Lịch tiệc
         </Link>
       </div>
 
