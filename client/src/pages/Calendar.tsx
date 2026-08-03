@@ -76,6 +76,9 @@ export default function CalendarPage() {
       if (!map.has(e.event_date)) map.set(e.event_date, [])
       map.get(e.event_date)!.push(e)
     }
+    for (const dayEvents of map.values()) {
+      dayEvents.sort((a, b) => timeSlotRank(a.time_slot) - timeSlotRank(b.time_slot))
+    }
     return map
   }, [events])
 
@@ -368,6 +371,14 @@ export default function CalendarPage() {
 }
 
 /* ------------------------------ Chip sự kiện ---------------------------- */
+
+/** Thứ tự sắp xếp buổi trong ngày: Sáng lên trên, Chiều xuống dưới, còn lại ở cuối. */
+function timeSlotRank(timeSlot: string | null): number {
+  const slot = timeSlot?.trim().toLowerCase() ?? ''
+  if (slot.includes('sáng')) return 0
+  if (slot.includes('chiều')) return 1
+  return 2
+}
 
 /** Dải màu bên trái chip để phân biệt buổi Sáng (xanh dương) / Chiều (cam). */
 function timeSlotStripe(timeSlot: string | null): string {
