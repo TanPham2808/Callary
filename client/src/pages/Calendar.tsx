@@ -369,6 +369,14 @@ export default function CalendarPage() {
 
 /* ------------------------------ Chip sự kiện ---------------------------- */
 
+/** Dải màu bên trái chip để phân biệt buổi Sáng (xanh dương) / Chiều (cam). */
+function timeSlotStripe(timeSlot: string | null): string {
+  const slot = timeSlot?.trim().toLowerCase() ?? ''
+  if (slot.includes('sáng')) return 'border-l-4 border-l-sky-500'
+  if (slot.includes('chiều')) return 'border-l-4 border-l-orange-500'
+  return 'border-l-4 border-l-transparent'
+}
+
 function EventChip({
   event,
   detailed,
@@ -407,6 +415,7 @@ function EventChip({
                   transition hover:brightness-95
                   ${past ? 'opacity-60' : 'cursor-grab active:cursor-grabbing'}
                   ${STATUS_STYLE[event.status]}
+                  ${timeSlotStripe(event.time_slot)}
                   ${hasConflict ? 'ring-2 ring-red-400' : ''}`}
     >
       <div className="flex items-center gap-1">
