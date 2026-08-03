@@ -76,7 +76,7 @@ vào bằng địa chỉ IP của máy chủ, ví dụ `http://192.168.1.50:3001
 | **Gói trang trí** | Tạo/sửa/xoá gói, hạng mục và bảng định lượng. Có nút **Nhân bản gói** |
 | **Danh mục hoa** | Sửa tên, đơn vị, nhóm, đơn giá. Có chức năng **Gộp** hai loại hoa trùng nhau |
 | **Kho hoa dư** | Ghi nhận hoa còn lại sau tiệc để trừ vào lần mua sau |
-| **Báo cáo** | Chọn khoảng ngày → bảng hoa cần mua → **Xuất file Excel** (4 sheet) |
+| **Báo cáo** | Chọn khoảng ngày → bảng hoa cần mua → **Xuất file Excel** (4 sheet) hoặc **Xuất file Word** (đơn gọn, để gửi thẳng cho nhà cung cấp) |
 
 ---
 
@@ -92,6 +92,11 @@ Tiệc tuần này giống tuần trước thì mở tiệc cũ → bấm **Nhâ
 gợi ý đúng 7 ngày sau). Bản sao giữ nguyên các gói đã gắn cùng những hạng mục bạn đã bỏ
 chọn hoặc nhân đôi, và luôn ở trạng thái **Dự kiến**. Điều chỉnh linh động mặc định
 không chép theo vì nó gắn với lượng hoa dư của đúng ngày hôm đó.
+
+**Thay thế hoa trong điều chỉnh linh động**
+Ở tab **Thay thế** (thay vì **Điều chỉnh**) trong phần điều chỉnh linh động của sự kiện,
+chọn hoa cũ → hoa mới → số lượng: hệ thống tự tạo cặp điều chỉnh (trừ hoa cũ, cộng hoa mới)
+mà không cần nhập tay hai dòng riêng.
 
 **Cảnh báo trùng chỗ**
 Khi hai tiệc bị xếp cùng ngày, cùng sảnh, cùng ca, hệ thống tô viền đỏ ⚠ lên chip trên
@@ -183,6 +188,7 @@ server/src/
   routes/                  flowers · packages · events · inventory · reports · export · search
   services/calc.ts         ★ logic tính nhu cầu — dùng chung cho mọi màn hình và mọi sheet
   services/excel.ts        dựng file Excel 4 sheet bằng ExcelJS
+  services/word.ts         dựng file Word đơn giản (đơn mua hàng gửi nhà cung cấp) bằng docx
   services/event-status.ts tự chuyển tiệc quá ngày sang "Đã xong"
   lib/date.ts              ngày hôm nay theo giờ địa phương (không dùng UTC)
   seed/import-excel.ts     đọc .xlsx và nạp vào DB
