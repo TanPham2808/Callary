@@ -136,7 +136,7 @@ export default function Inventory() {
             <Empty icon="📦">
               {showAll
                 ? 'Không có loại hoa nào khớp tìm kiếm.'
-                : 'Chưa ghi nhận hoa dư nào. Bấm "Ghi nhận hoa dư" sau khi kết thúc một sự kiện.'}
+                : 'Chưa ghi nhận hoa dư nào. Bấm "Ghi nhận hoa dư" sau khi kết thúc một lịch tiệc.'}
             </Empty>
           )}
 
@@ -305,7 +305,7 @@ function LeftoverModal({
     <Modal
       open={open}
       wide
-      title="Ghi nhận hoa dư sau sự kiện"
+      title="Ghi nhận hoa dư sau lịch tiệc"
       onClose={onClose}
       footer={
         <>
@@ -323,9 +323,9 @@ function LeftoverModal({
 
         <div className="grid gap-3 sm:grid-cols-2">
           <div>
-            <label className="label">Sự kiện (không bắt buộc)</label>
+            <label className="label">Lịch tiệc (không bắt buộc)</label>
             <select className="input" value={eventId} onChange={(e) => setEventId(e.target.value)}>
-              <option value="">— Không gắn sự kiện nào —</option>
+              <option value="">— Không gắn lịch tiệc nào —</option>
               {(recent.data ?? [])
                 .slice()
                 .reverse()

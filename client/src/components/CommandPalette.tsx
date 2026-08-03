@@ -72,7 +72,7 @@ export function CommandPalette({ open, onClose }: { open: boolean; onClose: () =
       ]
       const events: Item[] = (upcoming.data ?? []).slice(0, 6).map((e) => ({
         key: `ev-${e.id}`,
-        group: 'Sự kiện sắp tới',
+        group: 'Lịch tiệc sắp tới',
         label: e.title,
         hint: [fmtDate(e.event_date), e.hall, e.time_slot].filter(Boolean).join(' · '),
         icon: '🎊',
@@ -86,7 +86,7 @@ export function CommandPalette({ open, onClose }: { open: boolean; onClose: () =
     return [
       ...r.events.map((e) => ({
         key: `ev-${e.id}`,
-        group: 'Sự kiện',
+        group: 'Lịch tiệc',
         label: e.title,
         hint: [fmtDate(e.event_date), e.hall, e.time_slot, STATUS_LABEL[e.status]].filter(Boolean).join(' · '),
         icon: '🎊',

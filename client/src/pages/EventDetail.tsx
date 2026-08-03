@@ -157,10 +157,10 @@ export default function EventDetail() {
             </button>
             <ConfirmButton
               className="btn-danger"
-              message={`Xoá sự kiện "${ev.title}"?`}
+              message={`Xoá lịch tiệc "${ev.title}"?`}
               onConfirm={() => removeEvent.mutate()}
             >
-              Xoá sự kiện
+              Xoá lịch tiệc
             </ConfirmButton>
           </>
         }
@@ -177,7 +177,7 @@ export default function EventDetail() {
           {/* Thông tin chung */}
           <div className="card">
             <div className="card-head">
-              <h2 className="card-title">Thông tin sự kiện</h2>
+              <h2 className="card-title">Thông tin lịch tiệc</h2>
             </div>
             <div className="grid gap-4 px-4 py-4 sm:grid-cols-2 xl:grid-cols-3">
               <div>
@@ -315,7 +315,7 @@ export default function EventDetail() {
                     </button>
                     <ConfirmButton
                       className="btn-ghost btn-sm ml-auto text-red-600"
-                      message={`Gỡ gói "${ep.package_name}" khỏi sự kiện?`}
+                      message={`Gỡ gói "${ep.package_name}" khỏi lịch tiệc?`}
                       onConfirm={() => removePackage.mutate(ep.id)}
                     >
                       Gỡ gói
@@ -373,7 +373,7 @@ export default function EventDetail() {
         onClose={() => setDuplicating(null)}
         onDone={() => {
           refresh()
-          toast.show('Đã tạo bản sao của sự kiện')
+          toast.show('Đã tạo bản sao của lịch tiệc')
         }}
       />
       {toast.node}
@@ -606,12 +606,12 @@ function RequirementPanel({ data, loading }: { data?: RequirementResult; loading
   return (
     <div className="card">
       <div className="card-head">
-        <h2 className="card-title">Tổng hợp hoa của sự kiện</h2>
+        <h2 className="card-title">Tổng hợp hoa của lịch tiệc</h2>
         {loading && <span className="text-xs text-zinc-400">đang tính…</span>}
       </div>
 
       {data.rows.length === 0 ? (
-        <Empty icon="🌿">Chưa có hoa nào — hãy gắn gói trang trí cho sự kiện.</Empty>
+        <Empty icon="🌿">Chưa có hoa nào — hãy gắn gói trang trí cho lịch tiệc.</Empty>
       ) : (
         <div className="max-h-[62vh] overflow-y-auto">
           {CATEGORY_ORDER.map((cat) => {
@@ -656,7 +656,7 @@ function RequirementPanel({ data, loading }: { data?: RequirementResult; loading
         </div>
       )}
       <p className="border-t border-zinc-100 px-4 py-2.5 text-[11px] leading-relaxed text-zinc-500">
-        Con số ở đây là nhu cầu của riêng sự kiện, chưa trừ tồn kho. Xem{' '}
+        Con số ở đây là nhu cầu của riêng lịch tiệc, chưa trừ tồn kho. Xem{' '}
         <Link to="/reports" className="text-brand-600 hover:underline">
           Báo cáo
         </Link>{' '}

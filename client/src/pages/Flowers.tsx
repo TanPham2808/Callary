@@ -427,7 +427,7 @@ function MergeModal({
         </div>
 
         <p className="text-xs leading-relaxed text-zinc-500">
-          Toàn bộ định lượng trong các gói, điều chỉnh của sự kiện và tồn kho của
+          Toàn bộ định lượng trong các gói, điều chỉnh của lịch tiệc và tồn kho của
           <strong> {source.name}</strong> sẽ được chuyển sang loại hoa bạn chọn. Tên
           <strong> {source.name}</strong> được giữ lại làm tên viết tắt để lần sau vẫn tra cứu được.
           Thao tác này không hoàn tác được.

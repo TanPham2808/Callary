@@ -14,7 +14,7 @@ const DATE = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Ngày phải theo định 
 function assertNotPast(date: string) {
   if (isPastDate(date)) {
     throw badRequest(
-      `Không thể xếp sự kiện vào ngày đã qua (${fmt(date)}). Chỉ chọn được từ hôm nay (${fmt(todayLocal())}) trở đi.`,
+      `Không thể xếp lịch tiệc vào ngày đã qua (${fmt(date)}). Chỉ chọn được từ hôm nay (${fmt(todayLocal())}) trở đi.`,
     )
   }
 }
@@ -78,7 +78,7 @@ router.get(
     const ev = db.prepare('SELECT event_date FROM events WHERE id = ?').get(eventId) as
       | { event_date: string }
       | undefined
-    if (!ev) throw notFound('Không tìm thấy sự kiện này')
+    if (!ev) throw notFound('Không tìm thấy lịch tiệc này')
     res.json(computeRequirement(ev.event_date, ev.event_date, { eventId, useStock: false }))
   }),
 )
@@ -101,7 +101,7 @@ router.put(
     const eventId = id(req.params.id)
     const data = parseBody(eventSchema.partial(), req.body)
     const cur = db.prepare('SELECT * FROM events WHERE id = ?').get(eventId) as DecorEvent | undefined
-    if (!cur) throw notFound('Không tìm thấy sự kiện này')
+    if (!cur) throw notFound('Không tìm thấy lịch tiệc này')
 
     // Chỉ chặn khi thực sự DỜI sang một ngày đã qua. Sự kiện cũ vẫn phải sửa
     // được tên, ghi chú, trạng thái… mà không bị chặn oan.
@@ -157,7 +157,7 @@ router.post(
     assertNotPast(data.event_date)
 
     const src = db.prepare('SELECT * FROM events WHERE id = ?').get(sourceId) as DecorEvent | undefined
-    if (!src) throw notFound('Không tìm thấy sự kiện cần nhân bản')
+    if (!src) throw notFound('Không tìm thấy lịch tiệc cần nhân bản')
 
     const newId = tx(() => {
       const info = db
@@ -252,7 +252,7 @@ router.put(
     const ep = db.prepare('SELECT event_id FROM event_packages WHERE id = ?').get(epId) as
       | { event_id: number }
       | undefined
-    if (!ep) throw notFound('Không tìm thấy gói trong sự kiện này')
+    if (!ep) throw notFound('Không tìm thấy gói trong lịch tiệc này')
     db.prepare('UPDATE event_packages SET quantity = ? WHERE id = ?').run(quantity, epId)
     res.json(loadEvent(ep.event_id))
   }),
@@ -265,7 +265,7 @@ router.delete(
     const ep = db.prepare('SELECT event_id FROM event_packages WHERE id = ?').get(epId) as
       | { event_id: number }
       | undefined
-    if (!ep) throw notFound('Không tìm thấy gói trong sự kiện này')
+    if (!ep) throw notFound('Không tìm thấy gói trong lịch tiệc này')
     db.prepare('DELETE FROM event_packages WHERE id = ?').run(epId)
     res.json(loadEvent(ep.event_id))
   }),
@@ -286,7 +286,7 @@ router.put(
            JOIN event_packages ep ON ep.id = epi.event_package_id WHERE epi.id = ?`,
       )
       .get(epiId) as { quantity: number; is_included: number; event_id: number } | undefined
-    if (!cur) throw notFound('Không tìm thấy hạng mục này trong sự kiện')
+    if (!cur) throw notFound('Không tìm thấy hạng mục này trong lịch tiệc')
     db.prepare('UPDATE event_package_items SET quantity = ?, is_included = ? WHERE id = ?').run(
       data.quantity ?? cur.quantity,
       data.is_included !== undefined ? (data.is_included ? 1 : 0) : cur.is_included,
@@ -302,7 +302,7 @@ router.post(
   ah((req, res) => {
     const epId = id(req.params.epId)
     const ep = db.prepare('SELECT * FROM event_packages WHERE id = ?').get(epId) as EventPackage | undefined
-    if (!ep) throw notFound('Không tìm thấy gói trong sự kiện này')
+    if (!ep) throw notFound('Không tìm thấy gói trong lịch tiệc này')
 
     tx(() => {
       const items = db
@@ -415,7 +415,7 @@ router.delete(
 
 export function loadEvent(eventId: number): DecorEvent {
   const ev = db.prepare('SELECT * FROM events WHERE id = ?').get(eventId) as DecorEvent | undefined
-  if (!ev) throw notFound('Không tìm thấy sự kiện này')
+  if (!ev) throw notFound('Không tìm thấy lịch tiệc này')
 
   ev.packages = db
     .prepare(

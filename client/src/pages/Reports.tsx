@@ -78,7 +78,7 @@ export default function Reports() {
         title="Báo cáo hoa cần mua"
         subtitle={
           report.data
-            ? `${report.data.event_count} sự kiện · ${report.data.rows.length} loại hoa · ${fmtDate(from)} — ${fmtDate(to)}`
+            ? `${report.data.event_count} lịch tiệc · ${report.data.rows.length} loại hoa · ${fmtDate(from)} — ${fmtDate(to)}`
             : undefined
         }
         actions={
@@ -180,7 +180,7 @@ export default function Reports() {
       {report.data && (
         <>
           <div className="mb-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            <Stat label="Sự kiện" value={String(report.data.event_count)} />
+            <Stat label="Lịch tiệc" value={String(report.data.event_count)} />
             <Stat label="Loại hoa cần" value={String(report.data.rows.length)} />
             <Stat label="Tận dụng từ kho" value={num(totals.stockUsed)} tone="emerald" />
             <Stat label="Chi phí cần mua" value={money(totals.amount)} tone="brand" />
@@ -189,7 +189,7 @@ export default function Reports() {
           {report.data.rows.length === 0 ? (
             <div className="card">
               <Empty icon="📄">
-                Không có sự kiện nào trong khoảng ngày đã chọn — chưa có hoa nào cần chuẩn bị.
+                Không có lịch tiệc nào trong khoảng ngày đã chọn — chưa có hoa nào cần chuẩn bị.
               </Empty>
             </div>
           ) : (
@@ -290,7 +290,7 @@ export default function Reports() {
                   <thead>
                     <tr>
                       <th className="w-36">Ngày</th>
-                      <th className="w-28 text-right">Số sự kiện</th>
+                      <th className="w-28 text-right">Số lịch tiệc</th>
                       <th className="w-36 text-right">Tổng lượng hoa</th>
                       <th className="w-40 text-right">Chi phí ước tính</th>
                     </tr>

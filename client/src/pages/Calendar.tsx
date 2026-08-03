@@ -140,14 +140,14 @@ export default function CalendarPage() {
     <>
       <PageHeader
         title="Lịch tiệc"
-        subtitle={`${periodEvents.length} sự kiện trong ${periodLabel}`}
+        subtitle={`${periodEvents.length} lịch tiệc trong ${periodLabel}`}
         actions={
           <>
             <Link className="btn-secondary" to={`/reports?from=${periodStart}&to=${periodEnd}`}>
               {view === 'week' ? 'Báo cáo tuần này' : 'Báo cáo tháng này'}
             </Link>
             <button className="btn-primary" onClick={() => setCreatingOn(todayIso)}>
-              + Thêm sự kiện
+              + Thêm lịch tiệc
             </button>
           </>
         }
@@ -260,7 +260,7 @@ export default function CalendarPage() {
                     <button
                       className="flex h-7 w-7 items-center justify-center rounded text-sm leading-none text-zinc-400 transition
                                  hover:bg-brand-50 hover:text-brand-600"
-                      title="Thêm sự kiện ngày này"
+                      title="Thêm lịch tiệc ngày này"
                       onClick={() => setCreatingOn(iso)}
                     >
                       +
@@ -292,7 +292,7 @@ export default function CalendarPage() {
       {periodEvents.length > 0 && (
         <div className="card mt-5">
           <div className="card-head">
-            <h2 className="card-title">Danh sách sự kiện {periodLabel}</h2>
+            <h2 className="card-title">Danh sách lịch tiệc {periodLabel}</h2>
           </div>
           <div className="overflow-x-auto">
             <table className="table">
@@ -351,7 +351,7 @@ export default function CalendarPage() {
         onClose={() => setCreatingOn(null)}
         onCreated={() => {
           qc.invalidateQueries({ queryKey: ['events'] })
-          toast.show('Đã tạo sự kiện')
+          toast.show('Đã tạo lịch tiệc')
         }}
       />
       <DuplicateEventModal
@@ -359,7 +359,7 @@ export default function CalendarPage() {
         onClose={() => setDuplicating(null)}
         onDone={() => {
           qc.invalidateQueries({ queryKey: ['events'] })
-          toast.show('Đã tạo bản sao của sự kiện')
+          toast.show('Đã tạo bản sao của lịch tiệc')
         }}
       />
       {toast.node}
@@ -510,7 +510,7 @@ export function CreateEventModal({
   return (
     <Modal
       open
-      title={`Thêm sự kiện — ${fmtDate(date)}`}
+      title={`Thêm lịch tiệc — ${fmtDate(date)}`}
       onClose={onClose}
       footer={
         <>
@@ -522,7 +522,7 @@ export function CreateEventModal({
             disabled={past || !title.trim() || create.isPending}
             onClick={() => create.mutate()}
           >
-            {create.isPending ? 'Đang tạo…' : 'Tạo sự kiện'}
+            {create.isPending ? 'Đang tạo…' : 'Tạo lịch tiệc'}
           </button>
         </>
       }
@@ -532,7 +532,7 @@ export function CreateEventModal({
 
         {past && (
           <div className="rounded-lg border border-red-200 bg-red-50 px-3 py-2.5 text-sm text-red-800">
-            Ngày {fmtDate(date)} đã qua. Chỉ xếp được sự kiện từ hôm nay ({fmtDate(today())}) trở đi.
+            Ngày {fmtDate(date)} đã qua. Chỉ xếp được lịch tiệc từ hôm nay ({fmtDate(today())}) trở đi.
           </div>
         )}
 

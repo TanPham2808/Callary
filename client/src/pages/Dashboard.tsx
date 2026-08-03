@@ -47,7 +47,7 @@ export default function Dashboard() {
       />
 
       <div className="mb-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-        <StatCard to="/calendar" label="Sự kiện 7 ngày tới" value={String(d.upcoming.length)} icon="📅" />
+        <StatCard to="/calendar" label="Lịch tiệc 7 ngày tới" value={String(d.upcoming.length)} icon="📅" />
         <StatCard to="/packages" label="Gói trang trí" value={String(d.counts.packages)} icon="🎀" />
         <StatCard to="/flowers" label="Loại hoa / vật tư" value={String(d.counts.flowers)} icon="🌸" />
         <StatCard
@@ -72,19 +72,19 @@ export default function Dashboard() {
       )}
 
       <div className="grid gap-5 lg:grid-cols-2">
-        {/* Sự kiện sắp tới */}
+        {/* Lịch tiệc sắp tới */}
         <div className="card">
           <div className="card-head">
-            <h2 className="card-title">Sự kiện sắp tới</h2>
+            <h2 className="card-title">Lịch tiệc sắp tới</h2>
             <span className="text-xs text-zinc-400">
               {fmtDate(d.today)} — {fmtDate(d.until)}
             </span>
           </div>
           {d.upcoming.length === 0 ? (
             <Empty icon="📅">
-              Không có sự kiện nào trong 7 ngày tới.{' '}
+              Không có lịch tiệc nào trong 7 ngày tới.{' '}
               <Link to="/calendar" className="text-brand-600 hover:underline">
-                Thêm sự kiện
+                Thêm lịch tiệc
               </Link>
             </Empty>
           ) : (
@@ -122,7 +122,7 @@ export default function Dashboard() {
             </Link>
           </div>
           {buyRows.length === 0 ? (
-            <Empty icon="✅">Không cần mua thêm hoa nào — tồn kho đã đủ hoặc chưa có sự kiện.</Empty>
+            <Empty icon="✅">Không cần mua thêm hoa nào — tồn kho đã đủ hoặc chưa có lịch tiệc.</Empty>
           ) : (
             <div className="max-h-96 overflow-y-auto">
               {CATEGORY_ORDER.map((cat) => {
