@@ -1,3 +1,4 @@
+import { SearchX } from 'lucide-react'
 import { Route, Routes } from 'react-router-dom'
 import Layout from './components/Layout'
 import ProtectedRoute from './components/ProtectedRoute'
@@ -28,7 +29,7 @@ export default function App() {
           <Route path="inventory" element={<Inventory />} />
           <Route path="reports" element={<Reports />} />
           <Route path="change-password" element={<ChangePassword />} />
-          <Route path="*" element={<Empty icon="🔍">Không tìm thấy trang bạn yêu cầu.</Empty>} />
+          <Route path="*" element={<Empty icon={<SearchX />}>Không tìm thấy trang bạn yêu cầu.</Empty>} />
         </Route>
       </Route>
     </Routes>

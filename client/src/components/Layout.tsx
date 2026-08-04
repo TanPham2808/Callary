@@ -1,15 +1,29 @@
 import { useState } from 'react'
 import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom'
+import {
+  CalendarDays,
+  CircleUserRound,
+  FileText,
+  Flower2,
+  Gift,
+  KeyRound,
+  LayoutDashboard,
+  LogOut,
+  Menu,
+  Package,
+  Search,
+  X,
+} from 'lucide-react'
 import { useAuth } from '../lib/AuthContext'
 import { CommandPalette, useCommandPalette } from './CommandPalette'
 
 const NAV = [
-  { to: '/', label: 'Tổng quan', icon: '📊', end: true },
-  { to: '/calendar', label: 'Lịch tiệc', icon: '📅' },
-  { to: '/packages', label: 'Gói trang trí', icon: '🎀' },
-  { to: '/flowers', label: 'Danh mục hoa', icon: '🌸' },
-  { to: '/inventory', label: 'Kho hoa dư', icon: '📦' },
-  { to: '/reports', label: 'Order hoa & Báo cáo', icon: '📄' },
+  { to: '/', label: 'Tổng quan', icon: LayoutDashboard, end: true },
+  { to: '/calendar', label: 'Lịch tiệc', icon: CalendarDays },
+  { to: '/packages', label: 'Gói trang trí', icon: Gift },
+  { to: '/flowers', label: 'Danh mục hoa', icon: Flower2 },
+  { to: '/inventory', label: 'Kho hoa dư', icon: Package },
+  { to: '/reports', label: 'Order hoa & Báo cáo', icon: FileText },
 ]
 
 export default function Layout() {
@@ -30,12 +44,10 @@ export default function Layout() {
         <Brand />
         <div className="flex items-center gap-1">
           <button className="btn-ghost" onClick={() => palette.setOpen(true)} aria-label="Tìm nhanh">
-            🔍
+            <Search className="h-[18px] w-[18px]" />
           </button>
           <button className="btn-ghost" onClick={() => setOpen((o) => !o)} aria-label="Mở menu">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M3 6h18M3 12h18M3 18h18" strokeLinecap="round" />
-            </svg>
+            {open ? <X className="h-[22px] w-[22px]" /> : <Menu className="h-[22px] w-[22px]" />}
           </button>
         </div>
       </header>
@@ -56,7 +68,7 @@ export default function Layout() {
                        text-sm text-zinc-500 transition hover:border-brand-300 hover:bg-white hover:text-zinc-700"
             onClick={() => palette.setOpen(true)}
           >
-            <span>🔍</span>
+            <Search className="h-4 w-4" />
             <span className="flex-1 text-left">Tìm nhanh…</span>
             <kbd className="rounded border border-zinc-300 bg-white px-1.5 py-0.5 text-[10px] font-medium">
               Ctrl K
@@ -72,25 +84,36 @@ export default function Layout() {
               end={item.end}
               onClick={() => setOpen(false)}
               className={({ isActive }) =>
-                `flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
-                  isActive ? 'bg-brand-50 text-brand-700' : 'text-zinc-600 hover:bg-zinc-50 hover:text-zinc-900'
+                `flex items-center gap-3 rounded-lg border-l-2 px-2.5 py-2.5 text-sm font-medium transition-colors ${
+                  isActive
+                    ? 'border-brand-600 bg-gradient-to-r from-brand-50 to-transparent text-brand-700'
+                    : 'border-transparent text-zinc-600 hover:bg-zinc-50 hover:text-zinc-900'
                 }`
               }
             >
-              <span className="text-base leading-none">{item.icon}</span>
+              <item.icon className="h-[18px] w-[18px] shrink-0" strokeWidth={2} />
               {item.label}
             </NavLink>
           ))}
         </nav>
         <div className="absolute inset-x-0 bottom-0 space-y-2 px-5 py-4 text-[11px] leading-relaxed text-zinc-400">
           <div className="flex items-center justify-between gap-2 border-b border-zinc-100 pb-2">
-            <span className="truncate text-sm font-medium text-zinc-600">👤 {username}</span>
+            <span className="flex items-center gap-1.5 truncate text-sm font-medium text-zinc-600">
+              <CircleUserRound className="h-4 w-4 shrink-0 text-zinc-400" />
+              {username}
+            </span>
             <div className="flex shrink-0 items-center gap-1">
-              <Link to="/change-password" className="btn-ghost btn-sm" onClick={() => setOpen(false)}>
-                Đổi mật khẩu
+              <Link
+                to="/change-password"
+                className="btn-ghost btn-sm"
+                onClick={() => setOpen(false)}
+                aria-label="Đổi mật khẩu"
+                title="Đổi mật khẩu"
+              >
+                <KeyRound className="h-4 w-4" />
               </Link>
-              <button className="btn-ghost btn-sm" onClick={onLogout}>
-                Đăng xuất
+              <button className="btn-ghost btn-sm" onClick={onLogout} aria-label="Đăng xuất" title="Đăng xuất">
+                <LogOut className="h-4 w-4" />
               </button>
             </div>
           </div>
@@ -122,8 +145,8 @@ export default function Layout() {
 function Brand() {
   return (
     <div className="flex items-center gap-2.5">
-      <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-brand-600 text-lg text-white">
-        🌷
+      <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-brand-500 to-brand-700 text-white shadow-sm shadow-brand-600/30">
+        <Flower2 className="h-[18px] w-[18px]" />
       </span>
       <div className="leading-tight">
         <div className="text-sm font-bold text-zinc-900">Callary</div>

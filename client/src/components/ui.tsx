@@ -1,4 +1,6 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react'
+import { CircleAlert, Inbox, Trash2, X, type LucideIcon } from 'lucide-react'
+import { Link } from 'react-router-dom'
 import { CATEGORY_LABEL, STATUS_LABEL, type EventStatus, type FlowerCategory } from '@shared/types'
 
 /* ------------------------------- Page head ------------------------------- */
@@ -23,6 +25,52 @@ export function PageHeader({
   )
 }
 
+/* --------------------------------- Stat ----------------------------------- */
+
+export const STAT_TONE = {
+  brand: 'bg-brand-50 text-brand-600',
+  sky: 'bg-sky-50 text-sky-600',
+  pink: 'bg-pink-50 text-pink-600',
+  emerald: 'bg-emerald-50 text-emerald-600',
+} as const
+
+/** Ô số liệu nổi bật: khung icon màu riêng + nhãn + giá trị. `to` biến nó thành link có thể bấm. */
+export function Stat({
+  to,
+  label,
+  value,
+  icon: Icon,
+  tone = 'brand',
+}: {
+  to?: string
+  label: string
+  value: string
+  icon?: LucideIcon
+  tone?: keyof typeof STAT_TONE
+}) {
+  const content = (
+    <>
+      {Icon && (
+        <span className={`icon-badge rounded-full ${STAT_TONE[tone]}`}>
+          <Icon />
+        </span>
+      )}
+      <div className="min-w-0">
+        <div className="truncate text-xs font-medium uppercase tracking-wide text-zinc-500">{label}</div>
+        <div className="mt-0.5 text-2xl font-bold text-zinc-900">{value}</div>
+      </div>
+    </>
+  )
+  const className = `card flex items-center gap-3 px-4 py-3 ${to ? 'card-interactive' : ''}`
+  return to ? (
+    <Link to={to} className={className}>
+      {content}
+    </Link>
+  ) : (
+    <div className={className}>{content}</div>
+  )
+}
+
 /* -------------------------------- States --------------------------------- */
 
 export function Loading({ label = 'Đang tải…' }: { label?: string }) {
@@ -37,17 +85,22 @@ export function Loading({ label = 'Đang tải…' }: { label?: string }) {
 export function ErrorBox({ error }: { error: unknown }) {
   const message = error instanceof Error ? error.message : 'Đã có lỗi xảy ra'
   return (
-    <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-      <strong className="font-semibold">Lỗi: </strong>
-      {message}
+    <div className="flex items-start gap-2.5 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+      <CircleAlert className="mt-0.5 h-4 w-4 shrink-0" />
+      <p>
+        <strong className="font-semibold">Lỗi: </strong>
+        {message}
+      </p>
     </div>
   )
 }
 
-export function Empty({ children, icon = '📭' }: { children: ReactNode; icon?: string }) {
+export function Empty({ children, icon }: { children: ReactNode; icon?: ReactNode }) {
   return (
-    <div className="flex flex-col items-center justify-center gap-2 px-4 py-14 text-center">
-      <span className="text-3xl">{icon}</span>
+    <div className="flex flex-col items-center justify-center gap-3 px-4 py-14 text-center">
+      <span className="flex h-12 w-12 items-center justify-center rounded-full bg-zinc-100 text-zinc-400 [&>svg]:h-6 [&>svg]:w-6">
+        {icon ?? <Inbox />}
+      </span>
       <p className="max-w-sm text-sm text-zinc-500">{children}</p>
     </div>
   )
@@ -118,7 +171,7 @@ export function Modal({
             onClick={onClose}
             aria-label="Đóng"
           >
-            ✕
+            <X className="h-[18px] w-[18px]" />
           </button>
         </div>
         <div className="overflow-y-auto px-4 py-4">{children}</div>
@@ -150,6 +203,7 @@ export function ConfirmButton({
         if (window.confirm(message)) onConfirm()
       }}
     >
+      <Trash2 className="h-3.5 w-3.5" />
       {children}
     </button>
   )

@@ -89,7 +89,7 @@ export function DuplicateEventModal({
   return (
     <Modal
       open
-      title="Nhân bản lịch tiệc"
+      title="Copy lịch tiệc"
       onClose={onClose}
       footer={
         <>

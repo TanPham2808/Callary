@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { CalendarDays, FileText, Flower2, Gift, Package, PartyPopper, Search, type LucideIcon } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { api, qs } from '../lib/api'
@@ -10,7 +11,7 @@ interface Item {
   group: string
   label: string
   hint?: string
-  icon: string
+  icon: LucideIcon
   to: string
 }
 
@@ -58,24 +59,24 @@ export function CommandPalette({ open, onClose }: { open: boolean; onClose: () =
   const items = useMemo<Item[]>(() => {
     if (!query) {
       const shortcuts: Item[] = [
-        { key: 'nav-cal', group: 'Truy cập nhanh', label: 'Lịch tiệc', icon: '📅', to: '/calendar' },
+        { key: 'nav-cal', group: 'Truy cập nhanh', label: 'Lịch tiệc', icon: CalendarDays, to: '/calendar' },
         {
           key: 'nav-rep',
           group: 'Truy cập nhanh',
           label: 'Báo cáo hôm nay',
-          icon: '📄',
+          icon: FileText,
           to: `/reports?from=${today()}&to=${today()}`,
         },
-        { key: 'nav-pkg', group: 'Truy cập nhanh', label: 'Gói trang trí', icon: '🎀', to: '/packages' },
-        { key: 'nav-flw', group: 'Truy cập nhanh', label: 'Danh mục hoa', icon: '🌸', to: '/flowers' },
-        { key: 'nav-inv', group: 'Truy cập nhanh', label: 'Kho hoa dư', icon: '📦', to: '/inventory' },
+        { key: 'nav-pkg', group: 'Truy cập nhanh', label: 'Gói trang trí', icon: Gift, to: '/packages' },
+        { key: 'nav-flw', group: 'Truy cập nhanh', label: 'Danh mục hoa', icon: Flower2, to: '/flowers' },
+        { key: 'nav-inv', group: 'Truy cập nhanh', label: 'Kho hoa dư', icon: Package, to: '/inventory' },
       ]
       const events: Item[] = (upcoming.data ?? []).slice(0, 6).map((e) => ({
         key: `ev-${e.id}`,
         group: 'Lịch tiệc sắp tới',
         label: e.title,
         hint: [fmtDate(e.event_date), e.hall, e.time_slot].filter(Boolean).join(' · '),
-        icon: '🎊',
+        icon: PartyPopper,
         to: `/events/${e.id}`,
       }))
       return [...shortcuts, ...events]
@@ -89,14 +90,14 @@ export function CommandPalette({ open, onClose }: { open: boolean; onClose: () =
         group: 'Lịch tiệc',
         label: e.title,
         hint: [fmtDate(e.event_date), e.hall, e.time_slot, STATUS_LABEL[e.status]].filter(Boolean).join(' · '),
-        icon: '🎊',
+        icon: PartyPopper,
         to: `/events/${e.id}`,
       })),
       ...r.packages.map((p) => ({
         key: `pk-${p.id}`,
         group: 'Gói trang trí',
         label: p.name,
-        icon: '🎀',
+        icon: Gift,
         to: `/packages/${p.id}`,
       })),
       ...r.flowers.map((f) => ({
@@ -106,7 +107,7 @@ export function CommandPalette({ open, onClose }: { open: boolean; onClose: () =
         hint: [f.unit, CATEGORY_LABEL[f.category], f.matched_alias ? `khớp: ${f.matched_alias}` : '']
           .filter(Boolean)
           .join(' · '),
-        icon: '🌸',
+        icon: Flower2,
         to: `/flowers?q=${encodeURIComponent(f.name)}`,
       })),
     ]
@@ -138,7 +139,7 @@ export function CommandPalette({ open, onClose }: { open: boolean; onClose: () =
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center gap-2 border-b border-zinc-200 px-4">
-          <span className="text-zinc-400">🔍</span>
+          <Search className="h-4 w-4 shrink-0 text-zinc-400" />
           <input
             autoFocus
             className="w-full bg-transparent py-3.5 text-sm outline-none placeholder:text-zinc-400"
@@ -191,7 +192,9 @@ export function CommandPalette({ open, onClose }: { open: boolean; onClose: () =
                   onMouseEnter={() => setHighlight(i)}
                   onClick={() => go(item)}
                 >
-                  <span className="shrink-0 text-base leading-none">{item.icon}</span>
+                  <item.icon
+                    className={`h-4 w-4 shrink-0 ${i === highlight ? 'text-brand-600' : 'text-zinc-400'}`}
+                  />
                   <span className="flex-1 truncate font-medium">{item.label}</span>
                   {item.hint && <span className="shrink-0 text-xs text-zinc-400">{item.hint}</span>}
                 </button>

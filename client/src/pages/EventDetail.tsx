@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Copy, Gift, Leaf, Trash2 } from 'lucide-react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { api, qs } from '../lib/api'
@@ -153,7 +154,7 @@ export default function EventDetail() {
         actions={
           <>
             <button className="btn-secondary" onClick={() => setDuplicating(ev)}>
-              Nhân bản
+              <Copy className="h-4 w-4" /> Copy
             </button>
             <ConfirmButton
               className="btn-danger"
@@ -199,7 +200,7 @@ export default function EventDetail() {
                 />
                 {isEventPast && (
                   <p className="mt-1 text-[11px] text-zinc-500">
-                    Tiệc đã diễn ra. Muốn xếp lại vào ngày mới thì bấm <strong>Nhân bản</strong>.
+                    Tiệc đã diễn ra. Muốn xếp lại vào ngày mới thì bấm <strong>Copy</strong>.
                   </p>
                 )}
               </div>
@@ -284,7 +285,7 @@ export default function EventDetail() {
             </div>
 
             {(ev.packages ?? []).length === 0 && (
-              <Empty icon="🎀">Chưa gắn gói trang trí nào. Chọn một gói ở ô phía trên.</Empty>
+              <Empty icon={<Gift />}>Chưa gắn gói trang trí nào. Chọn một gói ở ô phía trên.</Empty>
             )}
 
             <div className="divide-y divide-zinc-100">
@@ -496,8 +497,12 @@ function AdjustmentsCard({
                   />
                 </td>
                 <td className="text-right">
-                  <button className="btn-ghost btn-sm text-red-600" onClick={() => remove.mutate(a.id)}>
-                    ✕
+                  <button
+                    className="btn-ghost btn-sm text-red-600"
+                    onClick={() => remove.mutate(a.id)}
+                    aria-label="Xóa"
+                  >
+                    <Trash2 className="h-3.5 w-3.5" />
                   </button>
                 </td>
               </tr>
@@ -611,7 +616,7 @@ function RequirementPanel({ data, loading }: { data?: RequirementResult; loading
       </div>
 
       {data.rows.length === 0 ? (
-        <Empty icon="🌿">Chưa có hoa nào — hãy gắn gói trang trí cho lịch tiệc.</Empty>
+        <Empty icon={<Leaf />}>Chưa có hoa nào — hãy gắn gói trang trí cho lịch tiệc.</Empty>
       ) : (
         <div className="max-h-[62vh] overflow-y-auto">
           {CATEGORY_ORDER.map((cat) => {

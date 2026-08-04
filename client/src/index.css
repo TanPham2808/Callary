@@ -45,10 +45,12 @@
   .btn-danger,
   .btn-success {
     @apply inline-flex items-center justify-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium
-           transition-colors disabled:cursor-not-allowed disabled:opacity-50 pointer-coarse:min-h-10;
+           transition-all duration-150 disabled:cursor-not-allowed disabled:opacity-50 pointer-coarse:min-h-10;
   }
   .btn-primary {
-    @apply bg-brand-600 text-white hover:bg-brand-700;
+    @apply bg-gradient-to-b from-brand-500 to-brand-600 text-white shadow-sm
+           hover:from-brand-600 hover:to-brand-700 hover:shadow-md
+           active:translate-y-px active:shadow-sm;
   }
   .btn-secondary {
     @apply border border-zinc-300 bg-white text-zinc-700 hover:bg-zinc-50;
@@ -80,13 +82,22 @@
   }
 
   .card {
-    @apply rounded-xl border border-zinc-200 bg-white shadow-sm;
+    @apply rounded-xl border border-zinc-200 bg-white
+           shadow-[0_1px_2px_rgba(24,24,27,0.04),0_10px_24px_-18px_rgba(24,24,27,0.16)];
+  }
+  .card-interactive {
+    @apply transition-all duration-150 hover:-translate-y-0.5 hover:border-brand-200
+           hover:shadow-[0_16px_32px_-16px_rgba(124,58,237,0.28)];
   }
   .card-head {
     @apply flex flex-wrap items-center justify-between gap-3 border-b border-zinc-200 px-4 py-3;
   }
   .card-title {
     @apply text-sm font-semibold text-zinc-800;
+  }
+
+  .icon-badge {
+    @apply flex h-10 w-10 shrink-0 items-center justify-center rounded-lg [&>svg]:h-5 [&>svg]:w-5;
   }
 
   .table {

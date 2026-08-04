@@ -1,4 +1,5 @@
 import { useState, type FormEvent } from 'react'
+import { Flower2 } from 'lucide-react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../lib/AuthContext'
 import { ApiError } from '../lib/api'
@@ -33,8 +34,8 @@ export default function Login() {
     <div className="flex min-h-screen items-center justify-center bg-zinc-50 px-4">
       <form onSubmit={onSubmit} className="card w-full max-w-sm p-6">
         <div className="mb-6 flex flex-col items-center gap-2 text-center">
-          <span className="flex h-11 w-11 items-center justify-center rounded-lg bg-brand-600 text-xl text-white">
-            🌷
+          <span className="flex h-11 w-11 items-center justify-center rounded-lg bg-gradient-to-br from-brand-500 to-brand-700 text-white shadow-sm shadow-brand-600/30">
+            <Flower2 className="h-5 w-5" />
           </span>
           <div>
             <div className="text-base font-bold text-zinc-900">Callary</div>

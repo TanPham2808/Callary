@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { ClipboardList, Copy, Leaf, Plus, Trash2 } from 'lucide-react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { api } from '../lib/api'
@@ -111,7 +112,7 @@ export default function PackageDetail() {
         actions={
           <>
             <button className="btn-secondary" onClick={() => duplicate.mutate()}>
-              Copy gói
+              <Copy className="h-4 w-4" /> Copy gói
             </button>
             <ConfirmButton
               className="btn-danger"
@@ -154,7 +155,7 @@ export default function PackageDetail() {
 
           {(pkg.items ?? []).length === 0 && (
             <div className="card">
-              <Empty icon="📋">Gói này chưa có hạng mục nào. Thêm hạng mục đầu tiên bên dưới.</Empty>
+              <Empty icon={<ClipboardList />}>Gói này chưa có hạng mục nào. Thêm hạng mục đầu tiên bên dưới.</Empty>
             </div>
           )}
 
@@ -174,7 +175,7 @@ export default function PackageDetail() {
                 disabled={!newItemName.trim() || addItem.isPending}
                 onClick={() => addItem.mutate(newItemName.trim())}
               >
-                + Thêm hạng mục
+                <Plus className="h-4 w-4" /> Thêm hạng mục
               </button>
             </div>
           </div>
@@ -187,7 +188,7 @@ export default function PackageDetail() {
               <span className="text-xs text-zinc-400">{totals.length} loại</span>
             </div>
             {totals.length === 0 ? (
-              <Empty icon="🌿">Chưa có định lượng nào.</Empty>
+              <Empty icon={<Leaf />}>Chưa có định lượng nào.</Empty>
             ) : (
               <div className="max-h-[60vh] overflow-y-auto">
                 <table className="table">
@@ -328,8 +329,12 @@ function ItemCard({
                     </label>
                   </td>
                   <td className="text-right">
-                    <button className="btn-ghost btn-sm text-red-600" onClick={() => removeRow.mutate(row.id)}>
-                      ✕
+                    <button
+                      className="btn-ghost btn-sm text-red-600"
+                      onClick={() => removeRow.mutate(row.id)}
+                      aria-label="Xóa"
+                    >
+                      <Trash2 className="h-3.5 w-3.5" />
                     </button>
                   </td>
                 </tr>
@@ -357,7 +362,7 @@ function ItemCard({
           </div>
         ) : (
           <button className="btn-ghost btn-sm text-brand-600" onClick={() => setAdding(true)}>
-            + Thêm dòng định lượng
+            <Plus className="h-3.5 w-3.5" /> Thêm dòng định lượng
           </button>
         )}
       </div>

@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Copy, Gift, Plus } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { api } from '../lib/api'
@@ -21,7 +22,7 @@ export default function Packages() {
     mutationFn: (id: number) => api.post(`/api/packages/${id}/duplicate`, {}),
     onSuccess: () => {
       invalidate()
-      toast.show('Đã nhân bản gói')
+      toast.show('Đã copy gói')
     },
     onError: (e: Error) => toast.show(e.message, 'error'),
   })
@@ -42,7 +43,7 @@ export default function Packages() {
         subtitle={query.data ? `${query.data.length} gói` : undefined}
         actions={
           <button className="btn-primary" onClick={() => setCreating(true)}>
-            + Tạo gói mới
+            <Plus className="h-4 w-4" /> Tạo gói mới
           </button>
         }
       />
@@ -52,7 +53,7 @@ export default function Packages() {
 
       {query.data && query.data.length === 0 && (
         <div className="card">
-          <Empty icon="🎀">
+          <Empty icon={<Gift />}>
             Chưa có gói trang trí nào. Bấm <strong>Tạo gói mới</strong> để bắt đầu, hoặc chạy lệnh{' '}
             <code className="rounded bg-zinc-100 px-1">npm run seed</code> để nạp dữ liệu từ file Excel.
           </Empty>
@@ -61,7 +62,7 @@ export default function Packages() {
 
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {(query.data ?? []).map((p) => (
-          <div key={p.id} className="card flex flex-col transition hover:border-brand-300 hover:shadow-md">
+          <div key={p.id} className="card card-interactive flex flex-col">
             <Link to={`/packages/${p.id}`} className="flex-1 px-4 py-4">
               <div className="flex items-start justify-between gap-2">
                 <h3 className="text-base font-bold text-zinc-900">{p.name}</h3>
@@ -82,7 +83,7 @@ export default function Packages() {
                 Xem chi tiết
               </Link>
               <button className="btn-ghost btn-sm" onClick={() => duplicate.mutate(p.id)}>
-                Nhân bản
+                <Copy className="h-3.5 w-3.5" /> Copy
               </button>
               <ConfirmButton
                 message={`Xoá gói "${p.name}" cùng toàn bộ hạng mục và định lượng?`}

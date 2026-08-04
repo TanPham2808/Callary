@@ -1,10 +1,11 @@
 import { useMemo, useState } from 'react'
+import { CalendarDays, CircleCheck, Download, FileText, Flower2, PackageCheck, Wallet } from 'lucide-react'
 import { useSearchParams } from 'react-router-dom'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { api, qs } from '../lib/api'
 import { addDays, endOfMonth, fmtDate, fmtDateTime, money, num, startOfMonth, startOfWeek, today } from '../lib/format'
 import { DateField } from '../components/DateField'
-import { Empty, ErrorBox, Loading, PageHeader } from '../components/ui'
+import { Empty, ErrorBox, Loading, PageHeader, Stat } from '../components/ui'
 import { CATEGORY_LABEL, CATEGORY_ORDER, type DailyStat, type OrderBatch, type RequirementResult } from '@shared/types'
 
 type Preset = 'today' | 'week' | 'month' | 'custom'
@@ -114,7 +115,13 @@ export default function Reports() {
                 disabled={setOrderStatus.isPending}
                 onClick={() => setOrderStatus.mutate({ from, to, ordered: !report.data!.ordered })}
               >
-                {report.data.ordered ? '✓ Đã Order' : 'Đánh dấu Đã Order'}
+                {report.data.ordered ? (
+                  <>
+                    <CircleCheck className="h-4 w-4" /> Đã Order
+                  </>
+                ) : (
+                  'Đánh dấu Đã Order'
+                )}
               </button>
             )}
             <a
@@ -124,7 +131,7 @@ export default function Reports() {
                 setParams({ from, to })
               }}
             >
-              ⬇ Xuất file Excel
+              <Download className="h-4 w-4" /> Xuất file Excel
             </a>
             <a
               className="btn-success"
@@ -133,7 +140,7 @@ export default function Reports() {
                 setParams({ from, to })
               }}
             >
-              ⬇ Xuất file Word
+              <Download className="h-4 w-4" /> Xuất file Word
             </a>
           </div>
         }
@@ -214,15 +221,15 @@ export default function Reports() {
       {report.data && (
         <>
           <div className="mb-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            <Stat label="Lịch tiệc" value={String(report.data.event_count)} />
-            <Stat label="Loại hoa cần" value={String(report.data.rows.length)} />
-            <Stat label="Tận dụng từ kho" value={num(totals.stockUsed)} tone="emerald" />
-            <Stat label="Chi phí cần mua" value={money(totals.amount)} tone="brand" />
+            <Stat label="Lịch tiệc" value={String(report.data.event_count)} icon={CalendarDays} tone="sky" />
+            <Stat label="Loại hoa cần" value={String(report.data.rows.length)} icon={Flower2} tone="pink" />
+            <Stat label="Tận dụng từ kho" value={num(totals.stockUsed)} icon={PackageCheck} tone="emerald" />
+            <Stat label="Chi phí cần mua" value={money(totals.amount)} icon={Wallet} tone="brand" />
           </div>
 
           {report.data.rows.length === 0 ? (
             <div className="card">
-              <Empty icon="📄">
+              <Empty icon={<FileText />}>
                 Không có lịch tiệc nào trong khoảng ngày đã chọn — chưa có hoa nào cần chuẩn bị.
               </Empty>
             </div>
@@ -396,20 +403,5 @@ export default function Reports() {
         </div>
       )}
     </>
-  )
-}
-
-function Stat({ label, value, tone }: { label: string; value: string; tone?: 'brand' | 'emerald' }) {
-  return (
-    <div className="card px-4 py-3">
-      <div className="text-xs font-medium uppercase tracking-wide text-zinc-500">{label}</div>
-      <div
-        className={`mt-1 text-2xl font-bold ${
-          tone === 'brand' ? 'text-brand-700' : tone === 'emerald' ? 'text-emerald-600' : 'text-zinc-900'
-        }`}
-      >
-        {value}
-      </div>
-    </div>
   )
 }

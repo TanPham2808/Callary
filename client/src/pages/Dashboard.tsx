@@ -1,8 +1,9 @@
+import { CalendarDays, CircleCheck, Flower2, Gift, TriangleAlert, Wallet } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { api, qs } from '../lib/api'
 import { fmtDate, fmtDateLong, fmtDateTime, money, num, today } from '../lib/format'
-import { Empty, ErrorBox, Loading, PageHeader, StatusBadge } from '../components/ui'
+import { Empty, ErrorBox, Loading, PageHeader, Stat, StatusBadge } from '../components/ui'
 import { CATEGORY_LABEL, CATEGORY_ORDER, type DecorEvent, type OrderBatch, type RequirementResult } from '@shared/types'
 
 interface DashboardData {
@@ -52,14 +53,26 @@ export default function Dashboard() {
       />
 
       <div className="mb-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-        <StatCard to="/calendar" label="Lịch tiệc 7 ngày tới" value={String(d.upcoming.length)} icon="📅" />
-        <StatCard to="/packages" label="Gói trang trí" value={String(d.counts.packages)} icon="🎀" />
-        <StatCard to="/flowers" label="Loại hoa / vật tư" value={String(d.counts.flowers)} icon="🌸" />
-        <StatCard
+        <Stat
+          to="/calendar"
+          label="Lịch tiệc 7 ngày tới"
+          value={String(d.upcoming.length)}
+          icon={CalendarDays}
+          tone="sky"
+        />
+        <Stat to="/packages" label="Gói trang trí" value={String(d.counts.packages)} icon={Gift} tone="pink" />
+        <Stat
+          to="/flowers"
+          label="Loại hoa / vật tư"
+          value={String(d.counts.flowers)}
+          icon={Flower2}
+          tone="emerald"
+        />
+        <Stat
           to={`/reports?from=${d.today}&to=${d.until}`}
           label="Chi phí hoa tuần này"
           value={totalAmount ? money(totalAmount) : '—'}
-          icon="💰"
+          icon={Wallet}
           tone="brand"
         />
       </div>
@@ -69,8 +82,9 @@ export default function Dashboard() {
           to="/flowers"
           className="mb-5 flex items-center justify-between gap-3 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800 transition hover:bg-amber-100"
         >
-          <span>
-            ⚠ <strong>{d.counts.needs_review}</strong> loại hoa nhập từ Excel có tên chưa rõ ràng — nên kiểm tra lại.
+          <span className="flex items-center gap-1.5">
+            <TriangleAlert className="h-4 w-4 shrink-0" />
+            <strong>{d.counts.needs_review}</strong> loại hoa nhập từ Excel có tên chưa rõ ràng — nên kiểm tra lại.
           </span>
           <span className="shrink-0 font-medium underline">Kiểm tra ngay →</span>
         </Link>
@@ -86,7 +100,7 @@ export default function Dashboard() {
             </span>
           </div>
           {d.upcoming.length === 0 ? (
-            <Empty icon="📅">
+            <Empty icon={<CalendarDays />}>
               Không có lịch tiệc nào trong 7 ngày tới.{' '}
               <Link to="/calendar" className="text-brand-600 hover:underline">
                 Thêm lịch tiệc
@@ -110,7 +124,10 @@ export default function Dashboard() {
                     </div>
                   </div>
                   {e.package_names && (
-                    <p className="mt-1 truncate text-xs text-zinc-400">🎀 {e.package_names}</p>
+                    <p className="mt-1 flex items-center gap-1 truncate text-xs text-zinc-400">
+                      <Gift className="h-3 w-3 shrink-0" />
+                      {e.package_names}
+                    </p>
                   )}
                 </Link>
               ))}
@@ -127,7 +144,7 @@ export default function Dashboard() {
             </Link>
           </div>
           {buyRows.length === 0 ? (
-            <Empty icon="✅">Không cần mua thêm hoa nào — tồn kho đã đủ hoặc chưa có lịch tiệc.</Empty>
+            <Empty icon={<CircleCheck />}>Không cần mua thêm hoa nào — tồn kho đã đủ hoặc chưa có lịch tiệc.</Empty>
           ) : (
             <div className="max-h-96 overflow-y-auto">
               {CATEGORY_ORDER.map((cat) => {
@@ -211,31 +228,5 @@ export default function Dashboard() {
         </div>
       )}
     </>
-  )
-}
-
-function StatCard({
-  to,
-  label,
-  value,
-  icon,
-  tone,
-}: {
-  to: string
-  label: string
-  value: string
-  icon: string
-  tone?: 'brand'
-}) {
-  return (
-    <Link to={to} className="card px-4 py-3 transition hover:border-brand-300 hover:shadow-md">
-      <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-wide text-zinc-500">
-        <span className="text-sm">{icon}</span>
-        {label}
-      </div>
-      <div className={`mt-1 text-2xl font-bold ${tone === 'brand' ? 'text-brand-700' : 'text-zinc-900'}`}>
-        {value}
-      </div>
-    </Link>
   )
 }

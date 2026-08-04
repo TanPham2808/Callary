@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { TriangleAlert } from 'lucide-react'
 import { useQuery } from '@tanstack/react-query'
 import { api } from '../lib/api'
 import { CATEGORY_LABEL, type Flower } from '@shared/types'
@@ -120,9 +121,9 @@ export default function FlowerPicker({
               onMouseEnter={() => setHighlight(i)}
               onClick={() => pick(f)}
             >
-              <span className="truncate">
+              <span className="flex min-w-0 items-center gap-1 truncate">
                 {f.name}
-                {f.needs_review === 1 && <span className="ml-1 text-amber-500">⚠</span>}
+                {f.needs_review === 1 && <TriangleAlert className="h-3 w-3 shrink-0 text-amber-500" />}
               </span>
               <span className="shrink-0 text-[11px] text-zinc-400">
                 {f.unit} · {CATEGORY_LABEL[f.category]}

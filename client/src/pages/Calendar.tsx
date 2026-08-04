@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { ChevronLeft, ChevronRight, Copy, Gift, Plus, TriangleAlert } from 'lucide-react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { api, qs } from '../lib/api'
@@ -150,7 +151,7 @@ export default function CalendarPage() {
               {view === 'week' ? 'Báo cáo tuần này' : 'Báo cáo tháng này'}
             </Link>
             <button className="btn-primary" onClick={() => setCreatingOn(todayIso)}>
-              + Thêm lịch tiệc
+              <Plus className="h-4 w-4" /> Thêm lịch tiệc
             </button>
           </>
         }
@@ -160,13 +161,13 @@ export default function CalendarPage() {
         <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-3">
           <div className="flex items-center gap-1">
             <button className="btn-secondary btn-sm" onClick={() => step(-1)}>
-              ‹ {view === 'week' ? 'Tuần trước' : 'Tháng trước'}
+              <ChevronLeft className="h-3.5 w-3.5" /> {view === 'week' ? 'Tuần trước' : 'Tháng trước'}
             </button>
             <button className="btn-secondary btn-sm" onClick={() => setAnchor(todayIso)}>
               Hôm nay
             </button>
             <button className="btn-secondary btn-sm" onClick={() => step(1)}>
-              {view === 'week' ? 'Tuần sau' : 'Tháng sau'} ›
+              {view === 'week' ? 'Tuần sau' : 'Tháng sau'} <ChevronRight className="h-3.5 w-3.5" />
             </button>
 
             <div className="ml-2 flex overflow-hidden rounded-lg border border-zinc-300">
@@ -261,12 +262,12 @@ export default function CalendarPage() {
                   </span>
                   {!past && (
                     <button
-                      className="flex h-7 w-7 items-center justify-center rounded text-sm leading-none text-zinc-400 transition
+                      className="flex h-7 w-7 items-center justify-center rounded text-zinc-400 transition
                                  hover:bg-brand-50 hover:text-brand-600"
                       title="Thêm lịch tiệc ngày này"
                       onClick={() => setCreatingOn(iso)}
                     >
-                      +
+                      <Plus className="h-4 w-4" />
                     </button>
                   )}
                 </div>
@@ -320,12 +321,14 @@ export default function CalendarPage() {
                     </td>
                     <td className="text-zinc-500">{e.time_slot || '—'}</td>
                     <td className="font-medium">
-                      {e.title}
-                      {conflicts.has(e.id) && (
-                        <span className="ml-1.5 text-red-500" title={`Trùng ${slotLabel(e)}`}>
-                          ⚠
-                        </span>
-                      )}
+                      <span className="inline-flex items-center gap-1.5">
+                        {e.title}
+                        {conflicts.has(e.id) && (
+                          <span title={`Trùng ${slotLabel(e)}`}>
+                            <TriangleAlert className="h-3.5 w-3.5 shrink-0 text-red-500" />
+                          </span>
+                        )}
+                      </span>
                     </td>
                     <td className="text-zinc-500">{e.hall || '—'}</td>
                     <td className="text-sm text-zinc-500">{e.package_names || '—'}</td>
@@ -335,10 +338,10 @@ export default function CalendarPage() {
                     <td className="text-right">
                       <button
                         className="btn-ghost btn-sm"
-                        title="Nhân bản tiệc này sang ngày khác"
+                        title="Copy tiệc này sang ngày khác"
                         onClick={() => setDuplicating(e)}
                       >
-                        Nhân bản
+                        <Copy className="h-3.5 w-3.5" /> Copy
                       </button>
                     </td>
                   </tr>
@@ -407,7 +410,7 @@ function EventChip({
     [event.hall, event.time_slot].filter(Boolean).join(' · '),
     event.package_names,
     hasConflict ? `⚠ Trùng ${slotLabel(event)} với: ${conflicts.map((c) => c.title).join(', ')}` : '',
-    past ? 'Tiệc đã diễn ra — dùng "Nhân bản" nếu muốn xếp lại vào ngày mới' : '',
+    past ? 'Tiệc đã diễn ra — dùng "Copy" nếu muốn xếp lại vào ngày mới' : '',
   ]
     .filter(Boolean)
     .join('\n')
@@ -430,12 +433,15 @@ function EventChip({
                   ${hasConflict ? 'ring-2 ring-red-400' : ''}`}
     >
       <div className="flex items-center gap-1">
-        {hasConflict && <span className="shrink-0 text-red-600">⚠</span>}
+        {hasConflict && <TriangleAlert className="h-3 w-3 shrink-0 text-red-600" />}
         {event.time_slot && <span className="shrink-0 opacity-70">{event.time_slot}</span>}
         <span className="truncate">{event.hall || '—'}</span>
       </div>
       {detailed && event.package_names && (
-        <div className="mt-0.5 truncate opacity-60">🎀 {event.package_names}</div>
+        <div className="mt-0.5 flex items-center gap-1 truncate opacity-60">
+          <Gift className="h-3 w-3 shrink-0" />
+          {event.package_names}
+        </div>
       )}
     </Link>
   )

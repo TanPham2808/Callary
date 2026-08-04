@@ -1,3 +1,4 @@
+import { TriangleAlert } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { fmtDate } from '../lib/format'
 import { slotLabel } from '../lib/conflicts'
@@ -21,8 +22,9 @@ export function ConflictWarning({
 
   return (
     <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
-      <div className="font-semibold">
-        ⚠ Trùng chỗ — {slotLabel(event)} ngày {fmtDate(event.event_date)} đã có{' '}
+      <div className="flex items-center gap-1.5 font-semibold">
+        <TriangleAlert className="h-4 w-4 shrink-0" />
+        Trùng chỗ — {slotLabel(event)} ngày {fmtDate(event.event_date)} đã có{' '}
         {conflicts.length === 1 ? 'một tiệc khác' : `${conflicts.length} tiệc khác`}
       </div>
       <ul className="mt-1 space-y-0.5 pl-5">
@@ -62,8 +64,9 @@ export function ConflictSummary({ events, conflicts }: { events: DecorEvent[]; c
 
   return (
     <div className="mb-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
-      <div className="font-semibold">
-        ⚠ Có {groups.length} chỗ bị xếp trùng trong khoảng đang xem
+      <div className="flex items-center gap-1.5 font-semibold">
+        <TriangleAlert className="h-4 w-4 shrink-0" />
+        Có {groups.length} chỗ bị xếp trùng trong khoảng đang xem
       </div>
       <ul className="mt-1 space-y-0.5 pl-5">
         {groups.map(({ lead, others }) => (

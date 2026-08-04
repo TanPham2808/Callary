@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { Clock, Package, Plus, Trash2 } from 'lucide-react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { api, qs } from '../lib/api'
 import { fmtDateTime, money, signed, today } from '../lib/format'
@@ -86,7 +87,7 @@ export default function Inventory() {
         actions={
           <>
             <button className="btn-primary" onClick={() => setLeftoverOpen(true)}>
-              + Ghi nhận hoa dư
+              <Plus className="h-4 w-4" /> Ghi nhận hoa dư
             </button>
             <ConfirmButton
               className="btn-secondary"
@@ -133,7 +134,7 @@ export default function Inventory() {
           {stock.error && <ErrorBox error={stock.error} />}
 
           {stock.data && rows.length === 0 && (
-            <Empty icon="📦">
+            <Empty icon={<Package />}>
               {showAll
                 ? 'Không có loại hoa nào khớp tìm kiếm.'
                 : 'Chưa ghi nhận hoa dư nào. Bấm "Ghi nhận hoa dư" sau khi kết thúc một lịch tiệc.'}
@@ -203,7 +204,7 @@ export default function Inventory() {
             </div>
             {moves.isLoading && <Loading />}
             {(moves.data ?? []).length === 0 && !moves.isLoading && (
-              <Empty icon="🕓">Chưa có biến động nào.</Empty>
+              <Empty icon={<Clock />}>Chưa có biến động nào.</Empty>
             )}
             <div className="max-h-[65vh] divide-y divide-zinc-100 overflow-y-auto">
               {(moves.data ?? []).map((m) => (
@@ -371,8 +372,9 @@ function LeftoverModal({
                 <button
                   className="btn-ghost btn-sm text-red-600"
                   onClick={() => setRows((rs) => (rs.length > 1 ? rs.filter((x) => x.key !== r.key) : rs))}
+                  aria-label="Xóa dòng"
                 >
-                  ✕
+                  <Trash2 className="h-3.5 w-3.5" />
                 </button>
               </div>
             ))}
@@ -381,7 +383,7 @@ function LeftoverModal({
             className="btn-ghost btn-sm mt-2 text-brand-600"
             onClick={() => setRows((rs) => [...rs, { key: ++rowKey, flowerId: null, name: '', unit: '', quantity: '' }])}
           >
-            + Thêm dòng
+            <Plus className="h-3.5 w-3.5" /> Thêm dòng
           </button>
         </div>
 

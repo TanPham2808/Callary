@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import { Flower2, Plus, TriangleAlert } from 'lucide-react'
 import { useSearchParams } from 'react-router-dom'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { api } from '../lib/api'
@@ -91,15 +92,16 @@ export default function Flowers() {
         }
         actions={
           <button className="btn-primary" onClick={() => setCreating(true)}>
-            + Thêm loại hoa
+            <Plus className="h-4 w-4" /> Thêm loại hoa
           </button>
         }
       />
 
       {reviewCount > 0 && !onlyReview && (
         <div className="mb-4 flex flex-wrap items-center justify-between gap-2 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
-          <span>
-            ⚠ Có <strong>{reviewCount}</strong> loại được nhập từ Excel với tên chưa rõ ràng, nên kiểm tra lại.
+          <span className="flex items-center gap-1.5">
+            <TriangleAlert className="h-4 w-4 shrink-0" />
+            Có <strong>{reviewCount}</strong> loại được nhập từ Excel với tên chưa rõ ràng, nên kiểm tra lại.
           </span>
           <button className="btn-secondary btn-sm" onClick={() => setOnlyReview(true)}>
             Xem ngay
@@ -167,7 +169,7 @@ export default function Flowers() {
                         />
                         {f.needs_review === 1 && (
                           <span className="shrink-0 text-amber-500" title={f.note ?? 'Cần kiểm tra'}>
-                            ⚠
+                            <TriangleAlert className="h-3.5 w-3.5" />
                           </span>
                         )}
                       </div>
@@ -245,7 +247,7 @@ export default function Flowers() {
                 ))}
               </tbody>
             </table>
-            {rows.length === 0 && <Empty icon="🌸">Không có loại hoa nào khớp bộ lọc.</Empty>}
+            {rows.length === 0 && <Empty icon={<Flower2 />}>Không có loại hoa nào khớp bộ lọc.</Empty>}
           </div>
         </div>
       )}
