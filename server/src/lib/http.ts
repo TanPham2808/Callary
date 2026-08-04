@@ -26,6 +26,10 @@ export function notFound(message = 'Không tìm thấy dữ liệu') {
   return new HttpError(404, message)
 }
 
+export function unauthorized(message = 'Chưa đăng nhập') {
+  return new HttpError(401, message)
+}
+
 export function parseBody<T>(schema: ZodSchema<T>, body: unknown): T {
   const result = schema.safeParse(body)
   if (!result.success) {

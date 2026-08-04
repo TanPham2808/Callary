@@ -1,7 +1,15 @@
+try {
+  process.loadEnvFile()
+} catch {
+  /* không có .env — dùng biến môi trường đã set sẵn */
+}
+
 import express from 'express'
 import { existsSync } from 'node:fs'
 import { resolve } from 'node:path'
+import { getSessionUser, seedAuthFromEnv } from './auth.ts'
 import { migrate, ROOT_DIR, DB_PATH, getSetting } from './db.ts'
+import authRouter from './routes/auth.ts'
 import flowersRouter from './routes/flowers.ts'
 import packagesRouter from './routes/packages.ts'
 import eventsRouter from './routes/events.ts'
@@ -12,9 +20,14 @@ import searchRouter from './routes/search.ts'
 import { ensurePastEventsDone } from './services/event-status.ts'
 
 migrate()
+seedAuthFromEnv()
 ensurePastEventsDone()
 
 const app = express()
+// PaaS (Render/Railway/...) terminate TLS ở edge rồi forward HTTP vào app —
+// cần trust proxy để req.secure đọc đúng header X-Forwarded-Proto, nhờ đó
+// cookie đăng nhập được gắn cờ Secure khi thực sự chạy qua HTTPS.
+app.set('trust proxy', 1)
 app.use(express.json({ limit: '5mb' }))
 
 /**
@@ -29,6 +42,13 @@ app.use('/api', (_req, _res, next) => {
 
 app.get('/api/health', (_req, res) => {
   res.json({ ok: true, db: DB_PATH })
+})
+
+app.use('/api/auth', authRouter)
+
+app.use('/api', (req, res, next) => {
+  if (!getSessionUser(req)) return res.status(401).json({ error: 'Chưa đăng nhập' })
+  next()
 })
 
 app.get('/api/settings', (_req, res) => {

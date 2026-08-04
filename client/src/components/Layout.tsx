@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { NavLink, Outlet } from 'react-router-dom'
+import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom'
+import { useAuth } from '../lib/AuthContext'
 import { CommandPalette, useCommandPalette } from './CommandPalette'
 
 const NAV = [
@@ -14,6 +15,13 @@ const NAV = [
 export default function Layout() {
   const [open, setOpen] = useState(false)
   const palette = useCommandPalette()
+  const { username, logout } = useAuth()
+  const navigate = useNavigate()
+
+  const onLogout = async () => {
+    await logout()
+    navigate('/login', { replace: true })
+  }
 
   return (
     <div className="min-h-screen lg:flex">
@@ -75,6 +83,17 @@ export default function Layout() {
           ))}
         </nav>
         <div className="absolute inset-x-0 bottom-0 space-y-2 px-5 py-4 text-[11px] leading-relaxed text-zinc-400">
+          <div className="flex items-center justify-between gap-2 border-b border-zinc-100 pb-2">
+            <span className="truncate text-sm font-medium text-zinc-600">👤 {username}</span>
+            <div className="flex shrink-0 items-center gap-1">
+              <Link to="/change-password" className="btn-ghost btn-sm" onClick={() => setOpen(false)}>
+                Đổi mật khẩu
+              </Link>
+              <button className="btn-ghost btn-sm" onClick={onLogout}>
+                Đăng xuất
+              </button>
+            </div>
+          </div>
           <div>
             Nhà hàng Callary
             <br />
