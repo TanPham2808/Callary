@@ -9,6 +9,7 @@ import { existsSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { getSessionUser, seedAuthFromEnv } from './auth.ts'
 import { migrate, ROOT_DIR, DB_PATH, getSetting } from './db.ts'
+import { seedCatalogFromSnapshot } from './seed/seed-snapshot.ts'
 import authRouter from './routes/auth.ts'
 import flowersRouter from './routes/flowers.ts'
 import packagesRouter from './routes/packages.ts'
@@ -20,6 +21,7 @@ import searchRouter from './routes/search.ts'
 import { ensurePastEventsDone } from './services/event-status.ts'
 
 migrate()
+seedCatalogFromSnapshot()
 seedAuthFromEnv()
 ensurePastEventsDone()
 

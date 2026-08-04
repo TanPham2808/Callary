@@ -1,0 +1,5536 @@
+{
+  "flowers": [
+    {
+      "id": 1,
+      "name": "Baby",
+      "slug": "baby",
+      "unit": "kg",
+      "category": "HOA",
+      "price": 0,
+      "note": null,
+      "needs_review": 0,
+      "is_active": 1
+    },
+    {
+      "id": 2,
+      "name": "Baby Trung Quốc",
+      "slug": "baby-trung-quoc",
+      "unit": "kg",
+      "category": "HOA",
+      "price": 0,
+      "note": "CẦN KIỂM TRA — đã gộp \"baby TQ\" và \"baby Trung\"; nếu \"baby Trung\" là baby cỡ trung thì hãy tách ra",
+      "needs_review": 1,
+      "is_active": 1
+    },
+    {
+      "id": 3,
+      "name": "Bạch đàn",
+      "slug": "bach-dan",
+      "unit": "cành",
+      "category": "LA",
+      "price": 0,
+      "note": null,
+      "needs_review": 0,
+      "is_active": 1
+    },
+    {
+      "id": 4,
+      "name": "Bách hợp",
+      "slug": "bach-hop",
+      "unit": "cành",
+      "category": "HOA",
+      "price": 0,
+      "note": null,
+      "needs_review": 0,
+      "is_active": 1
+    },
+    {
+      "id": 5,
+      "name": "Bách hợp đỏ",
+      "slug": "bach-hop-do",
+      "unit": "cành",
+      "category": "HOA",
+      "price": 0,
+      "note": null,
+      "needs_review": 0,
+      "is_active": 1
+    },
+    {
+      "id": 6,
+      "name": "Cát tường xanh",
+      "slug": "cat-tuong-xanh",
+      "unit": "cành",
+      "category": "HOA",
+      "price": 0,
+      "note": null,
+      "needs_review": 0,
+      "is_active": 1
+    },
+    {
+      "id": 7,
+      "name": "Cau nhỏ",
+      "slug": "cau-nho",
+      "unit": "cành",
+      "category": "LA",
+      "price": 0,
+      "note": null,
+      "needs_review": 0,
+      "is_active": 1
+    },
+    {
+      "id": 8,
+      "name": "Chữ neon",
+      "slug": "chu-neon",
+      "unit": "chiếc",
+      "category": "VAT_TU",
+      "price": 0,
+      "note": null,
+      "needs_review": 0,
+      "is_active": 1
+    },
+    {
+      "id": 9,
+      "name": "Cỏ đồng tiền",
+      "slug": "co-dong-tien",
+      "unit": "cành",
+      "category": "LA",
+      "price": 0,
+      "note": null,
+      "needs_review": 0,
+      "is_active": 1
+    },
+    {
+      "id": 10,
+      "name": "Cỏ nến",
+      "slug": "co-nen",
+      "unit": "cây",
+      "category": "LA",
+      "price": 0,
+      "note": null,
+      "needs_review": 0,
+      "is_active": 1
+    },
+    {
+      "id": 11,
+      "name": "Cỏ sọc",
+      "slug": "co-soc",
+      "unit": "cành",
+      "category": "LA",
+      "price": 0,
+      "note": null,
+      "needs_review": 0,
+      "is_active": 1
+    },
+    {
+      "id": 12,
+      "name": "Dây nho",
+      "slug": "day-nho",
+      "unit": "cành",
+      "category": "LA",
+      "price": 0,
+      "note": null,
+      "needs_review": 0,
+      "is_active": 1
+    },
+    {
+      "id": 13,
+      "name": "Delphin",
+      "slug": "delphin",
+      "unit": "cành",
+      "category": "HOA",
+      "price": 0,
+      "note": null,
+      "needs_review": 0,
+      "is_active": 1
+    },
+    {
+      "id": 14,
+      "name": "Delphin trắng",
+      "slug": "delphin-trang",
+      "unit": "cành",
+      "category": "HOA",
+      "price": 0,
+      "note": null,
+      "needs_review": 0,
+      "is_active": 1
+    },
+    {
+      "id": 15,
+      "name": "Delphin xanh",
+      "slug": "delphin-xanh",
+      "unit": "cành",
+      "category": "HOA",
+      "price": 0,
+      "note": null,
+      "needs_review": 0,
+      "is_active": 1
+    },
+    {
+      "id": 16,
+      "name": "Đồng tiền cánh tua hồng nhạt",
+      "slug": "dong-tien-canh-tua-hong-nhat",
+      "unit": "cành",
+      "category": "HOA",
+      "price": 0,
+      "note": null,
+      "needs_review": 0,
+      "is_active": 1
+    },
+    {
+      "id": 17,
+      "name": "Đồng tiền cánh xẻ hồng nhạt",
+      "slug": "dong-tien-canh-xe-hong-nhat",
+      "unit": "cành",
+      "category": "HOA",
+      "price": 0,
+      "note": null,
+      "needs_review": 0,
+      "is_active": 1
+    },
+    {
+      "id": 18,
+      "name": "Đồng tiền cánh xoăn trắng",
+      "slug": "dong-tien-canh-xoan-trang",
+      "unit": "cành",
+      "category": "HOA",
+      "price": 0,
+      "note": null,
+      "needs_review": 0,
+      "is_active": 1
+    },
+    {
+      "id": 19,
+      "name": "Đồng tiền nhí",
+      "slug": "dong-tien-nhi",
+      "unit": "cành",
+      "category": "HOA",
+      "price": 0,
+      "note": null,
+      "needs_review": 0,
+      "is_active": 1
+    },
+    {
+      "id": 20,
+      "name": "Đồng tiền nhí hồng",
+      "slug": "dong-tien-nhi-hong",
+      "unit": "cành",
+      "category": "HOA",
+      "price": 0,
+      "note": null,
+      "needs_review": 0,
+      "is_active": 1
+    },
+    {
+      "id": 21,
+      "name": "Đồng tiền nhí trắng",
+      "slug": "dong-tien-nhi-trang",
+      "unit": "cành",
+      "category": "HOA",
+      "price": 0,
+      "note": null,
+      "needs_review": 0,
+      "is_active": 1
+    },
+    {
+      "id": 22,
+      "name": "Đồng tiền tua trắng",
+      "slug": "dong-tien-tua-trang",
+      "unit": "cành",
+      "category": "HOA",
+      "price": 0,
+      "note": null,
+      "needs_review": 0,
+      "is_active": 1
+    },
+    {
+      "id": 23,
+      "name": "Đuôi chồn",
+      "slug": "duoi-chon",
+      "unit": "cành",
+      "category": "LA",
+      "price": 0,
+      "note": null,
+      "needs_review": 0,
+      "is_active": 1
+    },
+    {
+      "id": 24,
+      "name": "Hoa hồng",
+      "slug": "hoa-hong",
+      "unit": "cành",
+      "category": "HOA",
+      "price": 0,
+      "note": null,
+      "needs_review": 0,
+      "is_active": 1
+    },
+    {
+      "id": 25,
+      "name": "Hoàng kim",
+      "slug": "hoang-kim",
+      "unit": "cành",
+      "category": "LA",
+      "price": 0,
+      "note": null,
+      "needs_review": 0,
+      "is_active": 1
+    },
+    {
+      "id": 26,
+      "name": "Hồng màu",
+      "slug": "hong-mau",
+      "unit": "cành",
+      "category": "HOA",
+      "price": 0,
+      "note": null,
+      "needs_review": 0,
+      "is_active": 1
+    },
+    {
+      "id": 27,
+      "name": "Hồng môn",
+      "slug": "hong-mon",
+      "unit": "cành",
+      "category": "HOA",
+      "price": 0,
+      "note": null,
+      "needs_review": 0,
+      "is_active": 1
+    },
+    {
+      "id": 28,
+      "name": "Hồng môn hồng",
+      "slug": "hong-mon-hong",
+      "unit": "cành",
+      "category": "HOA",
+      "price": 0,
+      "note": null,
+      "needs_review": 0,
+      "is_active": 1
+    },
+    {
+      "id": 29,
+      "name": "Hồng môn xanh",
+      "slug": "hong-mon-xanh",
+      "unit": "cành",
+      "category": "HOA",
+      "price": 0,
+      "note": null,
+      "needs_review": 0,
+      "is_active": 1
+    },
+    {
+      "id": 30,
+      "name": "Hồng trắng",
+      "slug": "hong-trang",
+      "unit": "cành",
+      "category": "HOA",
+      "price": 0,
+      "note": null,
+      "needs_review": 0,
+      "is_active": 1
+    },
+    {
+      "id": 31,
+      "name": "Hột gà",
+      "slug": "hot-ga",
+      "unit": "cành",
+      "category": "HOA",
+      "price": 0,
+      "note": null,
+      "needs_review": 0,
+      "is_active": 1
+    },
+    {
+      "id": 32,
+      "name": "Kem",
+      "slug": "kem",
+      "unit": "cành",
+      "category": "HOA",
+      "price": 0,
+      "note": null,
+      "needs_review": 0,
+      "is_active": 1
+    },
+    {
+      "id": 33,
+      "name": "Kem cồ",
+      "slug": "kem-co",
+      "unit": "cành",
+      "category": "HOA",
+      "price": 0,
+      "note": null,
+      "needs_review": 0,
+      "is_active": 1
+    },
+    {
+      "id": 34,
+      "name": "Kem dâu",
+      "slug": "kem-dau",
+      "unit": "cành",
+      "category": "HOA",
+      "price": 0,
+      "note": null,
+      "needs_review": 0,
+      "is_active": 1
+    },
+    {
+      "id": 35,
+      "name": "Khuynh diệp",
+      "slug": "khuynh-diep",
+      "unit": "cành",
+      "category": "LA",
+      "price": 0,
+      "note": null,
+      "needs_review": 0,
+      "is_active": 1
+    },
+    {
+      "id": 36,
+      "name": "Lá bạc",
+      "slug": "la-bac",
+      "unit": "cành",
+      "category": "LA",
+      "price": 0,
+      "note": null,
+      "needs_review": 0,
+      "is_active": 1
+    },
+    {
+      "id": 37,
+      "name": "Lá bạc Đà Lạt",
+      "slug": "la-bac-da-lat",
+      "unit": "cành",
+      "category": "LA",
+      "price": 0,
+      "note": null,
+      "needs_review": 0,
+      "is_active": 1
+    },
+    {
+      "id": 38,
+      "name": "Lá quế",
+      "slug": "la-que",
+      "unit": "cành",
+      "category": "LA",
+      "price": 0,
+      "note": null,
+      "needs_review": 0,
+      "is_active": 1
+    },
+    {
+      "id": 39,
+      "name": "Lá táo",
+      "slug": "la-tao",
+      "unit": "cành",
+      "category": "LA",
+      "price": 0,
+      "note": null,
+      "needs_review": 0,
+      "is_active": 1
+    },
+    {
+      "id": 40,
+      "name": "Lá trầu mỹ lớn",
+      "slug": "la-trau-my-lon",
+      "unit": "cành",
+      "category": "LA",
+      "price": 0,
+      "note": null,
+      "needs_review": 0,
+      "is_active": 1
+    },
+    {
+      "id": 41,
+      "name": "Lá trầu mỹ trung",
+      "slug": "la-trau-my-trung",
+      "unit": "cành",
+      "category": "LA",
+      "price": 0,
+      "note": null,
+      "needs_review": 0,
+      "is_active": 1
+    },
+    {
+      "id": 42,
+      "name": "Lan",
+      "slug": "lan",
+      "unit": "cành",
+      "category": "HOA",
+      "price": 0,
+      "note": null,
+      "needs_review": 0,
+      "is_active": 1
+    },
+    {
+      "id": 43,
+      "name": "Lan trắng",
+      "slug": "lan-trang",
+      "unit": "cành",
+      "category": "HOA",
+      "price": 0,
+      "note": null,
+      "needs_review": 0,
+      "is_active": 1
+    },
+    {
+      "id": 44,
+      "name": "Ly kép",
+      "slug": "ly-kep",
+      "unit": "cành",
+      "category": "HOA",
+      "price": 0,
+      "note": null,
+      "needs_review": 0,
+      "is_active": 1
+    },
+    {
+      "id": 45,
+      "name": "Ly kép trắng",
+      "slug": "ly-kep-trang",
+      "unit": "cành",
+      "category": "HOA",
+      "price": 0,
+      "note": null,
+      "needs_review": 0,
+      "is_active": 1
+    },
+    {
+      "id": 46,
+      "name": "Manta",
+      "slug": "manta",
+      "unit": "cành",
+      "category": "HOA",
+      "price": 0,
+      "note": null,
+      "needs_review": 0,
+      "is_active": 1
+    },
+    {
+      "id": 47,
+      "name": "Măng tây",
+      "slug": "mang-tay",
+      "unit": "cành",
+      "category": "LA",
+      "price": 0,
+      "note": null,
+      "needs_review": 0,
+      "is_active": 1
+    },
+    {
+      "id": 48,
+      "name": "Mật cật",
+      "slug": "mat-cat",
+      "unit": "cành",
+      "category": "LA",
+      "price": 0,
+      "note": null,
+      "needs_review": 0,
+      "is_active": 1
+    },
+    {
+      "id": 49,
+      "name": "Mì",
+      "slug": "mi",
+      "unit": "cành",
+      "category": "LA",
+      "price": 0,
+      "note": null,
+      "needs_review": 0,
+      "is_active": 1
+    },
+    {
+      "id": 50,
+      "name": "Mimosa",
+      "slug": "mimosa",
+      "unit": "cành",
+      "category": "HOA",
+      "price": 0,
+      "note": null,
+      "needs_review": 0,
+      "is_active": 1
+    },
+    {
+      "id": 51,
+      "name": "Mõm sói",
+      "slug": "mom-soi",
+      "unit": "cành",
+      "category": "HOA",
+      "price": 0,
+      "note": null,
+      "needs_review": 0,
+      "is_active": 1
+    },
+    {
+      "id": 52,
+      "name": "Mõm sói trắng",
+      "slug": "mom-soi-trang",
+      "unit": "cành",
+      "category": "HOA",
+      "price": 0,
+      "note": null,
+      "needs_review": 0,
+      "is_active": 1
+    },
+    {
+      "id": 53,
+      "name": "Mút",
+      "slug": "mut",
+      "unit": "chiếc",
+      "category": "VAT_TU",
+      "price": 0,
+      "note": null,
+      "needs_review": 0,
+      "is_active": 1
+    },
+    {
+      "id": 54,
+      "name": "Ngâu",
+      "slug": "ngau",
+      "unit": "cành",
+      "category": "LA",
+      "price": 0,
+      "note": null,
+      "needs_review": 0,
+      "is_active": 1
+    },
+    {
+      "id": 55,
+      "name": "Nho lớn",
+      "slug": "nho-lon",
+      "unit": "cành",
+      "category": "LA",
+      "price": 0,
+      "note": null,
+      "needs_review": 0,
+      "is_active": 1
+    },
+    {
+      "id": 56,
+      "name": "Ohara hồng",
+      "slug": "ohara-hong",
+      "unit": "cành",
+      "category": "HOA",
+      "price": 0,
+      "note": null,
+      "needs_review": 0,
+      "is_active": 1
+    },
+    {
+      "id": 57,
+      "name": "Ohara trắng",
+      "slug": "ohara-trang",
+      "unit": "cành",
+      "category": "HOA",
+      "price": 0,
+      "note": null,
+      "needs_review": 0,
+      "is_active": 1
+    },
+    {
+      "id": 58,
+      "name": "Phát tài sọc",
+      "slug": "phat-tai-soc",
+      "unit": "cành",
+      "category": "LA",
+      "price": 0,
+      "note": null,
+      "needs_review": 0,
+      "is_active": 1
+    },
+    {
+      "id": 59,
+      "name": "Ping pong hồng",
+      "slug": "ping-pong-hong",
+      "unit": "cành",
+      "category": "HOA",
+      "price": 0,
+      "note": null,
+      "needs_review": 0,
+      "is_active": 1
+    },
+    {
+      "id": 60,
+      "name": "Ping pong tím",
+      "slug": "ping-pong-tim",
+      "unit": "cành",
+      "category": "HOA",
+      "price": 0,
+      "note": null,
+      "needs_review": 0,
+      "is_active": 1
+    },
+    {
+      "id": 61,
+      "name": "Ping pong trắng",
+      "slug": "ping-pong-trang",
+      "unit": "cành",
+      "category": "HOA",
+      "price": 0,
+      "note": null,
+      "needs_review": 0,
+      "is_active": 1
+    },
+    {
+      "id": 62,
+      "name": "Sen mới",
+      "slug": "sen-moi",
+      "unit": "cành",
+      "category": "HOA",
+      "price": 0,
+      "note": null,
+      "needs_review": 0,
+      "is_active": 1
+    },
+    {
+      "id": 63,
+      "name": "Shimmer",
+      "slug": "shimmer",
+      "unit": "cành",
+      "category": "HOA",
+      "price": 0,
+      "note": null,
+      "needs_review": 0,
+      "is_active": 1
+    },
+    {
+      "id": 64,
+      "name": "Sỉ",
+      "slug": "si",
+      "unit": "cành",
+      "category": "HOA",
+      "price": 0,
+      "note": null,
+      "needs_review": 0,
+      "is_active": 1
+    },
+    {
+      "id": 65,
+      "name": "Sỉ mềm",
+      "slug": "si-mem",
+      "unit": "cành",
+      "category": "HOA",
+      "price": 0,
+      "note": null,
+      "needs_review": 0,
+      "is_active": 1
+    },
+    {
+      "id": 66,
+      "name": "Sỉ pháp",
+      "slug": "si-phap",
+      "unit": "cành",
+      "category": "HOA",
+      "price": 0,
+      "note": null,
+      "needs_review": 0,
+      "is_active": 1
+    },
+    {
+      "id": 67,
+      "name": "Sơn tùng",
+      "slug": "son-tung",
+      "unit": "cành",
+      "category": "LA",
+      "price": 0,
+      "note": null,
+      "needs_review": 0,
+      "is_active": 1
+    },
+    {
+      "id": 68,
+      "name": "Thạch thảo",
+      "slug": "thach-thao",
+      "unit": "cành",
+      "category": "HOA",
+      "price": 0,
+      "note": null,
+      "needs_review": 0,
+      "is_active": 1
+    },
+    {
+      "id": 69,
+      "name": "Thạch thảo nở",
+      "slug": "thach-thao-no",
+      "unit": "cành",
+      "category": "HOA",
+      "price": 0,
+      "note": null,
+      "needs_review": 0,
+      "is_active": 1
+    },
+    {
+      "id": 70,
+      "name": "Thạch thảo trắng nở",
+      "slug": "thach-thao-trang-no",
+      "unit": "cành",
+      "category": "HOA",
+      "price": 0,
+      "note": null,
+      "needs_review": 0,
+      "is_active": 1
+    },
+    {
+      "id": 71,
+      "name": "Thúy châu",
+      "slug": "thuy-chau",
+      "unit": "cành",
+      "category": "HOA",
+      "price": 0,
+      "note": null,
+      "needs_review": 0,
+      "is_active": 1
+    },
+    {
+      "id": 72,
+      "name": "Thủy trúc",
+      "slug": "thuy-truc",
+      "unit": "cành",
+      "category": "LA",
+      "price": 0,
+      "note": null,
+      "needs_review": 0,
+      "is_active": 1
+    },
+    {
+      "id": 73,
+      "name": "Tím sữa",
+      "slug": "tim-sua",
+      "unit": "cành",
+      "category": "HOA",
+      "price": 0,
+      "note": null,
+      "needs_review": 0,
+      "is_active": 1
+    },
+    {
+      "id": 74,
+      "name": "Toffe",
+      "slug": "toffe",
+      "unit": "cành",
+      "category": "HOA",
+      "price": 0,
+      "note": null,
+      "needs_review": 0,
+      "is_active": 1
+    },
+    {
+      "id": 75,
+      "name": "Trắng",
+      "slug": "trang",
+      "unit": "cành",
+      "category": "HOA",
+      "price": 0,
+      "note": "CẦN KIỂM TRA — trong Excel chỉ ghi \"0,5 trắng\", chưa rõ là loại hoa nào",
+      "needs_review": 1,
+      "is_active": 1
+    },
+    {
+      "id": 76,
+      "name": "Trắng cồ",
+      "slug": "trang-co",
+      "unit": "cành",
+      "category": "HOA",
+      "price": 0,
+      "note": null,
+      "needs_review": 0,
+      "is_active": 1
+    },
+    {
+      "id": 77,
+      "name": "Trầu mỹ",
+      "slug": "trau-my",
+      "unit": "cành",
+      "category": "LA",
+      "price": 0,
+      "note": "CẦN KIỂM TRA — trong Excel ghi \"2 Trầu mỹ\", chưa rõ lá trầu mỹ lớn hay trung",
+      "needs_review": 1,
+      "is_active": 1
+    },
+    {
+      "id": 78,
+      "name": "Tú cầu",
+      "slug": "tu-cau",
+      "unit": "cành",
+      "category": "HOA",
+      "price": 0,
+      "note": null,
+      "needs_review": 0,
+      "is_active": 1
+    },
+    {
+      "id": 79,
+      "name": "Tú cầu trắng",
+      "slug": "tu-cau-trang",
+      "unit": "cành",
+      "category": "HOA",
+      "price": 0,
+      "note": null,
+      "needs_review": 0,
+      "is_active": 1
+    },
+    {
+      "id": 80,
+      "name": "Tú cầu xanh dương",
+      "slug": "tu-cau-xanh-duong",
+      "unit": "cành",
+      "category": "HOA",
+      "price": 0,
+      "note": null,
+      "needs_review": 0,
+      "is_active": 1
+    },
+    {
+      "id": 81,
+      "name": "Tùng nho",
+      "slug": "tung-nho",
+      "unit": "cành",
+      "category": "LA",
+      "price": 0,
+      "note": null,
+      "needs_review": 0,
+      "is_active": 1
+    },
+    {
+      "id": 82,
+      "name": "Tùng nho loại 1",
+      "slug": "tung-nho-loai-1",
+      "unit": "cành",
+      "category": "LA",
+      "price": 0,
+      "note": null,
+      "needs_review": 0,
+      "is_active": 1
+    },
+    {
+      "id": 83,
+      "name": "Vạn niên tùng",
+      "slug": "van-nien-tung",
+      "unit": "cành",
+      "category": "LA",
+      "price": 0,
+      "note": null,
+      "needs_review": 0,
+      "is_active": 1
+    },
+    {
+      "id": 84,
+      "name": "Victor vàng",
+      "slug": "victor-vang",
+      "unit": "cành",
+      "category": "HOA",
+      "price": 0,
+      "note": null,
+      "needs_review": 0,
+      "is_active": 1
+    },
+    {
+      "id": 85,
+      "name": "Vũ nữ",
+      "slug": "vu-nu",
+      "unit": "cành",
+      "category": "HOA",
+      "price": 0,
+      "note": null,
+      "needs_review": 0,
+      "is_active": 1
+    },
+    {
+      "id": 86,
+      "name": "Yến",
+      "slug": "yen",
+      "unit": "cành",
+      "category": "HOA",
+      "price": 0,
+      "note": null,
+      "needs_review": 0,
+      "is_active": 1
+    },
+    {
+      "id": 87,
+      "name": "Tú cầu xanh lơ",
+      "slug": "tu-cau-xanh-lo",
+      "unit": "bó",
+      "category": "HOA",
+      "price": 0,
+      "note": null,
+      "needs_review": 0,
+      "is_active": 1
+    }
+  ],
+  "flower_aliases": [
+    {
+      "flower_id": 37,
+      "alias": "lá bạc dalat"
+    },
+    {
+      "flower_id": 37,
+      "alias": "Lá bạc dalat"
+    },
+    {
+      "flower_id": 19,
+      "alias": "dtien nhí"
+    },
+    {
+      "flower_id": 6,
+      "alias": "ctuong xanh"
+    },
+    {
+      "flower_id": 6,
+      "alias": "ctruong xanh"
+    },
+    {
+      "flower_id": 6,
+      "alias": "CTUONG XANH"
+    },
+    {
+      "flower_id": 9,
+      "alias": "cỏ dtien"
+    },
+    {
+      "flower_id": 21,
+      "alias": "DTIEN NHÍ TRẮNG"
+    },
+    {
+      "flower_id": 2,
+      "alias": "Baby Trung"
+    },
+    {
+      "flower_id": 2,
+      "alias": "BABY TQ"
+    },
+    {
+      "flower_id": 2,
+      "alias": "baby TQ"
+    },
+    {
+      "flower_id": 80,
+      "alias": "TÚ CẦU XD"
+    },
+    {
+      "flower_id": 41,
+      "alias": "TRẦU MỸ TRUNG"
+    },
+    {
+      "flower_id": 41,
+      "alias": "trầu mỹ trung"
+    },
+    {
+      "flower_id": 41,
+      "alias": "Trầu Mỹ T"
+    },
+    {
+      "flower_id": 20,
+      "alias": "DTIEN NHÍ HỒNG"
+    },
+    {
+      "flower_id": 17,
+      "alias": "dtien c.xẻ hồng nhạt"
+    },
+    {
+      "flower_id": 16,
+      "alias": "dtien c.tua hồng nhạt"
+    },
+    {
+      "flower_id": 60,
+      "alias": "pingpong tím"
+    },
+    {
+      "flower_id": 40,
+      "alias": "trầu mỹ lớn"
+    },
+    {
+      "flower_id": 40,
+      "alias": "Trầu mỹ lớn"
+    },
+    {
+      "flower_id": 18,
+      "alias": "dtien cánh xoăn trắng"
+    },
+    {
+      "flower_id": 18,
+      "alias": "dtien c.xoan trắng"
+    },
+    {
+      "flower_id": 18,
+      "alias": "dtien trắng xoăn"
+    },
+    {
+      "flower_id": 22,
+      "alias": "Dtien tua trắng"
+    }
+  ],
+  "packages": [
+    {
+      "id": 1,
+      "name": "TIÊU CHUẨN",
+      "code": null,
+      "description": null,
+      "sort_order": 10,
+      "is_active": 1
+    },
+    {
+      "id": 2,
+      "name": "GLAMOUR",
+      "code": null,
+      "description": null,
+      "sort_order": 20,
+      "is_active": 1
+    },
+    {
+      "id": 3,
+      "name": "SWEETY",
+      "code": null,
+      "description": null,
+      "sort_order": 30,
+      "is_active": 1
+    },
+    {
+      "id": 4,
+      "name": "TWINKLE",
+      "code": null,
+      "description": null,
+      "sort_order": 40,
+      "is_active": 1
+    },
+    {
+      "id": 5,
+      "name": "SECRET GARDEN",
+      "code": null,
+      "description": null,
+      "sort_order": 50,
+      "is_active": 1
+    },
+    {
+      "id": 6,
+      "name": "NATURAL",
+      "code": null,
+      "description": null,
+      "sort_order": 60,
+      "is_active": 1
+    },
+    {
+      "id": 7,
+      "name": "CỔNG VÒM",
+      "code": null,
+      "description": null,
+      "sort_order": 70,
+      "is_active": 1
+    },
+    {
+      "id": 8,
+      "name": "CỔNG NGANG",
+      "code": null,
+      "description": null,
+      "sort_order": 80,
+      "is_active": 1
+    },
+    {
+      "id": 9,
+      "name": "L'MOUR PARFAIT",
+      "code": null,
+      "description": null,
+      "sort_order": 90,
+      "is_active": 1
+    },
+    {
+      "id": 10,
+      "name": "GLOW",
+      "code": null,
+      "description": null,
+      "sort_order": 100,
+      "is_active": 1
+    },
+    {
+      "id": 11,
+      "name": "FAIRYTALE",
+      "code": null,
+      "description": null,
+      "sort_order": 110,
+      "is_active": 1
+    },
+    {
+      "id": 12,
+      "name": "BLISS",
+      "code": null,
+      "description": null,
+      "sort_order": 120,
+      "is_active": 1
+    },
+    {
+      "id": 13,
+      "name": "WONDERLAND",
+      "code": null,
+      "description": null,
+      "sort_order": 130,
+      "is_active": 1
+    },
+    {
+      "id": 14,
+      "name": "DAISY",
+      "code": null,
+      "description": null,
+      "sort_order": 140,
+      "is_active": 1
+    },
+    {
+      "id": 15,
+      "name": "TWISTING",
+      "code": null,
+      "description": null,
+      "sort_order": 150,
+      "is_active": 1
+    },
+    {
+      "id": 16,
+      "name": "CLOUD",
+      "code": null,
+      "description": null,
+      "sort_order": 160,
+      "is_active": 1
+    },
+    {
+      "id": 17,
+      "name": "T-BREAK",
+      "code": null,
+      "description": null,
+      "sort_order": 170,
+      "is_active": 1
+    }
+  ],
+  "package_items": [
+    {
+      "id": 1,
+      "package_id": 1,
+      "name": "Lối đi",
+      "sort_order": 10,
+      "note": null
+    },
+    {
+      "id": 2,
+      "package_id": 1,
+      "name": "Bàn VIP",
+      "sort_order": 20,
+      "note": null
+    },
+    {
+      "id": 3,
+      "package_id": 1,
+      "name": "Vòng nhẫn",
+      "sort_order": 30,
+      "note": null
+    },
+    {
+      "id": 4,
+      "package_id": 1,
+      "name": "Bàn đón khách",
+      "sort_order": 40,
+      "note": null
+    },
+    {
+      "id": 5,
+      "package_id": 1,
+      "name": "Bục phát biểu",
+      "sort_order": 50,
+      "note": null
+    },
+    {
+      "id": 6,
+      "package_id": 2,
+      "name": "Cổng hoa",
+      "sort_order": 10,
+      "note": null
+    },
+    {
+      "id": 7,
+      "package_id": 2,
+      "name": "Bàn gallery",
+      "sort_order": 20,
+      "note": null
+    },
+    {
+      "id": 8,
+      "package_id": 2,
+      "name": "Lối đi",
+      "sort_order": 30,
+      "note": null
+    },
+    {
+      "id": 9,
+      "package_id": 3,
+      "name": "Bàn gallery",
+      "sort_order": 10,
+      "note": null
+    },
+    {
+      "id": 10,
+      "package_id": 4,
+      "name": "Bàn gallery",
+      "sort_order": 10,
+      "note": null
+    },
+    {
+      "id": 11,
+      "package_id": 5,
+      "name": "Cổng hoa",
+      "sort_order": 10,
+      "note": null
+    },
+    {
+      "id": 12,
+      "package_id": 5,
+      "name": "Bàn gallery",
+      "sort_order": 20,
+      "note": null
+    },
+    {
+      "id": 13,
+      "package_id": 5,
+      "name": "Lối đi",
+      "sort_order": 30,
+      "note": null
+    },
+    {
+      "id": 14,
+      "package_id": 6,
+      "name": "Bàn gallery",
+      "sort_order": 10,
+      "note": null
+    },
+    {
+      "id": 15,
+      "package_id": 6,
+      "name": "Cổng hoa",
+      "sort_order": 20,
+      "note": null
+    },
+    {
+      "id": 16,
+      "package_id": 7,
+      "name": "Cổng vòm",
+      "sort_order": 10,
+      "note": null
+    },
+    {
+      "id": 17,
+      "package_id": 8,
+      "name": "Cổng ngang",
+      "sort_order": 10,
+      "note": null
+    },
+    {
+      "id": 18,
+      "package_id": 9,
+      "name": "Cổng hoa",
+      "sort_order": 10,
+      "note": null
+    },
+    {
+      "id": 19,
+      "package_id": 9,
+      "name": "Lối đi",
+      "sort_order": 20,
+      "note": null
+    },
+    {
+      "id": 20,
+      "package_id": 9,
+      "name": "Vòng treo (12 vòng)",
+      "sort_order": 30,
+      "note": null
+    },
+    {
+      "id": 21,
+      "package_id": 10,
+      "name": "Cổng hoa",
+      "sort_order": 10,
+      "note": null
+    },
+    {
+      "id": 22,
+      "package_id": 10,
+      "name": "Bàn gallery",
+      "sort_order": 20,
+      "note": null
+    },
+    {
+      "id": 23,
+      "package_id": 10,
+      "name": "Lối đi",
+      "sort_order": 30,
+      "note": null
+    },
+    {
+      "id": 24,
+      "package_id": 11,
+      "name": "Cổng hoa",
+      "sort_order": 10,
+      "note": null
+    },
+    {
+      "id": 25,
+      "package_id": 11,
+      "name": "Gallery",
+      "sort_order": 20,
+      "note": null
+    },
+    {
+      "id": 26,
+      "package_id": 11,
+      "name": "Lối đi",
+      "sort_order": 30,
+      "note": null
+    },
+    {
+      "id": 27,
+      "package_id": 12,
+      "name": "Cổng hoa",
+      "sort_order": 10,
+      "note": null
+    },
+    {
+      "id": 28,
+      "package_id": 12,
+      "name": "Gallery",
+      "sort_order": 20,
+      "note": null
+    },
+    {
+      "id": 29,
+      "package_id": 12,
+      "name": "Lối đi",
+      "sort_order": 30,
+      "note": null
+    },
+    {
+      "id": 30,
+      "package_id": 13,
+      "name": "Cổng hoa",
+      "sort_order": 10,
+      "note": null
+    },
+    {
+      "id": 31,
+      "package_id": 13,
+      "name": "Gallery",
+      "sort_order": 20,
+      "note": null
+    },
+    {
+      "id": 32,
+      "package_id": 13,
+      "name": "Lối đi",
+      "sort_order": 30,
+      "note": null
+    },
+    {
+      "id": 33,
+      "package_id": 13,
+      "name": "Upgrade",
+      "sort_order": 40,
+      "note": null
+    },
+    {
+      "id": 34,
+      "package_id": 14,
+      "name": "Cổng hoa",
+      "sort_order": 10,
+      "note": null
+    },
+    {
+      "id": 35,
+      "package_id": 14,
+      "name": "Gallery",
+      "sort_order": 20,
+      "note": null
+    },
+    {
+      "id": 36,
+      "package_id": 14,
+      "name": "Lối đi",
+      "sort_order": 30,
+      "note": null
+    },
+    {
+      "id": 37,
+      "package_id": 14,
+      "name": "Upgrade",
+      "sort_order": 40,
+      "note": null
+    },
+    {
+      "id": 38,
+      "package_id": 15,
+      "name": "Cổng hoa",
+      "sort_order": 10,
+      "note": null
+    },
+    {
+      "id": 39,
+      "package_id": 15,
+      "name": "Gallery",
+      "sort_order": 20,
+      "note": null
+    },
+    {
+      "id": 40,
+      "package_id": 15,
+      "name": "Lối đi",
+      "sort_order": 30,
+      "note": null
+    },
+    {
+      "id": 41,
+      "package_id": 16,
+      "name": "Cổng hoa",
+      "sort_order": 10,
+      "note": null
+    },
+    {
+      "id": 42,
+      "package_id": 16,
+      "name": "Gallery / Cổng lên sân khấu",
+      "sort_order": 20,
+      "note": null
+    },
+    {
+      "id": 43,
+      "package_id": 17,
+      "name": "T-Break",
+      "sort_order": 10,
+      "note": null
+    }
+  ],
+  "item_flowers": [
+    {
+      "id": 1,
+      "package_item_id": 1,
+      "flower_id": 38,
+      "quantity": 6,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 10,
+      "note": null
+    },
+    {
+      "id": 2,
+      "package_item_id": 1,
+      "flower_id": 43,
+      "quantity": 2,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 20,
+      "note": null
+    },
+    {
+      "id": 3,
+      "package_item_id": 1,
+      "flower_id": 30,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 30,
+      "note": null
+    },
+    {
+      "id": 4,
+      "package_item_id": 1,
+      "flower_id": 68,
+      "quantity": 3,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 40,
+      "note": null
+    },
+    {
+      "id": 5,
+      "package_item_id": 1,
+      "flower_id": 67,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 50,
+      "note": null
+    },
+    {
+      "id": 6,
+      "package_item_id": 1,
+      "flower_id": 12,
+      "quantity": 0.5,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 60,
+      "note": null
+    },
+    {
+      "id": 7,
+      "package_item_id": 2,
+      "flower_id": 38,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 10,
+      "note": null
+    },
+    {
+      "id": 8,
+      "package_item_id": 2,
+      "flower_id": 24,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 20,
+      "note": null
+    },
+    {
+      "id": 9,
+      "package_item_id": 2,
+      "flower_id": 68,
+      "quantity": 2,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 30,
+      "note": null
+    },
+    {
+      "id": 10,
+      "package_item_id": 2,
+      "flower_id": 37,
+      "quantity": 0.5,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 40,
+      "note": null
+    },
+    {
+      "id": 11,
+      "package_item_id": 2,
+      "flower_id": 81,
+      "quantity": 0.3,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 50,
+      "note": null
+    },
+    {
+      "id": 12,
+      "package_item_id": 3,
+      "flower_id": 38,
+      "quantity": 3,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 10,
+      "note": null
+    },
+    {
+      "id": 13,
+      "package_item_id": 3,
+      "flower_id": 24,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 20,
+      "note": null
+    },
+    {
+      "id": 14,
+      "package_item_id": 3,
+      "flower_id": 68,
+      "quantity": 3,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 30,
+      "note": null
+    },
+    {
+      "id": 15,
+      "package_item_id": 3,
+      "flower_id": 83,
+      "quantity": 0.5,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 40,
+      "note": null
+    },
+    {
+      "id": 16,
+      "package_item_id": 3,
+      "flower_id": 67,
+      "quantity": 0.5,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 50,
+      "note": null
+    },
+    {
+      "id": 17,
+      "package_item_id": 4,
+      "flower_id": 38,
+      "quantity": 2,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 10,
+      "note": null
+    },
+    {
+      "id": 18,
+      "package_item_id": 4,
+      "flower_id": 24,
+      "quantity": 0.5,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 20,
+      "note": null
+    },
+    {
+      "id": 19,
+      "package_item_id": 4,
+      "flower_id": 68,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 30,
+      "note": null
+    },
+    {
+      "id": 20,
+      "package_item_id": 4,
+      "flower_id": 4,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 40,
+      "note": null
+    },
+    {
+      "id": 21,
+      "package_item_id": 5,
+      "flower_id": 66,
+      "quantity": 0.5,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 10,
+      "note": null
+    },
+    {
+      "id": 22,
+      "package_item_id": 5,
+      "flower_id": 42,
+      "quantity": 0.5,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 20,
+      "note": null
+    },
+    {
+      "id": 23,
+      "package_item_id": 5,
+      "flower_id": 26,
+      "quantity": 0.5,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 30,
+      "note": null
+    },
+    {
+      "id": 24,
+      "package_item_id": 5,
+      "flower_id": 38,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 40,
+      "note": null
+    },
+    {
+      "id": 25,
+      "package_item_id": 5,
+      "flower_id": 68,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 50,
+      "note": null
+    },
+    {
+      "id": 26,
+      "package_item_id": 6,
+      "flower_id": 54,
+      "quantity": 40,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 10,
+      "note": null
+    },
+    {
+      "id": 27,
+      "package_item_id": 6,
+      "flower_id": 68,
+      "quantity": 85,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 20,
+      "note": null
+    },
+    {
+      "id": 28,
+      "package_item_id": 6,
+      "flower_id": 4,
+      "quantity": 4,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 30,
+      "note": null
+    },
+    {
+      "id": 29,
+      "package_item_id": 6,
+      "flower_id": 7,
+      "quantity": 2,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 40,
+      "note": null
+    },
+    {
+      "id": 30,
+      "package_item_id": 6,
+      "flower_id": 38,
+      "quantity": 3,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 50,
+      "note": null
+    },
+    {
+      "id": 31,
+      "package_item_id": 6,
+      "flower_id": 52,
+      "quantity": 2,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 60,
+      "note": null
+    },
+    {
+      "id": 32,
+      "package_item_id": 6,
+      "flower_id": 24,
+      "quantity": 5,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 70,
+      "note": null
+    },
+    {
+      "id": 33,
+      "package_item_id": 7,
+      "flower_id": 68,
+      "quantity": 15,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 10,
+      "note": null
+    },
+    {
+      "id": 34,
+      "package_item_id": 7,
+      "flower_id": 24,
+      "quantity": 3,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 20,
+      "note": null
+    },
+    {
+      "id": 35,
+      "package_item_id": 7,
+      "flower_id": 66,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 30,
+      "note": null
+    },
+    {
+      "id": 36,
+      "package_item_id": 7,
+      "flower_id": 38,
+      "quantity": 6,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 40,
+      "note": null
+    },
+    {
+      "id": 37,
+      "package_item_id": 8,
+      "flower_id": 68,
+      "quantity": 140,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 10,
+      "note": null
+    },
+    {
+      "id": 38,
+      "package_item_id": 8,
+      "flower_id": 24,
+      "quantity": 3,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 20,
+      "note": null
+    },
+    {
+      "id": 39,
+      "package_item_id": 8,
+      "flower_id": 38,
+      "quantity": 20,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 30,
+      "note": null
+    },
+    {
+      "id": 40,
+      "package_item_id": 9,
+      "flower_id": 78,
+      "quantity": 20,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 10,
+      "note": null
+    },
+    {
+      "id": 41,
+      "package_item_id": 9,
+      "flower_id": 62,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 20,
+      "note": null
+    },
+    {
+      "id": 42,
+      "package_item_id": 9,
+      "flower_id": 30,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 30,
+      "note": null
+    },
+    {
+      "id": 43,
+      "package_item_id": 9,
+      "flower_id": 34,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 40,
+      "note": null
+    },
+    {
+      "id": 44,
+      "package_item_id": 9,
+      "flower_id": 38,
+      "quantity": 5,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 50,
+      "note": null
+    },
+    {
+      "id": 45,
+      "package_item_id": 9,
+      "flower_id": 64,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 60,
+      "note": null
+    },
+    {
+      "id": 46,
+      "package_item_id": 9,
+      "flower_id": 68,
+      "quantity": 5,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 70,
+      "note": null
+    },
+    {
+      "id": 47,
+      "package_item_id": 9,
+      "flower_id": 4,
+      "quantity": 2,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 80,
+      "note": null
+    },
+    {
+      "id": 48,
+      "package_item_id": 9,
+      "flower_id": 54,
+      "quantity": 2,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 90,
+      "note": null
+    },
+    {
+      "id": 49,
+      "package_item_id": 9,
+      "flower_id": 36,
+      "quantity": 2,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 100,
+      "note": null
+    },
+    {
+      "id": 50,
+      "package_item_id": 9,
+      "flower_id": 11,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 110,
+      "note": null
+    },
+    {
+      "id": 51,
+      "package_item_id": 10,
+      "flower_id": 62,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 10,
+      "note": null
+    },
+    {
+      "id": 52,
+      "package_item_id": 10,
+      "flower_id": 34,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 20,
+      "note": null
+    },
+    {
+      "id": 53,
+      "package_item_id": 10,
+      "flower_id": 30,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 30,
+      "note": null
+    },
+    {
+      "id": 54,
+      "package_item_id": 10,
+      "flower_id": 36,
+      "quantity": 2,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 40,
+      "note": null
+    },
+    {
+      "id": 55,
+      "package_item_id": 10,
+      "flower_id": 4,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 50,
+      "note": null
+    },
+    {
+      "id": 56,
+      "package_item_id": 10,
+      "flower_id": 68,
+      "quantity": 5,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 60,
+      "note": null
+    },
+    {
+      "id": 57,
+      "package_item_id": 10,
+      "flower_id": 78,
+      "quantity": 20,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 70,
+      "note": null
+    },
+    {
+      "id": 58,
+      "package_item_id": 10,
+      "flower_id": 51,
+      "quantity": 2,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 80,
+      "note": null
+    },
+    {
+      "id": 59,
+      "package_item_id": 10,
+      "flower_id": 54,
+      "quantity": 3,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 90,
+      "note": null
+    },
+    {
+      "id": 60,
+      "package_item_id": 10,
+      "flower_id": 66,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 100,
+      "note": null
+    },
+    {
+      "id": 61,
+      "package_item_id": 11,
+      "flower_id": 30,
+      "quantity": 2,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 10,
+      "note": null
+    },
+    {
+      "id": 62,
+      "package_item_id": 11,
+      "flower_id": 19,
+      "quantity": 2,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 20,
+      "note": null
+    },
+    {
+      "id": 63,
+      "package_item_id": 11,
+      "flower_id": 5,
+      "quantity": 6,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 30,
+      "note": null
+    },
+    {
+      "id": 64,
+      "package_item_id": 11,
+      "flower_id": 37,
+      "quantity": 2,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 40,
+      "note": null
+    },
+    {
+      "id": 65,
+      "package_item_id": 11,
+      "flower_id": 35,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 50,
+      "note": null
+    },
+    {
+      "id": 66,
+      "package_item_id": 11,
+      "flower_id": 54,
+      "quantity": 5,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 60,
+      "note": null
+    },
+    {
+      "id": 67,
+      "package_item_id": 11,
+      "flower_id": 49,
+      "quantity": 5,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 70,
+      "note": null
+    },
+    {
+      "id": 68,
+      "package_item_id": 11,
+      "flower_id": 1,
+      "quantity": 0.5,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 80,
+      "note": null
+    },
+    {
+      "id": 69,
+      "package_item_id": 11,
+      "flower_id": 48,
+      "quantity": 2,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 90,
+      "note": null
+    },
+    {
+      "id": 70,
+      "package_item_id": 11,
+      "flower_id": 23,
+      "quantity": 2,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 100,
+      "note": null
+    },
+    {
+      "id": 71,
+      "package_item_id": 11,
+      "flower_id": 51,
+      "quantity": 2,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 110,
+      "note": null
+    },
+    {
+      "id": 72,
+      "package_item_id": 11,
+      "flower_id": 81,
+      "quantity": 0.5,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 120,
+      "note": null
+    },
+    {
+      "id": 73,
+      "package_item_id": 11,
+      "flower_id": 10,
+      "quantity": 30,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 130,
+      "note": null
+    },
+    {
+      "id": 74,
+      "package_item_id": 12,
+      "flower_id": 30,
+      "quantity": 2,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 10,
+      "note": null
+    },
+    {
+      "id": 75,
+      "package_item_id": 12,
+      "flower_id": 6,
+      "quantity": 2,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 20,
+      "note": null
+    },
+    {
+      "id": 76,
+      "package_item_id": 12,
+      "flower_id": 49,
+      "quantity": 4,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 30,
+      "note": null
+    },
+    {
+      "id": 77,
+      "package_item_id": 12,
+      "flower_id": 54,
+      "quantity": 2,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 40,
+      "note": null
+    },
+    {
+      "id": 78,
+      "package_item_id": 12,
+      "flower_id": 9,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 50,
+      "note": null
+    },
+    {
+      "id": 79,
+      "package_item_id": 12,
+      "flower_id": 19,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 60,
+      "note": null
+    },
+    {
+      "id": 80,
+      "package_item_id": 12,
+      "flower_id": 37,
+      "quantity": 2,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 70,
+      "note": null
+    },
+    {
+      "id": 81,
+      "package_item_id": 12,
+      "flower_id": 51,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 80,
+      "note": null
+    },
+    {
+      "id": 82,
+      "package_item_id": 12,
+      "flower_id": 1,
+      "quantity": 0.5,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 90,
+      "note": null
+    },
+    {
+      "id": 83,
+      "package_item_id": 12,
+      "flower_id": 81,
+      "quantity": 0.5,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 100,
+      "note": null
+    },
+    {
+      "id": 84,
+      "package_item_id": 13,
+      "flower_id": 54,
+      "quantity": 4,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 10,
+      "note": null
+    },
+    {
+      "id": 85,
+      "package_item_id": 13,
+      "flower_id": 49,
+      "quantity": 8,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 20,
+      "note": null
+    },
+    {
+      "id": 86,
+      "package_item_id": 13,
+      "flower_id": 78,
+      "quantity": 24,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 30,
+      "note": null
+    },
+    {
+      "id": 87,
+      "package_item_id": 13,
+      "flower_id": 30,
+      "quantity": 2,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 40,
+      "note": null
+    },
+    {
+      "id": 88,
+      "package_item_id": 13,
+      "flower_id": 6,
+      "quantity": 3,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 50,
+      "note": null
+    },
+    {
+      "id": 89,
+      "package_item_id": 13,
+      "flower_id": 19,
+      "quantity": 2,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 60,
+      "note": null
+    },
+    {
+      "id": 90,
+      "package_item_id": 13,
+      "flower_id": 37,
+      "quantity": 2,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 70,
+      "note": null
+    },
+    {
+      "id": 91,
+      "package_item_id": 13,
+      "flower_id": 9,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 80,
+      "note": null
+    },
+    {
+      "id": 92,
+      "package_item_id": 14,
+      "flower_id": 78,
+      "quantity": 30,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 10,
+      "note": null
+    },
+    {
+      "id": 93,
+      "package_item_id": 14,
+      "flower_id": 30,
+      "quantity": 2,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 20,
+      "note": null
+    },
+    {
+      "id": 94,
+      "package_item_id": 14,
+      "flower_id": 6,
+      "quantity": 5,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 30,
+      "note": null
+    },
+    {
+      "id": 95,
+      "package_item_id": 14,
+      "flower_id": 36,
+      "quantity": 2,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 40,
+      "note": null
+    },
+    {
+      "id": 96,
+      "package_item_id": 14,
+      "flower_id": 68,
+      "quantity": 6,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 50,
+      "note": null
+    },
+    {
+      "id": 97,
+      "package_item_id": 14,
+      "flower_id": 38,
+      "quantity": 3,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 60,
+      "note": null
+    },
+    {
+      "id": 98,
+      "package_item_id": 14,
+      "flower_id": 55,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 70,
+      "note": null
+    },
+    {
+      "id": 99,
+      "package_item_id": 14,
+      "flower_id": 11,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 80,
+      "note": null
+    },
+    {
+      "id": 100,
+      "package_item_id": 14,
+      "flower_id": 54,
+      "quantity": 3,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 90,
+      "note": null
+    },
+    {
+      "id": 101,
+      "package_item_id": 14,
+      "flower_id": 4,
+      "quantity": 3,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 100,
+      "note": null
+    },
+    {
+      "id": 102,
+      "package_item_id": 15,
+      "flower_id": 78,
+      "quantity": 60,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 10,
+      "note": null
+    },
+    {
+      "id": 103,
+      "package_item_id": 15,
+      "flower_id": 30,
+      "quantity": 2,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 20,
+      "note": null
+    },
+    {
+      "id": 104,
+      "package_item_id": 15,
+      "flower_id": 6,
+      "quantity": 5,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 30,
+      "note": null
+    },
+    {
+      "id": 105,
+      "package_item_id": 15,
+      "flower_id": 21,
+      "quantity": 2,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 40,
+      "note": null
+    },
+    {
+      "id": 106,
+      "package_item_id": 15,
+      "flower_id": 68,
+      "quantity": 5,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 50,
+      "note": null
+    },
+    {
+      "id": 107,
+      "package_item_id": 15,
+      "flower_id": 38,
+      "quantity": 8,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 60,
+      "note": null
+    },
+    {
+      "id": 108,
+      "package_item_id": 15,
+      "flower_id": 7,
+      "quantity": 2,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 70,
+      "note": null
+    },
+    {
+      "id": 109,
+      "package_item_id": 15,
+      "flower_id": 11,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 80,
+      "note": null
+    },
+    {
+      "id": 110,
+      "package_item_id": 15,
+      "flower_id": 50,
+      "quantity": 3,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 90,
+      "note": null
+    },
+    {
+      "id": 111,
+      "package_item_id": 16,
+      "flower_id": 78,
+      "quantity": 30,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 10,
+      "note": null
+    },
+    {
+      "id": 112,
+      "package_item_id": 16,
+      "flower_id": 24,
+      "quantity": 3,
+      "is_optional": 0,
+      "alt_group": "alt-CỔNG VÒM-B-1",
+      "sort_order": 20,
+      "note": null
+    },
+    {
+      "id": 113,
+      "package_item_id": 16,
+      "flower_id": 24,
+      "quantity": 2,
+      "is_optional": 1,
+      "alt_group": "alt-CỔNG VÒM-B-1",
+      "sort_order": 30,
+      "note": null
+    },
+    {
+      "id": 114,
+      "package_item_id": 16,
+      "flower_id": 6,
+      "quantity": 5,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 40,
+      "note": null
+    },
+    {
+      "id": 115,
+      "package_item_id": 16,
+      "flower_id": 38,
+      "quantity": 8,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 50,
+      "note": null
+    },
+    {
+      "id": 116,
+      "package_item_id": 16,
+      "flower_id": 54,
+      "quantity": 3,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 60,
+      "note": null
+    },
+    {
+      "id": 117,
+      "package_item_id": 16,
+      "flower_id": 68,
+      "quantity": 30,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 70,
+      "note": null
+    },
+    {
+      "id": 118,
+      "package_item_id": 16,
+      "flower_id": 4,
+      "quantity": 3,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 80,
+      "note": null
+    },
+    {
+      "id": 119,
+      "package_item_id": 16,
+      "flower_id": 72,
+      "quantity": 2,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 90,
+      "note": null
+    },
+    {
+      "id": 120,
+      "package_item_id": 16,
+      "flower_id": 7,
+      "quantity": 0.5,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 100,
+      "note": null
+    },
+    {
+      "id": 121,
+      "package_item_id": 17,
+      "flower_id": 78,
+      "quantity": 40,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 10,
+      "note": null
+    },
+    {
+      "id": 122,
+      "package_item_id": 17,
+      "flower_id": 24,
+      "quantity": 3,
+      "is_optional": 0,
+      "alt_group": "alt-CỔNG NGANG-E-1",
+      "sort_order": 20,
+      "note": null
+    },
+    {
+      "id": 123,
+      "package_item_id": 17,
+      "flower_id": 24,
+      "quantity": 2,
+      "is_optional": 1,
+      "alt_group": "alt-CỔNG NGANG-E-1",
+      "sort_order": 30,
+      "note": null
+    },
+    {
+      "id": 124,
+      "package_item_id": 17,
+      "flower_id": 6,
+      "quantity": 5,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 40,
+      "note": null
+    },
+    {
+      "id": 125,
+      "package_item_id": 17,
+      "flower_id": 38,
+      "quantity": 8,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 50,
+      "note": null
+    },
+    {
+      "id": 126,
+      "package_item_id": 17,
+      "flower_id": 54,
+      "quantity": 3,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 60,
+      "note": null
+    },
+    {
+      "id": 127,
+      "package_item_id": 17,
+      "flower_id": 68,
+      "quantity": 30,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 70,
+      "note": null
+    },
+    {
+      "id": 128,
+      "package_item_id": 17,
+      "flower_id": 4,
+      "quantity": 4,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 80,
+      "note": null
+    },
+    {
+      "id": 129,
+      "package_item_id": 17,
+      "flower_id": 72,
+      "quantity": 2,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 90,
+      "note": null
+    },
+    {
+      "id": 130,
+      "package_item_id": 17,
+      "flower_id": 7,
+      "quantity": 0.5,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 100,
+      "note": null
+    },
+    {
+      "id": 131,
+      "package_item_id": 18,
+      "flower_id": 69,
+      "quantity": 200,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 10,
+      "note": null
+    },
+    {
+      "id": 132,
+      "package_item_id": 18,
+      "flower_id": 36,
+      "quantity": 8,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 20,
+      "note": null
+    },
+    {
+      "id": 133,
+      "package_item_id": 19,
+      "flower_id": 68,
+      "quantity": 8,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 10,
+      "note": null
+    },
+    {
+      "id": 134,
+      "package_item_id": 19,
+      "flower_id": 4,
+      "quantity": 16,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 20,
+      "note": null
+    },
+    {
+      "id": 135,
+      "package_item_id": 19,
+      "flower_id": 50,
+      "quantity": 3,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 30,
+      "note": null
+    },
+    {
+      "id": 136,
+      "package_item_id": 19,
+      "flower_id": 34,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 40,
+      "note": null
+    },
+    {
+      "id": 137,
+      "package_item_id": 19,
+      "flower_id": 31,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 50,
+      "note": null
+    },
+    {
+      "id": 138,
+      "package_item_id": 19,
+      "flower_id": 30,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 60,
+      "note": null
+    },
+    {
+      "id": 139,
+      "package_item_id": 19,
+      "flower_id": 6,
+      "quantity": 3,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 70,
+      "note": null
+    },
+    {
+      "id": 140,
+      "package_item_id": 19,
+      "flower_id": 38,
+      "quantity": 36,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 80,
+      "note": null
+    },
+    {
+      "id": 141,
+      "package_item_id": 19,
+      "flower_id": 11,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 90,
+      "note": null
+    },
+    {
+      "id": 142,
+      "package_item_id": 19,
+      "flower_id": 12,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 100,
+      "note": null
+    },
+    {
+      "id": 143,
+      "package_item_id": 19,
+      "flower_id": 65,
+      "quantity": 4,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 110,
+      "note": null
+    },
+    {
+      "id": 144,
+      "package_item_id": 19,
+      "flower_id": 36,
+      "quantity": 2,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 120,
+      "note": null
+    },
+    {
+      "id": 145,
+      "package_item_id": 20,
+      "flower_id": 68,
+      "quantity": 12,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 10,
+      "note": null
+    },
+    {
+      "id": 146,
+      "package_item_id": 20,
+      "flower_id": 50,
+      "quantity": 5,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 20,
+      "note": null
+    },
+    {
+      "id": 147,
+      "package_item_id": 20,
+      "flower_id": 34,
+      "quantity": 2,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 30,
+      "note": null
+    },
+    {
+      "id": 148,
+      "package_item_id": 20,
+      "flower_id": 31,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 40,
+      "note": null
+    },
+    {
+      "id": 149,
+      "package_item_id": 20,
+      "flower_id": 30,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 50,
+      "note": null
+    },
+    {
+      "id": 150,
+      "package_item_id": 20,
+      "flower_id": 6,
+      "quantity": 5,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 60,
+      "note": null
+    },
+    {
+      "id": 151,
+      "package_item_id": 20,
+      "flower_id": 38,
+      "quantity": 24,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 70,
+      "note": null
+    },
+    {
+      "id": 152,
+      "package_item_id": 20,
+      "flower_id": 11,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 80,
+      "note": null
+    },
+    {
+      "id": 153,
+      "package_item_id": 20,
+      "flower_id": 66,
+      "quantity": 3,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 90,
+      "note": null
+    },
+    {
+      "id": 154,
+      "package_item_id": 20,
+      "flower_id": 12,
+      "quantity": 2,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 100,
+      "note": null
+    },
+    {
+      "id": 155,
+      "package_item_id": 20,
+      "flower_id": 36,
+      "quantity": 4,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 110,
+      "note": null
+    },
+    {
+      "id": 156,
+      "package_item_id": 20,
+      "flower_id": 19,
+      "quantity": 2,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 120,
+      "note": null
+    },
+    {
+      "id": 157,
+      "package_item_id": 21,
+      "flower_id": 85,
+      "quantity": 2,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 10,
+      "note": null
+    },
+    {
+      "id": 158,
+      "package_item_id": 21,
+      "flower_id": 78,
+      "quantity": 30,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 20,
+      "note": null
+    },
+    {
+      "id": 159,
+      "package_item_id": 21,
+      "flower_id": 34,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 30,
+      "note": null
+    },
+    {
+      "id": 160,
+      "package_item_id": 21,
+      "flower_id": 31,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 40,
+      "note": null
+    },
+    {
+      "id": 161,
+      "package_item_id": 21,
+      "flower_id": 86,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 50,
+      "note": null
+    },
+    {
+      "id": 162,
+      "package_item_id": 21,
+      "flower_id": 40,
+      "quantity": 4,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 60,
+      "note": null
+    },
+    {
+      "id": 163,
+      "package_item_id": 21,
+      "flower_id": 49,
+      "quantity": 8,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 70,
+      "note": null
+    },
+    {
+      "id": 164,
+      "package_item_id": 21,
+      "flower_id": 36,
+      "quantity": 3,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 80,
+      "note": null
+    },
+    {
+      "id": 165,
+      "package_item_id": 21,
+      "flower_id": 68,
+      "quantity": 25,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 90,
+      "note": null
+    },
+    {
+      "id": 166,
+      "package_item_id": 21,
+      "flower_id": 48,
+      "quantity": 4,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 100,
+      "note": null
+    },
+    {
+      "id": 167,
+      "package_item_id": 21,
+      "flower_id": 4,
+      "quantity": 4,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 110,
+      "note": null
+    },
+    {
+      "id": 168,
+      "package_item_id": 21,
+      "flower_id": 54,
+      "quantity": 4,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 120,
+      "note": null
+    },
+    {
+      "id": 169,
+      "package_item_id": 21,
+      "flower_id": 1,
+      "quantity": 0.5,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 130,
+      "note": null
+    },
+    {
+      "id": 170,
+      "package_item_id": 22,
+      "flower_id": 85,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 10,
+      "note": null
+    },
+    {
+      "id": 171,
+      "package_item_id": 22,
+      "flower_id": 78,
+      "quantity": 10,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 20,
+      "note": null
+    },
+    {
+      "id": 172,
+      "package_item_id": 22,
+      "flower_id": 34,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 30,
+      "note": null
+    },
+    {
+      "id": 173,
+      "package_item_id": 22,
+      "flower_id": 31,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 40,
+      "note": null
+    },
+    {
+      "id": 174,
+      "package_item_id": 22,
+      "flower_id": 86,
+      "quantity": 0.5,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 50,
+      "note": null
+    },
+    {
+      "id": 175,
+      "package_item_id": 22,
+      "flower_id": 19,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 60,
+      "note": null
+    },
+    {
+      "id": 176,
+      "package_item_id": 22,
+      "flower_id": 41,
+      "quantity": 2,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 70,
+      "note": null
+    },
+    {
+      "id": 177,
+      "package_item_id": 22,
+      "flower_id": 49,
+      "quantity": 3,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 80,
+      "note": null
+    },
+    {
+      "id": 178,
+      "package_item_id": 22,
+      "flower_id": 36,
+      "quantity": 2,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 90,
+      "note": null
+    },
+    {
+      "id": 179,
+      "package_item_id": 22,
+      "flower_id": 4,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 100,
+      "note": null
+    },
+    {
+      "id": 180,
+      "package_item_id": 22,
+      "flower_id": 54,
+      "quantity": 2,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 110,
+      "note": null
+    },
+    {
+      "id": 181,
+      "package_item_id": 23,
+      "flower_id": 85,
+      "quantity": 2,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 10,
+      "note": null
+    },
+    {
+      "id": 182,
+      "package_item_id": 23,
+      "flower_id": 34,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 20,
+      "note": null
+    },
+    {
+      "id": 183,
+      "package_item_id": 23,
+      "flower_id": 31,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 30,
+      "note": null
+    },
+    {
+      "id": 184,
+      "package_item_id": 23,
+      "flower_id": 86,
+      "quantity": 0.5,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 40,
+      "note": null
+    },
+    {
+      "id": 185,
+      "package_item_id": 23,
+      "flower_id": 1,
+      "quantity": 0.5,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 50,
+      "note": null
+    },
+    {
+      "id": 186,
+      "package_item_id": 23,
+      "flower_id": 41,
+      "quantity": 3,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 60,
+      "note": null
+    },
+    {
+      "id": 187,
+      "package_item_id": 23,
+      "flower_id": 49,
+      "quantity": 8,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 70,
+      "note": null
+    },
+    {
+      "id": 188,
+      "package_item_id": 23,
+      "flower_id": 36,
+      "quantity": 2,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 80,
+      "note": null
+    },
+    {
+      "id": 189,
+      "package_item_id": 24,
+      "flower_id": 78,
+      "quantity": 20,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 10,
+      "note": null
+    },
+    {
+      "id": 190,
+      "package_item_id": 24,
+      "flower_id": 5,
+      "quantity": 5,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 20,
+      "note": null
+    },
+    {
+      "id": 191,
+      "package_item_id": 24,
+      "flower_id": 32,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 30,
+      "note": null
+    },
+    {
+      "id": 192,
+      "package_item_id": 24,
+      "flower_id": 30,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 40,
+      "note": null
+    },
+    {
+      "id": 193,
+      "package_item_id": 24,
+      "flower_id": 19,
+      "quantity": 2,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 50,
+      "note": null
+    },
+    {
+      "id": 194,
+      "package_item_id": 24,
+      "flower_id": 54,
+      "quantity": 3,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 60,
+      "note": null
+    },
+    {
+      "id": 195,
+      "package_item_id": 24,
+      "flower_id": 36,
+      "quantity": 2,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 70,
+      "note": null
+    },
+    {
+      "id": 196,
+      "package_item_id": 24,
+      "flower_id": 49,
+      "quantity": 8,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 80,
+      "note": null
+    },
+    {
+      "id": 197,
+      "package_item_id": 24,
+      "flower_id": 52,
+      "quantity": 2,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 90,
+      "note": null
+    },
+    {
+      "id": 198,
+      "package_item_id": 24,
+      "flower_id": 3,
+      "quantity": 3,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 100,
+      "note": null
+    },
+    {
+      "id": 199,
+      "package_item_id": 24,
+      "flower_id": 2,
+      "quantity": 0.5,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 110,
+      "note": null
+    },
+    {
+      "id": 200,
+      "package_item_id": 24,
+      "flower_id": 10,
+      "quantity": 30,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 120,
+      "note": null
+    },
+    {
+      "id": 201,
+      "package_item_id": 24,
+      "flower_id": 48,
+      "quantity": 2,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 130,
+      "note": null
+    },
+    {
+      "id": 202,
+      "package_item_id": 25,
+      "flower_id": 78,
+      "quantity": 20,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 10,
+      "note": null
+    },
+    {
+      "id": 203,
+      "package_item_id": 25,
+      "flower_id": 5,
+      "quantity": 3,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 20,
+      "note": null
+    },
+    {
+      "id": 204,
+      "package_item_id": 25,
+      "flower_id": 32,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 30,
+      "note": null
+    },
+    {
+      "id": 205,
+      "package_item_id": 25,
+      "flower_id": 30,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 40,
+      "note": null
+    },
+    {
+      "id": 206,
+      "package_item_id": 25,
+      "flower_id": 19,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 50,
+      "note": null
+    },
+    {
+      "id": 207,
+      "package_item_id": 25,
+      "flower_id": 54,
+      "quantity": 2,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 60,
+      "note": null
+    },
+    {
+      "id": 208,
+      "package_item_id": 25,
+      "flower_id": 36,
+      "quantity": 2,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 70,
+      "note": null
+    },
+    {
+      "id": 209,
+      "package_item_id": 25,
+      "flower_id": 49,
+      "quantity": 5,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 80,
+      "note": null
+    },
+    {
+      "id": 210,
+      "package_item_id": 25,
+      "flower_id": 2,
+      "quantity": 0.5,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 90,
+      "note": null
+    },
+    {
+      "id": 211,
+      "package_item_id": 25,
+      "flower_id": 81,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 100,
+      "note": null
+    },
+    {
+      "id": 212,
+      "package_item_id": 26,
+      "flower_id": 78,
+      "quantity": 40,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 10,
+      "note": null
+    },
+    {
+      "id": 213,
+      "package_item_id": 26,
+      "flower_id": 5,
+      "quantity": 4,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 20,
+      "note": null
+    },
+    {
+      "id": 214,
+      "package_item_id": 26,
+      "flower_id": 32,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 30,
+      "note": null
+    },
+    {
+      "id": 215,
+      "package_item_id": 26,
+      "flower_id": 30,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 40,
+      "note": null
+    },
+    {
+      "id": 216,
+      "package_item_id": 26,
+      "flower_id": 19,
+      "quantity": 2,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 50,
+      "note": null
+    },
+    {
+      "id": 217,
+      "package_item_id": 26,
+      "flower_id": 54,
+      "quantity": 4,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 60,
+      "note": null
+    },
+    {
+      "id": 218,
+      "package_item_id": 26,
+      "flower_id": 36,
+      "quantity": 2,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 70,
+      "note": null
+    },
+    {
+      "id": 219,
+      "package_item_id": 26,
+      "flower_id": 49,
+      "quantity": 8,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 80,
+      "note": null
+    },
+    {
+      "id": 220,
+      "package_item_id": 27,
+      "flower_id": 33,
+      "quantity": 2,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 10,
+      "note": null
+    },
+    {
+      "id": 221,
+      "package_item_id": 27,
+      "flower_id": 30,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 20,
+      "note": null
+    },
+    {
+      "id": 222,
+      "package_item_id": 27,
+      "flower_id": 80,
+      "quantity": 10,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 30,
+      "note": null
+    },
+    {
+      "id": 223,
+      "package_item_id": 27,
+      "flower_id": 82,
+      "quantity": 2,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 40,
+      "note": null
+    },
+    {
+      "id": 224,
+      "package_item_id": 27,
+      "flower_id": 35,
+      "quantity": 3,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 50,
+      "note": null
+    },
+    {
+      "id": 225,
+      "package_item_id": 27,
+      "flower_id": 47,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 60,
+      "note": null
+    },
+    {
+      "id": 226,
+      "package_item_id": 27,
+      "flower_id": 2,
+      "quantity": 0.5,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 70,
+      "note": null
+    },
+    {
+      "id": 227,
+      "package_item_id": 27,
+      "flower_id": 36,
+      "quantity": 2,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 80,
+      "note": null
+    },
+    {
+      "id": 228,
+      "package_item_id": 27,
+      "flower_id": 52,
+      "quantity": 2,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 90,
+      "note": null
+    },
+    {
+      "id": 229,
+      "package_item_id": 27,
+      "flower_id": 41,
+      "quantity": 2,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 100,
+      "note": null
+    },
+    {
+      "id": 230,
+      "package_item_id": 27,
+      "flower_id": 49,
+      "quantity": 3,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 110,
+      "note": null
+    },
+    {
+      "id": 231,
+      "package_item_id": 27,
+      "flower_id": 20,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 120,
+      "note": null
+    },
+    {
+      "id": 232,
+      "package_item_id": 28,
+      "flower_id": 33,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 10,
+      "note": null
+    },
+    {
+      "id": 233,
+      "package_item_id": 28,
+      "flower_id": 30,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 20,
+      "note": null
+    },
+    {
+      "id": 234,
+      "package_item_id": 28,
+      "flower_id": 80,
+      "quantity": 10,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 30,
+      "note": null
+    },
+    {
+      "id": 235,
+      "package_item_id": 28,
+      "flower_id": 81,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 40,
+      "note": null
+    },
+    {
+      "id": 236,
+      "package_item_id": 28,
+      "flower_id": 35,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 50,
+      "note": null
+    },
+    {
+      "id": 237,
+      "package_item_id": 28,
+      "flower_id": 20,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 60,
+      "note": null
+    },
+    {
+      "id": 238,
+      "package_item_id": 28,
+      "flower_id": 2,
+      "quantity": 0.5,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 70,
+      "note": null
+    },
+    {
+      "id": 239,
+      "package_item_id": 28,
+      "flower_id": 36,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 80,
+      "note": null
+    },
+    {
+      "id": 240,
+      "package_item_id": 29,
+      "flower_id": 70,
+      "quantity": 65,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 10,
+      "note": null
+    },
+    {
+      "id": 241,
+      "package_item_id": 30,
+      "flower_id": 80,
+      "quantity": 30,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 10,
+      "note": null
+    },
+    {
+      "id": 242,
+      "package_item_id": 30,
+      "flower_id": 34,
+      "quantity": 1.5,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 20,
+      "note": null
+    },
+    {
+      "id": 243,
+      "package_item_id": 30,
+      "flower_id": 30,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 30,
+      "note": null
+    },
+    {
+      "id": 244,
+      "package_item_id": 30,
+      "flower_id": 61,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 40,
+      "note": null
+    },
+    {
+      "id": 245,
+      "package_item_id": 30,
+      "flower_id": 17,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 50,
+      "note": null
+    },
+    {
+      "id": 246,
+      "package_item_id": 30,
+      "flower_id": 52,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 60,
+      "note": null
+    },
+    {
+      "id": 247,
+      "package_item_id": 30,
+      "flower_id": 28,
+      "quantity": 10,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 70,
+      "note": null
+    },
+    {
+      "id": 248,
+      "package_item_id": 30,
+      "flower_id": 2,
+      "quantity": 0.5,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 80,
+      "note": null
+    },
+    {
+      "id": 249,
+      "package_item_id": 30,
+      "flower_id": 39,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 90,
+      "note": null
+    },
+    {
+      "id": 250,
+      "package_item_id": 30,
+      "flower_id": 81,
+      "quantity": 3,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 100,
+      "note": null
+    },
+    {
+      "id": 251,
+      "package_item_id": 30,
+      "flower_id": 37,
+      "quantity": 2,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 110,
+      "note": null
+    },
+    {
+      "id": 252,
+      "package_item_id": 30,
+      "flower_id": 48,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 120,
+      "note": null
+    },
+    {
+      "id": 253,
+      "package_item_id": 30,
+      "flower_id": 49,
+      "quantity": 3,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 130,
+      "note": null
+    },
+    {
+      "id": 254,
+      "package_item_id": 31,
+      "flower_id": 80,
+      "quantity": 5,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 10,
+      "note": null
+    },
+    {
+      "id": 255,
+      "package_item_id": 31,
+      "flower_id": 34,
+      "quantity": 1.5,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 20,
+      "note": null
+    },
+    {
+      "id": 256,
+      "package_item_id": 31,
+      "flower_id": 75,
+      "quantity": 0.5,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 30,
+      "note": null
+    },
+    {
+      "id": 257,
+      "package_item_id": 31,
+      "flower_id": 59,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 40,
+      "note": null
+    },
+    {
+      "id": 258,
+      "package_item_id": 31,
+      "flower_id": 17,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 50,
+      "note": null
+    },
+    {
+      "id": 259,
+      "package_item_id": 31,
+      "flower_id": 28,
+      "quantity": 10,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 60,
+      "note": null
+    },
+    {
+      "id": 260,
+      "package_item_id": 31,
+      "flower_id": 2,
+      "quantity": 0.5,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 70,
+      "note": null
+    },
+    {
+      "id": 261,
+      "package_item_id": 31,
+      "flower_id": 39,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 80,
+      "note": null
+    },
+    {
+      "id": 262,
+      "package_item_id": 31,
+      "flower_id": 81,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 90,
+      "note": null
+    },
+    {
+      "id": 263,
+      "package_item_id": 31,
+      "flower_id": 37,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 100,
+      "note": null
+    },
+    {
+      "id": 264,
+      "package_item_id": 32,
+      "flower_id": 70,
+      "quantity": 50,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 10,
+      "note": null
+    },
+    {
+      "id": 265,
+      "package_item_id": 33,
+      "flower_id": 80,
+      "quantity": 30,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 10,
+      "note": null
+    },
+    {
+      "id": 266,
+      "package_item_id": 33,
+      "flower_id": 34,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 20,
+      "note": null
+    },
+    {
+      "id": 267,
+      "package_item_id": 33,
+      "flower_id": 73,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 30,
+      "note": null
+    },
+    {
+      "id": 268,
+      "package_item_id": 33,
+      "flower_id": 30,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 40,
+      "note": null
+    },
+    {
+      "id": 269,
+      "package_item_id": 33,
+      "flower_id": 56,
+      "quantity": 2,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 50,
+      "note": null
+    },
+    {
+      "id": 270,
+      "package_item_id": 33,
+      "flower_id": 45,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 60,
+      "note": null
+    },
+    {
+      "id": 271,
+      "package_item_id": 33,
+      "flower_id": 16,
+      "quantity": 2,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 70,
+      "note": null
+    },
+    {
+      "id": 272,
+      "package_item_id": 33,
+      "flower_id": 15,
+      "quantity": 2,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 80,
+      "note": null
+    },
+    {
+      "id": 273,
+      "package_item_id": 33,
+      "flower_id": 28,
+      "quantity": 20,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 90,
+      "note": null
+    },
+    {
+      "id": 274,
+      "package_item_id": 33,
+      "flower_id": 2,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 100,
+      "note": null
+    },
+    {
+      "id": 275,
+      "package_item_id": 33,
+      "flower_id": 60,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 110,
+      "note": null
+    },
+    {
+      "id": 276,
+      "package_item_id": 33,
+      "flower_id": 37,
+      "quantity": 2,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 120,
+      "note": null
+    },
+    {
+      "id": 277,
+      "package_item_id": 33,
+      "flower_id": 39,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 130,
+      "note": null
+    },
+    {
+      "id": 278,
+      "package_item_id": 33,
+      "flower_id": 81,
+      "quantity": 2,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 140,
+      "note": null
+    },
+    {
+      "id": 279,
+      "package_item_id": 34,
+      "flower_id": 79,
+      "quantity": 10,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 10,
+      "note": null
+    },
+    {
+      "id": 280,
+      "package_item_id": 34,
+      "flower_id": 41,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 20,
+      "note": null
+    },
+    {
+      "id": 281,
+      "package_item_id": 34,
+      "flower_id": 40,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 30,
+      "note": null
+    },
+    {
+      "id": 282,
+      "package_item_id": 34,
+      "flower_id": 81,
+      "quantity": 2,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 40,
+      "note": null
+    },
+    {
+      "id": 283,
+      "package_item_id": 34,
+      "flower_id": 37,
+      "quantity": 2,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 50,
+      "note": null
+    },
+    {
+      "id": 284,
+      "package_item_id": 34,
+      "flower_id": 39,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 60,
+      "note": null
+    },
+    {
+      "id": 285,
+      "package_item_id": 34,
+      "flower_id": 35,
+      "quantity": 0.5,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 70,
+      "note": null
+    },
+    {
+      "id": 286,
+      "package_item_id": 34,
+      "flower_id": 30,
+      "quantity": 2,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 80,
+      "note": null
+    },
+    {
+      "id": 287,
+      "package_item_id": 34,
+      "flower_id": 29,
+      "quantity": 10,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 90,
+      "note": null
+    },
+    {
+      "id": 288,
+      "package_item_id": 34,
+      "flower_id": 2,
+      "quantity": 0.5,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 100,
+      "note": null
+    },
+    {
+      "id": 289,
+      "package_item_id": 34,
+      "flower_id": 51,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 110,
+      "note": null
+    },
+    {
+      "id": 290,
+      "package_item_id": 34,
+      "flower_id": 58,
+      "quantity": 2,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 120,
+      "note": null
+    },
+    {
+      "id": 291,
+      "package_item_id": 34,
+      "flower_id": 48,
+      "quantity": 2,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 130,
+      "note": null
+    },
+    {
+      "id": 292,
+      "package_item_id": 34,
+      "flower_id": 61,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 140,
+      "note": null
+    },
+    {
+      "id": 293,
+      "package_item_id": 34,
+      "flower_id": 49,
+      "quantity": 3,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 150,
+      "note": null
+    },
+    {
+      "id": 294,
+      "package_item_id": 35,
+      "flower_id": 79,
+      "quantity": 10,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 10,
+      "note": null
+    },
+    {
+      "id": 295,
+      "package_item_id": 35,
+      "flower_id": 37,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 20,
+      "note": null
+    },
+    {
+      "id": 296,
+      "package_item_id": 35,
+      "flower_id": 39,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 30,
+      "note": null
+    },
+    {
+      "id": 297,
+      "package_item_id": 35,
+      "flower_id": 35,
+      "quantity": 0.5,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 40,
+      "note": null
+    },
+    {
+      "id": 298,
+      "package_item_id": 35,
+      "flower_id": 30,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 50,
+      "note": null
+    },
+    {
+      "id": 299,
+      "package_item_id": 35,
+      "flower_id": 18,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 60,
+      "note": null
+    },
+    {
+      "id": 300,
+      "package_item_id": 35,
+      "flower_id": 2,
+      "quantity": 0.5,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 70,
+      "note": null
+    },
+    {
+      "id": 301,
+      "package_item_id": 35,
+      "flower_id": 58,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 80,
+      "note": null
+    },
+    {
+      "id": 302,
+      "package_item_id": 35,
+      "flower_id": 48,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 90,
+      "note": null
+    },
+    {
+      "id": 303,
+      "package_item_id": 35,
+      "flower_id": 61,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 100,
+      "note": null
+    },
+    {
+      "id": 304,
+      "package_item_id": 35,
+      "flower_id": 71,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 110,
+      "note": null
+    },
+    {
+      "id": 305,
+      "package_item_id": 35,
+      "flower_id": 81,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 120,
+      "note": null
+    },
+    {
+      "id": 306,
+      "package_item_id": 36,
+      "flower_id": 78,
+      "quantity": 16,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 10,
+      "note": null
+    },
+    {
+      "id": 307,
+      "package_item_id": 36,
+      "flower_id": 72,
+      "quantity": 2,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 20,
+      "note": null
+    },
+    {
+      "id": 308,
+      "package_item_id": 36,
+      "flower_id": 41,
+      "quantity": 2,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 30,
+      "note": null
+    },
+    {
+      "id": 309,
+      "package_item_id": 36,
+      "flower_id": 81,
+      "quantity": 3,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 40,
+      "note": null
+    },
+    {
+      "id": 310,
+      "package_item_id": 36,
+      "flower_id": 35,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 50,
+      "note": null
+    },
+    {
+      "id": 311,
+      "package_item_id": 36,
+      "flower_id": 30,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 60,
+      "note": null
+    },
+    {
+      "id": 312,
+      "package_item_id": 36,
+      "flower_id": 18,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 70,
+      "note": null
+    },
+    {
+      "id": 313,
+      "package_item_id": 36,
+      "flower_id": 58,
+      "quantity": 3,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 80,
+      "note": null
+    },
+    {
+      "id": 314,
+      "package_item_id": 36,
+      "flower_id": 39,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 90,
+      "note": null
+    },
+    {
+      "id": 315,
+      "package_item_id": 37,
+      "flower_id": 79,
+      "quantity": 10,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 10,
+      "note": null
+    },
+    {
+      "id": 316,
+      "package_item_id": 37,
+      "flower_id": 41,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 20,
+      "note": null
+    },
+    {
+      "id": 317,
+      "package_item_id": 37,
+      "flower_id": 40,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 30,
+      "note": null
+    },
+    {
+      "id": 318,
+      "package_item_id": 37,
+      "flower_id": 82,
+      "quantity": 2,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 40,
+      "note": null
+    },
+    {
+      "id": 319,
+      "package_item_id": 37,
+      "flower_id": 37,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 50,
+      "note": null
+    },
+    {
+      "id": 320,
+      "package_item_id": 37,
+      "flower_id": 39,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 60,
+      "note": null
+    },
+    {
+      "id": 321,
+      "package_item_id": 37,
+      "flower_id": 35,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 70,
+      "note": null
+    },
+    {
+      "id": 322,
+      "package_item_id": 37,
+      "flower_id": 30,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 80,
+      "note": null
+    },
+    {
+      "id": 323,
+      "package_item_id": 37,
+      "flower_id": 57,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 90,
+      "note": null
+    },
+    {
+      "id": 324,
+      "package_item_id": 37,
+      "flower_id": 18,
+      "quantity": 2,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 100,
+      "note": null
+    },
+    {
+      "id": 325,
+      "package_item_id": 37,
+      "flower_id": 45,
+      "quantity": 2,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 110,
+      "note": null
+    },
+    {
+      "id": 326,
+      "package_item_id": 37,
+      "flower_id": 2,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 120,
+      "note": null
+    },
+    {
+      "id": 327,
+      "package_item_id": 37,
+      "flower_id": 14,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 130,
+      "note": null
+    },
+    {
+      "id": 328,
+      "package_item_id": 37,
+      "flower_id": 58,
+      "quantity": 2,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 140,
+      "note": null
+    },
+    {
+      "id": 329,
+      "package_item_id": 37,
+      "flower_id": 61,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 150,
+      "note": null
+    },
+    {
+      "id": 330,
+      "package_item_id": 38,
+      "flower_id": 33,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 10,
+      "note": null
+    },
+    {
+      "id": 331,
+      "package_item_id": 38,
+      "flower_id": 31,
+      "quantity": 0.5,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 20,
+      "note": null
+    },
+    {
+      "id": 332,
+      "package_item_id": 38,
+      "flower_id": 81,
+      "quantity": 3,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 30,
+      "note": null
+    },
+    {
+      "id": 333,
+      "package_item_id": 38,
+      "flower_id": 25,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 40,
+      "note": null
+    },
+    {
+      "id": 334,
+      "package_item_id": 38,
+      "flower_id": 18,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 50,
+      "note": null
+    },
+    {
+      "id": 335,
+      "package_item_id": 38,
+      "flower_id": 35,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 60,
+      "note": null
+    },
+    {
+      "id": 336,
+      "package_item_id": 38,
+      "flower_id": 36,
+      "quantity": 2,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 70,
+      "note": null
+    },
+    {
+      "id": 337,
+      "package_item_id": 38,
+      "flower_id": 68,
+      "quantity": 20,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 80,
+      "note": null
+    },
+    {
+      "id": 338,
+      "package_item_id": 38,
+      "flower_id": 58,
+      "quantity": 2,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 90,
+      "note": null
+    },
+    {
+      "id": 339,
+      "package_item_id": 38,
+      "flower_id": 53,
+      "quantity": 10,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 100,
+      "note": null
+    },
+    {
+      "id": 340,
+      "package_item_id": 38,
+      "flower_id": 1,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 110,
+      "note": null
+    },
+    {
+      "id": 341,
+      "package_item_id": 38,
+      "flower_id": 80,
+      "quantity": 10,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 120,
+      "note": null
+    },
+    {
+      "id": 342,
+      "package_item_id": 39,
+      "flower_id": 51,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 10,
+      "note": null
+    },
+    {
+      "id": 343,
+      "package_item_id": 39,
+      "flower_id": 33,
+      "quantity": 1.5,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 20,
+      "note": null
+    },
+    {
+      "id": 344,
+      "package_item_id": 39,
+      "flower_id": 31,
+      "quantity": 0.5,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 30,
+      "note": null
+    },
+    {
+      "id": 345,
+      "package_item_id": 39,
+      "flower_id": 25,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 40,
+      "note": null
+    },
+    {
+      "id": 346,
+      "package_item_id": 39,
+      "flower_id": 36,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 50,
+      "note": null
+    },
+    {
+      "id": 347,
+      "package_item_id": 39,
+      "flower_id": 48,
+      "quantity": 3,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 60,
+      "note": null
+    },
+    {
+      "id": 348,
+      "package_item_id": 39,
+      "flower_id": 58,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 70,
+      "note": null
+    },
+    {
+      "id": 349,
+      "package_item_id": 39,
+      "flower_id": 53,
+      "quantity": 4,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 80,
+      "note": null
+    },
+    {
+      "id": 350,
+      "package_item_id": 39,
+      "flower_id": 27,
+      "quantity": 10,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 90,
+      "note": null
+    },
+    {
+      "id": 351,
+      "package_item_id": 39,
+      "flower_id": 1,
+      "quantity": 0.5,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 100,
+      "note": null
+    },
+    {
+      "id": 352,
+      "package_item_id": 39,
+      "flower_id": 49,
+      "quantity": 2,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 110,
+      "note": null
+    },
+    {
+      "id": 353,
+      "package_item_id": 39,
+      "flower_id": 41,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 120,
+      "note": null
+    },
+    {
+      "id": 354,
+      "package_item_id": 40,
+      "flower_id": 70,
+      "quantity": 50,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 10,
+      "note": null
+    },
+    {
+      "id": 355,
+      "package_item_id": 40,
+      "flower_id": 53,
+      "quantity": 12,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 20,
+      "note": null
+    },
+    {
+      "id": 356,
+      "package_item_id": 41,
+      "flower_id": 63,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 10,
+      "note": null
+    },
+    {
+      "id": 357,
+      "package_item_id": 41,
+      "flower_id": 46,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 20,
+      "note": null
+    },
+    {
+      "id": 358,
+      "package_item_id": 41,
+      "flower_id": 74,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 30,
+      "note": null
+    },
+    {
+      "id": 359,
+      "package_item_id": 41,
+      "flower_id": 84,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 40,
+      "note": null
+    },
+    {
+      "id": 360,
+      "package_item_id": 41,
+      "flower_id": 44,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 50,
+      "note": null
+    },
+    {
+      "id": 361,
+      "package_item_id": 41,
+      "flower_id": 80,
+      "quantity": 10,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 60,
+      "note": null
+    },
+    {
+      "id": 362,
+      "package_item_id": 41,
+      "flower_id": 79,
+      "quantity": 10,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 70,
+      "note": null
+    },
+    {
+      "id": 363,
+      "package_item_id": 41,
+      "flower_id": 37,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 80,
+      "note": null
+    },
+    {
+      "id": 364,
+      "package_item_id": 41,
+      "flower_id": 81,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 90,
+      "note": null
+    },
+    {
+      "id": 365,
+      "package_item_id": 41,
+      "flower_id": 77,
+      "quantity": 2,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 100,
+      "note": null
+    },
+    {
+      "id": 366,
+      "package_item_id": 41,
+      "flower_id": 58,
+      "quantity": 2,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 110,
+      "note": null
+    },
+    {
+      "id": 367,
+      "package_item_id": 41,
+      "flower_id": 39,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 120,
+      "note": null
+    },
+    {
+      "id": 368,
+      "package_item_id": 41,
+      "flower_id": 85,
+      "quantity": 2,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 130,
+      "note": null
+    },
+    {
+      "id": 369,
+      "package_item_id": 41,
+      "flower_id": 1,
+      "quantity": 0.5,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 140,
+      "note": null
+    },
+    {
+      "id": 370,
+      "package_item_id": 41,
+      "flower_id": 3,
+      "quantity": 2,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 150,
+      "note": null
+    },
+    {
+      "id": 371,
+      "package_item_id": 41,
+      "flower_id": 22,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 160,
+      "note": null
+    },
+    {
+      "id": 372,
+      "package_item_id": 41,
+      "flower_id": 8,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 170,
+      "note": "Trong Excel không ghi số lượng"
+    },
+    {
+      "id": 373,
+      "package_item_id": 41,
+      "flower_id": 53,
+      "quantity": 12,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 180,
+      "note": null
+    },
+    {
+      "id": 374,
+      "package_item_id": 41,
+      "flower_id": 13,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 190,
+      "note": null
+    },
+    {
+      "id": 375,
+      "package_item_id": 42,
+      "flower_id": 76,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 10,
+      "note": null
+    },
+    {
+      "id": 376,
+      "package_item_id": 42,
+      "flower_id": 63,
+      "quantity": 2,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 20,
+      "note": null
+    },
+    {
+      "id": 377,
+      "package_item_id": 42,
+      "flower_id": 46,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 30,
+      "note": null
+    },
+    {
+      "id": 378,
+      "package_item_id": 42,
+      "flower_id": 74,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 40,
+      "note": null
+    },
+    {
+      "id": 379,
+      "package_item_id": 42,
+      "flower_id": 84,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 50,
+      "note": null
+    },
+    {
+      "id": 380,
+      "package_item_id": 42,
+      "flower_id": 44,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 60,
+      "note": null
+    },
+    {
+      "id": 381,
+      "package_item_id": 42,
+      "flower_id": 80,
+      "quantity": 20,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 70,
+      "note": null
+    },
+    {
+      "id": 382,
+      "package_item_id": 42,
+      "flower_id": 34,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 80,
+      "note": null
+    },
+    {
+      "id": 383,
+      "package_item_id": 42,
+      "flower_id": 4,
+      "quantity": 3,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 90,
+      "note": null
+    },
+    {
+      "id": 384,
+      "package_item_id": 42,
+      "flower_id": 37,
+      "quantity": 3,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 100,
+      "note": null
+    },
+    {
+      "id": 385,
+      "package_item_id": 42,
+      "flower_id": 81,
+      "quantity": 2,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 110,
+      "note": null
+    },
+    {
+      "id": 386,
+      "package_item_id": 42,
+      "flower_id": 40,
+      "quantity": 2,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 120,
+      "note": null
+    },
+    {
+      "id": 387,
+      "package_item_id": 42,
+      "flower_id": 58,
+      "quantity": 2,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 130,
+      "note": null
+    },
+    {
+      "id": 388,
+      "package_item_id": 42,
+      "flower_id": 39,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 140,
+      "note": null
+    },
+    {
+      "id": 389,
+      "package_item_id": 42,
+      "flower_id": 85,
+      "quantity": 2,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 150,
+      "note": null
+    },
+    {
+      "id": 390,
+      "package_item_id": 42,
+      "flower_id": 1,
+      "quantity": 0.5,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 160,
+      "note": null
+    },
+    {
+      "id": 391,
+      "package_item_id": 42,
+      "flower_id": 13,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 170,
+      "note": null
+    },
+    {
+      "id": 392,
+      "package_item_id": 42,
+      "flower_id": 22,
+      "quantity": 2,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 180,
+      "note": null
+    },
+    {
+      "id": 393,
+      "package_item_id": 42,
+      "flower_id": 53,
+      "quantity": 15,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 190,
+      "note": null
+    },
+    {
+      "id": 394,
+      "package_item_id": 42,
+      "flower_id": 48,
+      "quantity": 2,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 200,
+      "note": null
+    },
+    {
+      "id": 395,
+      "package_item_id": 42,
+      "flower_id": 49,
+      "quantity": 10,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 210,
+      "note": null
+    },
+    {
+      "id": 396,
+      "package_item_id": 42,
+      "flower_id": 54,
+      "quantity": 8,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 220,
+      "note": null
+    },
+    {
+      "id": 397,
+      "package_item_id": 43,
+      "flower_id": 43,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": "alt-T-BREAK-B-1",
+      "sort_order": 10,
+      "note": null
+    },
+    {
+      "id": 398,
+      "package_item_id": 43,
+      "flower_id": 85,
+      "quantity": 2,
+      "is_optional": 1,
+      "alt_group": "alt-T-BREAK-B-1",
+      "sort_order": 20,
+      "note": null
+    },
+    {
+      "id": 399,
+      "package_item_id": 43,
+      "flower_id": 41,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 30,
+      "note": null
+    },
+    {
+      "id": 400,
+      "package_item_id": 43,
+      "flower_id": 10,
+      "quantity": 40,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 40,
+      "note": null
+    },
+    {
+      "id": 401,
+      "package_item_id": 43,
+      "flower_id": 24,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 50,
+      "note": null
+    },
+    {
+      "id": 402,
+      "package_item_id": 43,
+      "flower_id": 38,
+      "quantity": 2,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 60,
+      "note": null
+    },
+    {
+      "id": 403,
+      "package_item_id": 43,
+      "flower_id": 36,
+      "quantity": 1,
+      "is_optional": 0,
+      "alt_group": null,
+      "sort_order": 70,
+      "note": null
+    }
+  ]
+}
