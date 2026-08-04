@@ -9,7 +9,7 @@ const NAV = [
   { to: '/packages', label: 'Gói trang trí', icon: '🎀' },
   { to: '/flowers', label: 'Danh mục hoa', icon: '🌸' },
   { to: '/inventory', label: 'Kho hoa dư', icon: '📦' },
-  { to: '/reports', label: 'Báo cáo', icon: '📄' },
+  { to: '/reports', label: 'Order hoa & Báo cáo', icon: '📄' },
 ]
 
 export default function Layout() {

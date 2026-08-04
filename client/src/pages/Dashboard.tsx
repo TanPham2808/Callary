@@ -1,9 +1,9 @@
 import { Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { api, qs } from '../lib/api'
-import { fmtDate, fmtDateLong, money, num, today } from '../lib/format'
+import { fmtDate, fmtDateLong, fmtDateTime, money, num, today } from '../lib/format'
 import { Empty, ErrorBox, Loading, PageHeader, StatusBadge } from '../components/ui'
-import { CATEGORY_LABEL, CATEGORY_ORDER, type DecorEvent, type RequirementResult } from '@shared/types'
+import { CATEGORY_LABEL, CATEGORY_ORDER, type DecorEvent, type OrderBatch, type RequirementResult } from '@shared/types'
 
 interface DashboardData {
   today: string
@@ -19,6 +19,11 @@ export default function Dashboard() {
   const query = useQuery({
     queryKey: ['reports', 'dashboard', t],
     queryFn: () => api.get<DashboardData>('/api/reports/dashboard' + qs({ today: t })),
+  })
+
+  const orderHistory = useQuery({
+    queryKey: ['reports', 'order-history'],
+    queryFn: () => api.get<OrderBatch[]>('/api/reports/order-status/history'),
   })
 
   if (query.isLoading) return <Loading />
@@ -177,6 +182,30 @@ export default function Dashboard() {
                   {num(s.quantity)} {s.unit}
                 </strong>
               </span>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {(orderHistory.data ?? []).length > 0 && (
+        <div className="card mt-5">
+          <div className="card-head">
+            <h2 className="card-title">Danh sách đã order gần đây</h2>
+            <Link className="text-xs text-brand-600 hover:underline" to="/reports">
+              Xem báo cáo →
+            </Link>
+          </div>
+          <div className="flex flex-wrap gap-2 px-4 py-3">
+            {(orderHistory.data ?? []).slice(0, 12).map((b) => (
+              <Link
+                key={`${b.range_from}_${b.range_to}`}
+                to={`/reports?from=${b.range_from}&to=${b.range_to}`}
+                className="badge bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200 transition hover:bg-emerald-100"
+                title={`Đã đặt lúc ${fmtDateTime(b.ordered_at)}`}
+              >
+                {fmtDate(b.range_from)}
+                {b.range_from !== b.range_to && ` — ${fmtDate(b.range_to)}`}
+              </Link>
             ))}
           </div>
         </div>
