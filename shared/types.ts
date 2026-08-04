@@ -148,6 +148,8 @@ export interface RequirementResult {
   event_count: number
   rows: RequirementRow[]
   total_amount: number
+  /** Đã đánh dấu đặt hàng NCC cho khoảng ngày (from–to) này chưa */
+  ordered: boolean
 }
 
 export interface InventoryMove {
@@ -182,6 +184,13 @@ export interface SearchResult {
     /** Tên viết tắt đã khớp với từ khoá, nếu khớp qua alias chứ không qua tên chính */
     matched_alias?: string | null
   }[]
+}
+
+/** Một khoảng ngày đã được đánh dấu "Đã Order" NCC. */
+export interface OrderBatch {
+  range_from: string
+  range_to: string
+  ordered_at: string
 }
 
 export interface DailyStat {

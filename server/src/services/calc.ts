@@ -132,6 +132,7 @@ export function computeRequirement(from: string, to: string, opts: CalcOptions =
       rows.reduce((s, r) => s + r.amount, 0),
       0,
     ),
+    ordered: isOrderedBatch(from, to),
   }
 }
 
@@ -141,6 +142,13 @@ function loadStock(): Map<number, number> {
     quantity: number
   }[]
   return new Map(rows.map((r) => [r.flower_id, r.quantity]))
+}
+
+/** Khoảng ngày báo cáo này đã được đánh dấu "Đã Order" NCC chưa. */
+export function isOrderedBatch(from: string, to: string): boolean {
+  return Boolean(
+    db.prepare('SELECT 1 FROM requirement_order_batches WHERE range_from = ? AND range_to = ?').get(from, to),
+  )
 }
 
 /** Chi tiết theo sự kiện → hạng mục (dùng cho sheet 2 của file Excel). */

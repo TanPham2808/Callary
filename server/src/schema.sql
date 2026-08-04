@@ -139,6 +139,20 @@ CREATE INDEX IF NOT EXISTS idx_inv_moves_flower ON inventory_moves(flower_id);
 CREATE INDEX IF NOT EXISTS idx_inv_moves_date   ON inventory_moves(created_at);
 
 -- ------------------------------------------------------------
+-- TRẠNG THÁI ĐẶT HÀNG NCC — đánh dấu cả khoảng ngày báo cáo đã
+-- đặt hàng NCC hay chưa, tránh đặt trùng hoặc quên đặt.
+-- Không có bản ghi = "Chưa Order".
+-- ------------------------------------------------------------
+DROP TABLE IF EXISTS requirement_order_marks;
+
+CREATE TABLE IF NOT EXISTS requirement_order_batches (
+  range_from TEXT NOT NULL,
+  range_to   TEXT NOT NULL,
+  ordered_at TEXT NOT NULL DEFAULT (datetime('now','localtime')),
+  PRIMARY KEY (range_from, range_to)
+);
+
+-- ------------------------------------------------------------
 -- CẤU HÌNH CHUNG (danh sách sảnh, ca...)
 -- ------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS settings (

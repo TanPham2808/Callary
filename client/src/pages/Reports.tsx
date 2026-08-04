@@ -1,11 +1,11 @@
 import { useMemo, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { api, qs } from '../lib/api'
-import { addDays, endOfMonth, fmtDate, money, num, startOfMonth, startOfWeek, today } from '../lib/format'
+import { addDays, endOfMonth, fmtDate, fmtDateTime, money, num, startOfMonth, startOfWeek, today } from '../lib/format'
 import { DateField } from '../components/DateField'
 import { Empty, ErrorBox, Loading, PageHeader } from '../components/ui'
-import { CATEGORY_LABEL, CATEGORY_ORDER, type DailyStat, type RequirementResult } from '@shared/types'
+import { CATEGORY_LABEL, CATEGORY_ORDER, type DailyStat, type OrderBatch, type RequirementResult } from '@shared/types'
 
 type Preset = 'today' | 'week' | 'month' | 'custom'
 
@@ -55,6 +55,30 @@ export default function Reports() {
     enabled: Boolean(from && to && from <= to),
   })
 
+  const history = useQuery({
+    queryKey: ['reports', 'order-history'],
+    queryFn: () => api.get<OrderBatch[]>('/api/reports/order-status/history'),
+  })
+
+  const qc = useQueryClient()
+  const requirementKey = ['reports', 'requirement', args]
+  const setOrderStatus = useMutation({
+    mutationFn: (v: { from: string; to: string; ordered: boolean }) => api.put('/api/reports/order-status', v),
+    onMutate: async (v) => {
+      if (v.from !== from || v.to !== to) return {}
+      await qc.cancelQueries({ queryKey: requirementKey })
+      const prev = qc.getQueryData<RequirementResult>(requirementKey)
+      qc.setQueryData<RequirementResult>(requirementKey, (old) => (old ? { ...old, ordered: v.ordered } : old))
+      return { prev }
+    },
+    onError: (_err, _v, ctx) => {
+      if (ctx?.prev) qc.setQueryData(requirementKey, ctx.prev)
+    },
+    onSettled: () => {
+      qc.invalidateQueries({ queryKey: ['reports', 'order-history'] })
+    },
+  })
+
   const rows = useMemo(() => {
     const q = search.trim().toLowerCase()
     return (report.data?.rows ?? []).filter((r) => !q || r.name.toLowerCase().includes(q))
@@ -83,6 +107,16 @@ export default function Reports() {
         }
         actions={
           <div className="flex gap-2">
+            {report.data && (
+              <button
+                type="button"
+                className={report.data.ordered ? 'btn-success' : 'btn-secondary'}
+                disabled={setOrderStatus.isPending}
+                onClick={() => setOrderStatus.mutate({ from, to, ordered: !report.data!.ordered })}
+              >
+                {report.data.ordered ? '✓ Đã Order' : 'Đánh dấu Đã Order'}
+              </button>
+            )}
             <a
               className="btn-primary"
               href={exportUrl}
@@ -310,6 +344,56 @@ export default function Reports() {
             </div>
           )}
         </>
+      )}
+
+      {(history.data ?? []).length > 0 && (
+        <div className="card mt-5">
+          <div className="card-head">
+            <h2 className="card-title">Lịch sử order hoa</h2>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="table">
+              <thead>
+                <tr>
+                  <th className="w-56">Khoảng ngày</th>
+                  <th className="w-40">Đã đặt lúc</th>
+                  <th className="text-right">Thao tác</th>
+                </tr>
+              </thead>
+              <tbody>
+                {(history.data ?? []).map((b) => (
+                  <tr key={`${b.range_from}_${b.range_to}`}>
+                    <td className="font-medium">
+                      {fmtDate(b.range_from)} — {fmtDate(b.range_to)}
+                    </td>
+                    <td className="text-zinc-500">{fmtDateTime(b.ordered_at)}</td>
+                    <td className="text-right">
+                      <button
+                        type="button"
+                        className="btn-secondary btn-sm"
+                        onClick={() => {
+                          setFrom(b.range_from)
+                          setTo(b.range_to)
+                          setPreset('custom')
+                        }}
+                      >
+                        Xem lại
+                      </button>
+                      <button
+                        type="button"
+                        className="btn-secondary btn-sm ml-2"
+                        disabled={setOrderStatus.isPending}
+                        onClick={() => setOrderStatus.mutate({ from: b.range_from, to: b.range_to, ordered: false })}
+                      >
+                        Bỏ đánh dấu
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
       )}
     </>
   )
