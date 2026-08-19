@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS flowers (
   id          INTEGER PRIMARY KEY AUTOINCREMENT,
   name        TEXT    NOT NULL,
   slug        TEXT    NOT NULL UNIQUE,          -- khoá chuẩn hoá (bỏ dấu, thường) để dò trùng
-  unit        TEXT    NOT NULL DEFAULT 'cành',  -- cành | bó | kg | cây | chiếc | mét
+  unit        TEXT    NOT NULL DEFAULT 'cành',  -- cành | bó | kg | cây | chiếc | mét | cục | bịch
   category    TEXT    NOT NULL DEFAULT 'HOA',   -- HOA | LA | VAT_TU
   price       REAL    NOT NULL DEFAULT 0,       -- đơn giá (VND)
   note        TEXT,

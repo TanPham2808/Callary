@@ -18,7 +18,7 @@ import {
 } from '../components/ui'
 import { CATEGORY_LABEL, CATEGORY_ORDER, type Flower, type FlowerCategory } from '@shared/types'
 
-const UNITS = ['cành', 'bó', 'kg', 'cây', 'chiếc', 'mét', 'cục']
+const UNITS = ['cành', 'bó', 'kg', 'cây', 'chiếc', 'mét', 'cục', 'bịch']
 
 export default function Flowers() {
   const qc = useQueryClient()
