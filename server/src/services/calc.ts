@@ -24,14 +24,32 @@ interface RawRow {
   flower_id: number
   name: string
   unit: string
+  order_unit: string | null
+  order_factor: number
   category: FlowerCategory
   price: number
   qty: number
 }
 
+/** Các cột hoa dùng chung cho cả hai câu truy vấn bên dưới. */
+const FLOWER_COLS = `f.id AS flower_id, f.name, f.unit, f.order_unit, f.order_factor, f.category, f.price`
+
 /**
- * Nhu cầu hoa = Σ (định lượng × số lượng hạng mục × số lượng gói) + Σ điều chỉnh.
+ * Hệ số quy đổi thực sự dùng được: chỉ coi là có quy đổi khi đã khai báo đơn vị
+ * mua khác đơn vị dùng và hệ số lớn hơn 1. Nhờ vậy các loại tính theo số lẻ
+ * (0,5 kg baby) không bị làm tròn lên oan.
+ */
+function orderFactor(orderUnit: string | null, factor: number, unit: string): number {
+  if (!orderUnit || orderUnit === unit) return 1
+  return factor > 1 ? factor : 1
+}
+
+/**
+ * Nhu cầu hoa = Σ (định lượng × số lượng hạng mục × số lượng gói × số bàn nếu
+ * dòng đó tính theo bàn) + Σ điều chỉnh.
+ *
  * Sự kiện có trạng thái HUY luôn bị loại khỏi mọi phép tính.
+ * Số cần mua được quy đổi sang đơn vị mua của nhà cung cấp ở bước cuối.
  */
 export function computeRequirement(from: string, to: string, opts: CalcOptions = {}): RequirementResult {
   const { eventId, hall, useStock = true, includeOptional = false } = opts
@@ -54,8 +72,9 @@ export function computeRequirement(from: string, to: string, opts: CalcOptions =
   // 1) Nhu cầu từ định lượng gói
   const baseRows = db
     .prepare(
-      `SELECT f.id AS flower_id, f.name, f.unit, f.category, f.price,
-              SUM(itf.quantity * epi.quantity * ep.quantity) AS qty
+      `SELECT ${FLOWER_COLS},
+              SUM(itf.quantity * epi.quantity * ep.quantity *
+                  CASE WHEN itf.per_table = 1 THEN COALESCE(e.table_count, 0) ELSE 1 END) AS qty
          FROM events e
          JOIN event_packages      ep  ON ep.event_id = e.id
          JOIN event_package_items epi ON epi.event_package_id = ep.id AND epi.is_included = 1
@@ -69,7 +88,7 @@ export function computeRequirement(from: string, to: string, opts: CalcOptions =
   // 2) Điều chỉnh linh động của từng sự kiện
   const adjRows = db
     .prepare(
-      `SELECT f.id AS flower_id, f.name, f.unit, f.category, f.price, SUM(a.delta) AS qty
+      `SELECT ${FLOWER_COLS}, SUM(a.delta) AS qty
          FROM events e
          JOIN event_adjustments a ON a.event_id = e.id
          JOIN flowers f           ON f.id = a.flower_id
@@ -86,6 +105,7 @@ export function computeRequirement(from: string, to: string, opts: CalcOptions =
   const ensure = (r: RawRow): RequirementRow => {
     let row = map.get(r.flower_id)
     if (!row) {
+      const factor = orderFactor(r.order_unit, r.order_factor, r.unit)
       row = {
         flower_id: r.flower_id,
         name: r.name,
@@ -97,6 +117,10 @@ export function computeRequirement(from: string, to: string, opts: CalcOptions =
         need: 0,
         stock: 0,
         to_buy: 0,
+        order_unit: factor > 1 ? r.order_unit! : r.unit,
+        order_factor: factor,
+        order_qty: 0,
+        leftover: 0,
         amount: 0,
       }
       map.set(r.flower_id, row)
@@ -114,7 +138,10 @@ export function computeRequirement(from: string, to: string, opts: CalcOptions =
     row.need = round(row.base + row.adjustment)
     row.stock = round(stock.get(row.flower_id) ?? 0)
     row.to_buy = round(Math.max(0, row.need - row.stock))
-    row.amount = round(row.to_buy * row.price, 0)
+    // Mua nguyên đơn vị: 40 cành ÷ 12 = 3,33 → đặt 4 bịch, dư 8 cành.
+    row.order_qty = row.order_factor > 1 ? Math.ceil(row.to_buy / row.order_factor) : row.to_buy
+    row.leftover = row.order_factor > 1 ? round(row.order_qty * row.order_factor - row.to_buy) : 0
+    row.amount = round(row.order_qty * row.price, 0)
   }
 
   rows.sort(
@@ -158,6 +185,7 @@ export interface EventBreakdown {
   title: string
   hall: string | null
   time_slot: string | null
+  table_count: number | null
   status: string
   note: string | null
   packages: {
@@ -166,7 +194,7 @@ export interface EventBreakdown {
     items: {
       item_name: string
       item_quantity: number
-      flowers: { name: string; unit: string; quantity: number; is_optional: number }[]
+      flowers: { name: string; unit: string; quantity: number; per_table: number; is_optional: number }[]
     }[]
   }[]
   adjustments: { name: string; unit: string; delta: number; reason: string | null }[]
@@ -197,6 +225,7 @@ export function loadEventBreakdown(from: string, to: string, hall?: string): Eve
       title: e.title,
       hall: e.hall,
       time_slot: e.time_slot,
+      table_count: e.table_count,
       status: e.status,
       note: e.note,
       packages: eps.map((ep) => ({
@@ -217,11 +246,17 @@ export function loadEventBreakdown(from: string, to: string, hall?: string): Eve
           flowers: it.package_item_id
             ? (db
                 .prepare(
-                  `SELECT f.name, f.unit, i.quantity, i.is_optional
+                  `SELECT f.name, f.unit, i.quantity, i.per_table, i.is_optional
                      FROM item_flowers i JOIN flowers f ON f.id = i.flower_id
                     WHERE i.package_item_id = ? ORDER BY i.sort_order, i.id`,
                 )
-                .all(it.package_item_id) as { name: string; unit: string; quantity: number; is_optional: number }[])
+                .all(it.package_item_id) as {
+                name: string
+                unit: string
+                quantity: number
+                per_table: number
+                is_optional: number
+              }[])
             : [],
         })),
       })),
@@ -254,8 +289,10 @@ export function computeDailyStats(from: string, to: string, hall?: string): Dail
       date,
       event_count: r.event_count,
       total_qty: round(r.rows.reduce((s, x) => s + x.need, 0)),
+      // Giá tính theo đơn vị mua, nên chia hệ số quy đổi. Không làm tròn lên ở
+      // đây vì đây là ước tính lượng dùng trong ngày, không phải đơn đặt hàng.
       total_amount: round(
-        r.rows.reduce((s, x) => s + x.need * x.price, 0),
+        r.rows.reduce((s, x) => s + (x.need / x.order_factor) * x.price, 0),
         0,
       ),
     }

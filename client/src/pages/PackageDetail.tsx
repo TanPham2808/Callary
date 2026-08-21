@@ -67,13 +67,19 @@ export default function PackageDetail() {
     onError,
   })
 
+  /**
+   * Tổng hợp cả gói. Dòng "theo bàn" không cộng chung được vì chưa biết tiệc nào
+   * bao nhiêu bàn, nên gom riêng và hiển thị dạng "1 /bàn".
+   */
   const totals = useMemo(() => {
     const items = query.data?.items ?? []
-    const map = new Map<string, { name: string; unit: string; qty: number; category: string }>()
+    type Row = { name: string; unit: string; qty: number; category: string; perTable: boolean }
+    const map = new Map<string, Row>()
     for (const item of items) {
       for (const f of item.flowers ?? []) {
         if (f.is_optional) continue
-        const key = String(f.flower_id)
+        const perTable = f.per_table === 1
+        const key = `${f.flower_id}-${perTable ? 'ban' : 'co-dinh'}`
         const cur = map.get(key)
         if (cur) cur.qty += f.quantity
         else
@@ -82,6 +88,7 @@ export default function PackageDetail() {
             unit: f.flower_unit ?? '',
             qty: f.quantity,
             category: f.flower_category ?? 'HOA',
+            perTable,
           })
       }
     }
@@ -194,11 +201,19 @@ export default function PackageDetail() {
                 <table className="table">
                   <tbody>
                     {totals.map((t) => (
-                      <tr key={t.name}>
-                        <td className="text-sm">{t.name}</td>
+                      <tr key={`${t.name}-${t.perTable}`}>
+                        <td className="text-sm">
+                          {t.name}
+                          {t.perTable && (
+                            <span className="ml-1.5 text-[11px] text-brand-600">theo bàn</span>
+                          )}
+                        </td>
                         <td className="w-24 whitespace-nowrap text-right text-sm tabular-nums">
                           <strong>{num(t.qty)}</strong>{' '}
-                          <span className="text-xs text-zinc-400">{t.unit}</span>
+                          <span className="text-xs text-zinc-400">
+                            {t.unit}
+                            {t.perTable ? '/bàn' : ''}
+                          </span>
                         </td>
                       </tr>
                     ))}
@@ -207,7 +222,8 @@ export default function PackageDetail() {
               </div>
             )}
             <p className="border-t border-zinc-100 px-4 py-2.5 text-[11px] leading-relaxed text-zinc-500">
-              Các dòng đánh dấu <em>phương án thay thế</em> không được cộng vào tổng.
+              Các dòng đánh dấu <em>phương án thay thế</em> không được cộng vào tổng. Dòng{' '}
+              <em>theo bàn</em> ghi định lượng cho một bàn — số thực tế phụ thuộc số bàn của từng lịch tiệc.
             </p>
           </div>
         </aside>
@@ -285,10 +301,10 @@ function ItemCard({
           <table className="table min-w-[600px]">
             <thead>
               <tr>
-                <th className="w-24">Số lượng</th>
+                <th className="w-28">Số lượng</th>
                 <th>Loại hoa</th>
                 <th className="w-28">Nhóm</th>
-                <th className="w-36">Tuỳ chọn</th>
+                <th className="w-44">Tuỳ chọn</th>
                 <th className="w-16"></th>
               </tr>
             </thead>
@@ -305,7 +321,10 @@ function ItemCard({
                         value={row.quantity}
                         onCommit={(v) => updateRow.mutate({ rowId: row.id, patch: { quantity: Number(v) || 0 } })}
                       />
-                      <span className="text-xs text-zinc-400">{row.flower_unit}</span>
+                      <span className="whitespace-nowrap text-xs text-zinc-400">
+                        {row.flower_unit}
+                        {row.per_table === 1 ? '/bàn' : ''}
+                      </span>
                     </div>
                   </td>
                   <td>
@@ -317,6 +336,19 @@ function ItemCard({
                   <td>{row.flower_category && <CategoryBadge category={row.flower_category} />}</td>
                   <td>
                     <label className="flex cursor-pointer items-center gap-2 whitespace-nowrap text-xs text-zinc-600">
+                      <input
+                        type="checkbox"
+                        className="h-3.5 w-3.5 rounded border-zinc-300 accent-brand-600"
+                        checked={row.per_table === 1}
+                        onChange={(e) =>
+                          updateRow.mutate({ rowId: row.id, patch: { per_table: e.target.checked } as any })
+                        }
+                      />
+                      <span title="Định lượng cho MỘT bàn tiệc — sẽ nhân với số bàn của lịch tiệc">
+                        Theo số bàn
+                      </span>
+                    </label>
+                    <label className="mt-1 flex cursor-pointer items-center gap-2 whitespace-nowrap text-xs text-zinc-600">
                       <input
                         type="checkbox"
                         className="h-3.5 w-3.5 rounded border-zinc-300 accent-brand-600"

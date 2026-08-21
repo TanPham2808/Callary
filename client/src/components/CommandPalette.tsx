@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { api, qs } from '../lib/api'
 import { addDays, fmtDate, today } from '../lib/format'
-import { CATEGORY_LABEL, STATUS_LABEL, type DecorEvent, type SearchResult } from '@shared/types'
+import { CATEGORY_LABEL, eventLabel, STATUS_LABEL, type DecorEvent, type SearchResult } from '@shared/types'
 
 interface Item {
   key: string
@@ -74,8 +74,10 @@ export function CommandPalette({ open, onClose }: { open: boolean; onClose: () =
       const events: Item[] = (upcoming.data ?? []).slice(0, 6).map((e) => ({
         key: `ev-${e.id}`,
         group: 'Lịch tiệc sắp tới',
-        label: e.title,
-        hint: [fmtDate(e.event_date), e.hall, e.time_slot].filter(Boolean).join(' · '),
+        label: eventLabel(e),
+        hint: [fmtDate(e.event_date), e.hall, e.time_slot, e.table_count ? `${e.table_count} bàn` : null]
+          .filter(Boolean)
+          .join(' · '),
         icon: PartyPopper,
         to: `/events/${e.id}`,
       }))
@@ -88,8 +90,16 @@ export function CommandPalette({ open, onClose }: { open: boolean; onClose: () =
       ...r.events.map((e) => ({
         key: `ev-${e.id}`,
         group: 'Lịch tiệc',
-        label: e.title,
-        hint: [fmtDate(e.event_date), e.hall, e.time_slot, STATUS_LABEL[e.status]].filter(Boolean).join(' · '),
+        label: eventLabel(e),
+        hint: [
+          fmtDate(e.event_date),
+          e.hall,
+          e.time_slot,
+          e.table_count ? `${e.table_count} bàn` : null,
+          STATUS_LABEL[e.status],
+        ]
+          .filter(Boolean)
+          .join(' · '),
         icon: PartyPopper,
         to: `/events/${e.id}`,
       })),

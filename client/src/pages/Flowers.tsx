@@ -149,8 +149,10 @@ export default function Flowers() {
                 <tr>
                   <th className="sticky left-0 z-20 min-w-52 bg-zinc-50">Tên hoa / vật tư</th>
                   <th className="w-28">Nhóm</th>
-                  <th className="w-24">ĐVT</th>
-                  <th className="w-32 text-right">Đơn giá</th>
+                  <th className="w-24">ĐV dùng</th>
+                  <th className="w-24">ĐV mua</th>
+                  <th className="w-32">Quy đổi</th>
+                  <th className="w-32 text-right">Đơn giá / ĐV mua</th>
                   <th className="w-24 text-right">Tồn kho</th>
                   <th className="w-24 text-right">Đang dùng</th>
                   <th className="min-w-40">Tên viết tắt</th>
@@ -210,6 +212,41 @@ export default function Flowers() {
                           </option>
                         ))}
                       </select>
+                    </td>
+                    <td>
+                      <select
+                        className="input input-sm"
+                        value={f.order_unit ?? ''}
+                        title="Đơn vị nhà cung cấp bán, nếu khác đơn vị dùng"
+                        onChange={(e) => update.mutate({ id: f.id, patch: { order_unit: e.target.value || null } })}
+                      >
+                        <option value="">giống ĐV dùng</option>
+                        {[...new Set([...UNITS, f.order_unit ?? ''])]
+                          .filter((u) => u && u !== f.unit)
+                          .map((u) => (
+                            <option key={u} value={u}>
+                              {u}
+                            </option>
+                          ))}
+                      </select>
+                    </td>
+                    <td>
+                      {f.order_unit ? (
+                        <div className="flex items-center gap-1 whitespace-nowrap text-xs text-zinc-500">
+                          1 {f.order_unit} =
+                          <InlineInput
+                            type="number"
+                            min={0}
+                            step={0.5}
+                            className="input input-sm w-14 text-right"
+                            value={f.order_factor}
+                            onCommit={(v) => update.mutate({ id: f.id, patch: { order_factor: Number(v) || 1 } })}
+                          />
+                          {f.unit}
+                        </div>
+                      ) : (
+                        <span className="text-xs text-zinc-300">—</span>
+                      )}
                     </td>
                     <td className="text-right">
                       <InlineInput
@@ -286,16 +323,28 @@ function CreateFlowerModal({
 }) {
   const [name, setName] = useState('')
   const [unit, setUnit] = useState('cành')
+  const [orderUnit, setOrderUnit] = useState('')
+  const [orderFactor, setOrderFactor] = useState('')
   const [category, setCategory] = useState<FlowerCategory>('HOA')
   const [price, setPrice] = useState('')
   const [error, setError] = useState<string | null>(null)
 
   const create = useMutation({
-    mutationFn: () => api.post('/api/flowers', { name: name.trim(), unit, category, price: Number(price) || 0 }),
+    mutationFn: () =>
+      api.post('/api/flowers', {
+        name: name.trim(),
+        unit,
+        order_unit: orderUnit || null,
+        order_factor: Number(orderFactor) || 1,
+        category,
+        price: Number(price) || 0,
+      }),
     onSuccess: () => {
       onCreated()
       setName('')
       setPrice('')
+      setOrderUnit('')
+      setOrderFactor('')
       onClose()
     },
     onError: (e: Error) => setError(e.message),
@@ -341,7 +390,7 @@ function CreateFlowerModal({
             </select>
           </div>
           <div>
-            <label className="label">Đơn vị tính</label>
+            <label className="label">Đơn vị dùng (trong định lượng)</label>
             <select className="input" value={unit} onChange={(e) => setUnit(e.target.value)}>
               {UNITS.map((u) => (
                 <option key={u} value={u}>
@@ -351,8 +400,44 @@ function CreateFlowerModal({
             </select>
           </div>
         </div>
+
+        <div className="rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-2.5">
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="label">Đơn vị mua của nhà cung cấp</label>
+              <select className="input" value={orderUnit} onChange={(e) => setOrderUnit(e.target.value)}>
+                <option value="">Giống đơn vị dùng — không quy đổi</option>
+                {UNITS.filter((u) => u !== unit).map((u) => (
+                  <option key={u} value={u}>
+                    {u}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="label">
+                Quy đổi: 1 {orderUnit || 'đơn vị mua'} = ? {unit}
+              </label>
+              <input
+                className="input"
+                type="number"
+                min={0}
+                step={0.5}
+                value={orderFactor}
+                disabled={!orderUnit}
+                placeholder="VD: 12"
+                onChange={(e) => setOrderFactor(e.target.value)}
+              />
+            </div>
+          </div>
+          <p className="mt-1.5 text-[11px] leading-relaxed text-zinc-500">
+            VD Lan trắng: định lượng ghi theo <strong>cành</strong>, nhà cung cấp bán theo{' '}
+            <strong>bịch</strong>, 1 bịch = <strong>12</strong> cành. Báo cáo sẽ tự làm tròn lên thành số bịch cần đặt.
+          </p>
+        </div>
+
         <div>
-          <label className="label">Đơn giá (VND) — có thể để trống</label>
+          <label className="label">Đơn giá 1 {orderUnit || unit} (VND) — có thể để trống</label>
           <input className="input" type="number" min={0} value={price} onChange={(e) => setPrice(e.target.value)} />
         </div>
       </div>
@@ -430,7 +515,8 @@ function MergeModal({
 
         <p className="text-xs leading-relaxed text-zinc-500">
           Toàn bộ định lượng trong các gói, điều chỉnh của lịch tiệc và tồn kho của
-          <strong> {source.name}</strong> sẽ được chuyển sang loại hoa bạn chọn. Tên
+          <strong> {source.name}</strong> sẽ được chuyển sang loại hoa bạn chọn — tính theo đơn vị dùng, và loại giữ
+          lại dùng quy đổi đơn vị mua của chính nó. Tên
           <strong> {source.name}</strong> được giữ lại làm tên viết tắt để lần sau vẫn tra cứu được.
           Thao tác này không hoàn tác được.
         </p>

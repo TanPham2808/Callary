@@ -11,11 +11,29 @@ const flowerSchema = z.object({
   name: z.string().trim().min(1, 'Tên hoa không được để trống'),
   unit: z.string().trim().min(1).default('cành'),
   category: z.enum(['HOA', 'LA', 'VAT_TU']).default('HOA'),
+  /** Đơn vị nhà cung cấp bán, để trống nếu mua bằng chính đơn vị dùng */
+  order_unit: z.string().trim().nullable().optional(),
+  /** Số đơn vị dùng trong 1 đơn vị mua (1 bịch = 12 cành) */
+  order_factor: z.number().positive('Quy đổi phải là số lớn hơn 0').optional(),
   price: z.number().min(0).default(0),
   note: z.string().trim().nullable().optional(),
   needs_review: z.boolean().optional(),
   is_active: z.boolean().optional(),
 })
+
+/**
+ * Chuẩn hoá cặp đơn vị mua / hệ số quy đổi: để trống hoặc trùng đơn vị dùng thì
+ * coi như không quy đổi, tránh trường hợp "1 cành = 12 cành" vô nghĩa.
+ */
+function normalizeOrderUnit(
+  orderUnit: string | null | undefined,
+  factor: number | undefined,
+  unit: string | undefined,
+): { order_unit: string | null; order_factor: number } {
+  const ou = orderUnit?.trim()
+  if (!ou || ou === unit) return { order_unit: null, order_factor: 1 }
+  return { order_unit: ou, order_factor: factor && factor > 0 ? factor : 1 }
+}
 
 /** Danh sách hoa kèm số lần được dùng trong catalog và tồn kho hiện tại. */
 router.get(
@@ -86,15 +104,18 @@ router.post(
   ah((req, res) => {
     const data = parseBody(flowerSchema, req.body)
     const slug = uniqueSlug(data.name)
+    const order = normalizeOrderUnit(data.order_unit, data.order_factor, data.unit)
     const info = db
       .prepare(
-        `INSERT INTO flowers (name, slug, unit, category, price, note, needs_review, is_active)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+        `INSERT INTO flowers (name, slug, unit, order_unit, order_factor, category, price, note, needs_review, is_active)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       )
       .run(
         data.name,
         slug,
         data.unit,
+        order.order_unit,
+        order.order_factor,
         data.category,
         data.price,
         data.note ?? null,
@@ -115,16 +136,24 @@ router.put(
 
     const name = data.name ?? current.name
     const slug = name !== current.name ? uniqueSlug(name, flowerId) : current.slug
+    const unit = data.unit ?? current.unit
+    const order = normalizeOrderUnit(
+      data.order_unit !== undefined ? data.order_unit : current.order_unit,
+      data.order_factor ?? current.order_factor,
+      unit,
+    )
 
     db.prepare(
       `UPDATE flowers
-          SET name = ?, slug = ?, unit = ?, category = ?, price = ?, note = ?,
+          SET name = ?, slug = ?, unit = ?, order_unit = ?, order_factor = ?, category = ?, price = ?, note = ?,
               needs_review = ?, is_active = ?, updated_at = datetime('now','localtime')
         WHERE id = ?`,
     ).run(
       name,
       slug,
-      data.unit ?? current.unit,
+      unit,
+      order.order_unit,
+      order.order_factor,
       data.category ?? current.category,
       data.price ?? current.price,
       data.note !== undefined ? data.note : current.note,

@@ -17,7 +17,7 @@ const OUT_PATH = resolve(DATA_DIR, 'catalog-snapshot.json')
 const snapshot = {
   flowers: db
     .prepare(
-      `SELECT id, name, slug, unit, category, price, note, needs_review, is_active
+      `SELECT id, name, slug, unit, order_unit, order_factor, category, price, note, needs_review, is_active
          FROM flowers ORDER BY id`,
     )
     .all(),
@@ -30,7 +30,7 @@ const snapshot = {
     .all(),
   item_flowers: db
     .prepare(
-      `SELECT id, package_item_id, flower_id, quantity, is_optional, alt_group, sort_order, note
+      `SELECT id, package_item_id, flower_id, quantity, per_table, is_optional, alt_group, sort_order, note
          FROM item_flowers ORDER BY id`,
     )
     .all(),

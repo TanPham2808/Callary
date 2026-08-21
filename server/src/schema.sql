@@ -12,9 +12,13 @@ CREATE TABLE IF NOT EXISTS flowers (
   id          INTEGER PRIMARY KEY AUTOINCREMENT,
   name        TEXT    NOT NULL,
   slug        TEXT    NOT NULL UNIQUE,          -- khoá chuẩn hoá (bỏ dấu, thường) để dò trùng
-  unit        TEXT    NOT NULL DEFAULT 'cành',  -- cành | bó | kg | cây | chiếc | mét | cục | bịch
+  unit        TEXT    NOT NULL DEFAULT 'cành',  -- đơn vị DÙNG trong định lượng: cành | bó | kg | cây | chiếc | mét | cục | bịch
   category    TEXT    NOT NULL DEFAULT 'HOA',   -- HOA | LA | VAT_TU
-  price       REAL    NOT NULL DEFAULT 0,       -- đơn giá (VND)
+  -- Đơn vị MUA của nhà cung cấp, khi khác đơn vị dùng (VD dùng "cành", mua "bịch").
+  -- NULL = không quy đổi, mua bằng chính đơn vị dùng.
+  order_unit  TEXT,
+  order_factor REAL   NOT NULL DEFAULT 1,       -- số đơn vị dùng trong 1 đơn vị mua (1 bịch = 12 cành)
+  price       REAL    NOT NULL DEFAULT 0,       -- đơn giá (VND) tính theo ĐƠN VỊ MUA
   note        TEXT,
   needs_review INTEGER NOT NULL DEFAULT 0,      -- 1 = tên gốc mơ hồ, cần người duyệt
   is_active   INTEGER NOT NULL DEFAULT 1,
@@ -57,6 +61,7 @@ CREATE TABLE IF NOT EXISTS item_flowers (
   package_item_id INTEGER NOT NULL REFERENCES package_items(id) ON DELETE CASCADE,
   flower_id       INTEGER NOT NULL REFERENCES flowers(id) ON DELETE CASCADE,
   quantity        REAL    NOT NULL DEFAULT 1,
+  per_table       INTEGER NOT NULL DEFAULT 0,     -- 1 = định lượng cho MỘT bàn tiệc, nhân với số bàn của sự kiện
   is_optional     INTEGER NOT NULL DEFAULT 0,     -- 1 = phương án thay thế ("Hoặc ...")
   alt_group       TEXT,                           -- các dòng cùng nhóm là thay thế nhau
   sort_order      INTEGER NOT NULL DEFAULT 0,
@@ -71,9 +76,12 @@ CREATE INDEX IF NOT EXISTS idx_item_flowers_flower ON item_flowers(flower_id);
 CREATE TABLE IF NOT EXISTS events (
   id         INTEGER PRIMARY KEY AUTOINCREMENT,
   event_date TEXT    NOT NULL,                    -- YYYY-MM-DD
-  title      TEXT    NOT NULL,                    -- tên tiệc / Cô dâu - Chú rể
+  -- Tên tự do, có thể rỗng. Nhãn hiển thị do eventLabel() trong shared/types.ts sinh
+  -- từ sảnh · ca · số bàn; cột này chỉ còn giữ tên của các tiệc nhập từ trước.
+  title      TEXT    NOT NULL DEFAULT '',
   hall       TEXT,                                -- sảnh
   time_slot  TEXT,                                -- giờ / ca (VD "11:00" hoặc "Chiều")
+  table_count INTEGER,                            -- số bàn tiệc (NULL = chưa nhập)
   status     TEXT    NOT NULL DEFAULT 'DU_KIEN',  -- DU_KIEN | DA_CHOT | DA_XONG | HUY
   note       TEXT,
   created_at TEXT    NOT NULL DEFAULT (datetime('now','localtime')),

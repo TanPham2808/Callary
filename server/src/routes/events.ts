@@ -26,9 +26,12 @@ function fmt(iso: string): string {
 
 const eventSchema = z.object({
   event_date: DATE,
-  title: z.string().trim().min(1, 'Tên tiệc không được để trống'),
+  // Tên tiệc không còn bắt buộc: tiệc được nhận diện bằng sảnh · ca · số bàn.
+  // Vẫn nhận giá trị để không mất tên của các tiệc nhập từ trước.
+  title: z.string().trim().optional(),
   hall: z.string().trim().nullable().optional(),
   time_slot: z.string().trim().nullable().optional(),
+  table_count: z.number().int().min(0, 'Số bàn không được âm').nullable().optional(),
   status: z.enum(['DU_KIEN', 'DA_CHOT', 'DA_XONG', 'HUY']).default('DU_KIEN'),
   note: z.string().trim().nullable().optional(),
 })
@@ -89,8 +92,18 @@ router.post(
     const data = parseBody(eventSchema, req.body)
     assertNotPast(data.event_date)
     const info = db
-      .prepare('INSERT INTO events (event_date, title, hall, time_slot, status, note) VALUES (?, ?, ?, ?, ?, ?)')
-      .run(data.event_date, data.title, data.hall ?? null, data.time_slot ?? null, data.status, data.note ?? null)
+      .prepare(
+        'INSERT INTO events (event_date, title, hall, time_slot, table_count, status, note) VALUES (?, ?, ?, ?, ?, ?, ?)',
+      )
+      .run(
+        data.event_date,
+        data.title ?? '',
+        data.hall ?? null,
+        data.time_slot ?? null,
+        data.table_count ?? null,
+        data.status,
+        data.note ?? null,
+      )
     res.status(201).json(loadEvent(Number(info.lastInsertRowid)))
   }),
 )
@@ -108,13 +121,14 @@ router.put(
     if (data.event_date && data.event_date !== cur.event_date) assertNotPast(data.event_date)
 
     db.prepare(
-      `UPDATE events SET event_date = ?, title = ?, hall = ?, time_slot = ?, status = ?, note = ?,
+      `UPDATE events SET event_date = ?, title = ?, hall = ?, time_slot = ?, table_count = ?, status = ?, note = ?,
               updated_at = datetime('now','localtime') WHERE id = ?`,
     ).run(
       data.event_date ?? cur.event_date,
       data.title ?? cur.title,
       data.hall !== undefined ? data.hall : cur.hall,
       data.time_slot !== undefined ? data.time_slot : cur.time_slot,
+      data.table_count !== undefined ? data.table_count : cur.table_count,
       data.status ?? cur.status,
       data.note !== undefined ? data.note : cur.note,
       eventId,
@@ -146,9 +160,10 @@ router.post(
     const data = parseBody(
       z.object({
         event_date: DATE,
-        title: z.string().trim().min(1).optional(),
+        title: z.string().trim().optional(),
         hall: z.string().trim().nullable().optional(),
         time_slot: z.string().trim().nullable().optional(),
+        table_count: z.number().int().min(0).nullable().optional(),
         copy_adjustments: z.boolean().default(false),
       }),
       req.body,
@@ -161,12 +176,15 @@ router.post(
 
     const newId = tx(() => {
       const info = db
-        .prepare('INSERT INTO events (event_date, title, hall, time_slot, status, note) VALUES (?, ?, ?, ?, ?, ?)')
+        .prepare(
+          'INSERT INTO events (event_date, title, hall, time_slot, table_count, status, note) VALUES (?, ?, ?, ?, ?, ?, ?)',
+        )
         .run(
           data.event_date,
           data.title ?? src.title,
           data.hall !== undefined ? data.hall : src.hall,
           data.time_slot !== undefined ? data.time_slot : src.time_slot,
+          data.table_count !== undefined ? data.table_count : src.table_count,
           'DU_KIEN',
           src.note,
         )
@@ -438,6 +456,20 @@ export function loadEvent(eventId: number): DecorEvent {
         WHERE a.event_id = ? ORDER BY a.id`,
     )
     .all(eventId) as any[]
+
+  // Có dòng định lượng nào tính theo số bàn hay không — để giao diện nhắc nhập
+  // số bàn, vì thiếu số bàn thì các dòng đó tính ra 0 mà không có lỗi nào.
+  ev.has_per_table = db
+    .prepare(
+      `SELECT 1 FROM event_packages ep
+         JOIN event_package_items epi ON epi.event_package_id = ep.id AND epi.is_included = 1
+         JOIN item_flowers        itf ON itf.package_item_id = epi.package_item_id
+        WHERE ep.event_id = ? AND itf.per_table = 1
+        LIMIT 1`,
+    )
+    .get(eventId)
+    ? 1
+    : 0
 
   return ev
 }

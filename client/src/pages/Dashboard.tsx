@@ -4,7 +4,14 @@ import { useQuery } from '@tanstack/react-query'
 import { api, qs } from '../lib/api'
 import { fmtDate, fmtDateLong, fmtDateTime, money, num, today } from '../lib/format'
 import { Empty, ErrorBox, Loading, PageHeader, Stat, StatusBadge } from '../components/ui'
-import { CATEGORY_LABEL, CATEGORY_ORDER, type DecorEvent, type OrderBatch, type RequirementResult } from '@shared/types'
+import {
+  CATEGORY_LABEL,
+  CATEGORY_ORDER,
+  eventLabel,
+  type DecorEvent,
+  type OrderBatch,
+  type RequirementResult,
+} from '@shared/types'
 
 interface DashboardData {
   today: string
@@ -113,7 +120,7 @@ export default function Dashboard() {
                   <div className="flex flex-wrap items-center justify-between gap-2">
                     <div className="min-w-0">
                       <div className="flex items-center gap-2">
-                        <span className="font-semibold text-zinc-900">{e.title}</span>
+                        <span className="font-semibold text-zinc-900">{eventLabel(e)}</span>
                         <StatusBadge status={e.status} />
                       </div>
                       <div className="mt-0.5 text-xs text-zinc-500">
@@ -163,9 +170,15 @@ export default function Dashboard() {
                             <td className="w-20 text-right text-sm tabular-nums text-zinc-400">
                               {r.stock > 0 && `tồn ${num(r.stock)}`}
                             </td>
-                            <td className="w-24 whitespace-nowrap text-right text-sm tabular-nums">
-                              <strong>{num(r.to_buy)}</strong>{' '}
-                              <span className="text-xs text-zinc-400">{r.unit}</span>
+                            {/* Đây là danh sách đi chợ nên ghi theo đơn vị mua, kèm số theo đơn vị dùng. */}
+                            <td className="w-28 whitespace-nowrap text-right text-sm tabular-nums">
+                              <strong>{num(r.order_qty)}</strong>{' '}
+                              <span className="text-xs text-zinc-400">{r.order_unit}</span>
+                              {r.order_factor > 1 && (
+                                <div className="text-[11px] text-zinc-400">
+                                  = {num(r.to_buy)} {r.unit}
+                                </div>
+                              )}
                             </td>
                           </tr>
                         ))}

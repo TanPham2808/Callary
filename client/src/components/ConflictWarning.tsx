@@ -2,7 +2,7 @@ import { TriangleAlert } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { fmtDate } from '../lib/format'
 import { slotLabel } from '../lib/conflicts'
-import type { DecorEvent } from '@shared/types'
+import { eventLabel, type DecorEvent } from '@shared/types'
 
 /**
  * Cảnh báo hai tiệc bị xếp trùng chỗ (cùng ngày, cùng sảnh, cùng ca).
@@ -32,10 +32,10 @@ export function ConflictWarning({
           <li key={c.id} className="list-disc">
             {linkToConflicts ? (
               <Link to={`/events/${c.id}`} className="font-medium underline hover:no-underline">
-                {c.title}
+                {eventLabel(c)}
               </Link>
             ) : (
-              <span className="font-medium">{c.title}</span>
+              <span className="font-medium">{eventLabel(c)}</span>
             )}
             {c.package_names && <span className="text-red-600/80"> — {c.package_names}</span>}
           </li>

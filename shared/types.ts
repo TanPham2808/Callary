@@ -19,6 +19,26 @@ export const STATUS_LABEL: Record<EventStatus, string> = {
   HUY: 'Huỷ',
 }
 
+/**
+ * Nhãn hiển thị của một lịch tiệc.
+ *
+ * Từ khi bỏ ô "Tên tiệc / Cô dâu — Chú rể", tiệc được nhận diện bằng
+ * sảnh · ca · số bàn. Các tiệc nhập từ trước vẫn còn tên trong DB nên ưu tiên
+ * dùng lại tên đó để không mất dữ liệu cũ.
+ */
+export function eventLabel(e: {
+  title?: string | null
+  hall?: string | null
+  time_slot?: string | null
+  table_count?: number | null
+}): string {
+  const title = e.title?.trim()
+  if (title) return title
+  const parts = [e.hall?.trim(), e.time_slot?.trim(), e.table_count ? `${e.table_count} bàn` : null]
+  const label = parts.filter(Boolean).join(' · ')
+  return label || 'Lịch tiệc'
+}
+
 export const MOVE_KIND_LABEL: Record<MoveKind, string> = {
   NHAP: 'Nhập kho',
   XUAT: 'Xuất kho',
@@ -31,8 +51,14 @@ export interface Flower {
   id: number
   name: string
   slug: string
+  /** Đơn vị dùng trong định lượng gói (VD "cành") */
   unit: string
   category: FlowerCategory
+  /** Đơn vị nhà cung cấp bán (VD "bịch"); null = mua bằng chính đơn vị dùng */
+  order_unit: string | null
+  /** Số đơn vị dùng trong 1 đơn vị mua (1 bịch = 12 cành) */
+  order_factor: number
+  /** Đơn giá tính theo ĐƠN VỊ MUA */
   price: number
   note: string | null
   needs_review: number
@@ -47,6 +73,8 @@ export interface ItemFlower {
   package_item_id: number
   flower_id: number
   quantity: number
+  /** 1 = định lượng cho một bàn tiệc, sẽ nhân với số bàn của sự kiện */
+  per_table: number
   is_optional: number
   alt_group: string | null
   sort_order: number
@@ -112,14 +140,19 @@ export interface EventAdjustment {
 export interface DecorEvent {
   id: number
   event_date: string
+  /** Tên tự do — có thể rỗng. Dùng eventLabel() để lấy nhãn hiển thị. */
   title: string
   hall: string | null
   time_slot: string | null
+  /** Số bàn tiệc; null = chưa nhập */
+  table_count: number | null
   status: EventStatus
   note: string | null
   packages?: EventPackage[]
   adjustments?: EventAdjustment[]
   package_names?: string
+  /** 1 = trong các gói đã gắn có dòng định lượng tính theo số bàn */
+  has_per_table?: number
 }
 
 export interface RequirementRow {
@@ -136,9 +169,17 @@ export interface RequirementRow {
   need: number
   /** Tồn kho hiện có */
   stock: number
-  /** max(0, need - stock) */
+  /** max(0, need - stock) — theo đơn vị dùng */
   to_buy: number
-  /** to_buy * price */
+  /** Đơn vị đặt hàng NCC (bằng `unit` nếu loại này không quy đổi) */
+  order_unit: string
+  /** Số đơn vị dùng trong 1 đơn vị mua (1 = không quy đổi) */
+  order_factor: number
+  /** Số lượng đặt NCC = làm tròn LÊN của to_buy / order_factor */
+  order_qty: number
+  /** Phần dư do mua nguyên đơn vị: order_qty × order_factor − to_buy */
+  leftover: number
+  /** order_qty * price */
   amount: number
 }
 
@@ -173,6 +214,7 @@ export interface SearchResult {
     title: string
     hall: string | null
     time_slot: string | null
+    table_count: number | null
     status: EventStatus
   }[]
   packages: { id: number; name: string }[]

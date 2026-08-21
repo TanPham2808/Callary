@@ -43,7 +43,7 @@ function sheetSummary(wb: ExcelJS.Workbook, opts: ExportOptions) {
   const ws = wb.addWorksheet('1. Tổng hợp cần mua', {
     views: [{ state: 'frozen', ySplit: 4 }],
   })
-  const COLS = 10
+  const COLS = 13
   const data = computeRequirement(opts.from, opts.to, {
     hall: opts.hall,
     includeOptional: opts.includeOptional,
@@ -65,6 +65,9 @@ function sheetSummary(wb: ExcelJS.Workbook, opts: ExportOptions) {
     'Nhu cầu',
     'Tồn kho',
     'Cần mua',
+    'ĐV mua',
+    'SL đặt',
+    'Dư',
     'Đơn giá',
     'Thành tiền',
   ]
@@ -79,6 +82,9 @@ function sheetSummary(wb: ExcelJS.Workbook, opts: ExportOptions) {
     { width: 11 },
     { width: 11 },
     { width: 12 },
+    { width: 9 },
+    { width: 10 },
+    { width: 9 },
     { width: 13 },
     { width: 15 },
   ]
@@ -100,6 +106,7 @@ function sheetSummary(wb: ExcelJS.Workbook, opts: ExportOptions) {
     let subQty = 0
     let subAmount = 0
     for (const r of rows) {
+      const converted = r.order_factor > 1
       const row = ws.addRow([
         ++stt,
         r.name,
@@ -109,23 +116,32 @@ function sheetSummary(wb: ExcelJS.Workbook, opts: ExportOptions) {
         r.need,
         r.stock || null,
         r.to_buy,
+        converted ? r.order_unit : '',
+        converted ? r.order_qty : '',
+        converted && r.leftover ? r.leftover : '',
         r.price || null,
         r.amount || null,
       ])
-      for (const col of [4, 5, 6, 7, 8]) row.getCell(col).numFmt = NUM
+      for (const col of [4, 5, 6, 7, 8, 10, 11]) row.getCell(col).numFmt = NUM
       row.getCell(5).numFmt = '+#,##0.###;-#,##0.###'
       row.getCell(8).font = { bold: true }
-      row.getCell(9).numFmt = MONEY
-      row.getCell(10).numFmt = MONEY
+      row.getCell(10).font = { bold: true }
+      row.getCell(11).font = { color: { argb: 'FFB45309' } }
+      row.getCell(12).numFmt = MONEY
+      row.getCell(13).numFmt = MONEY
       row.eachCell((c) => (c.border = BORDER))
       subQty += r.to_buy
       subAmount += r.amount
     }
 
-    const sub = ws.addRow(['', `Cộng ${CATEGORY_LABEL[cat]}`, '', '', '', '', '', subQty, '', subAmount])
+    // Chỉ cộng dồn cột "Cần mua" (cùng đơn vị dùng) — cột "SL đặt" gồm nhiều
+    // đơn vị mua khác nhau (bịch, bó, kg) nên cộng lại sẽ vô nghĩa.
+    const sub = ws.addRow([
+      '', `Cộng ${CATEGORY_LABEL[cat]}`, '', '', '', '', '', subQty, '', '', '', '', subAmount,
+    ])
     sub.font = { bold: true, italic: true }
     sub.getCell(8).numFmt = NUM
-    sub.getCell(10).numFmt = MONEY
+    sub.getCell(13).numFmt = MONEY
     sub.eachCell((c) => (c.border = BORDER))
     grandQty += subQty
     grandAmount += subAmount
@@ -138,10 +154,10 @@ function sheetSummary(wb: ExcelJS.Workbook, opts: ExportOptions) {
   }
 
   ws.addRow([])
-  const total = ws.addRow(['', 'TỔNG CỘNG', '', '', '', '', '', grandQty, '', grandAmount])
+  const total = ws.addRow(['', 'TỔNG CỘNG', '', '', '', '', '', grandQty, '', '', '', '', grandAmount])
   total.font = { bold: true, size: 12, color: { argb: BRAND } }
   total.getCell(8).numFmt = NUM
-  total.getCell(10).numFmt = MONEY
+  total.getCell(13).numFmt = MONEY
   total.eachCell((c) => (c.border = BORDER))
 
   ws.autoFilter = { from: { row: 4, column: 1 }, to: { row: 4, column: header.length } }
@@ -169,8 +185,9 @@ function sheetBreakdown(wb: ExcelJS.Workbook, opts: ExportOptions) {
     ws.addRow([])
     const head = ws.addRow([
       `${fmtDate(ev.event_date)}`,
-      ev.title,
-      [ev.hall, ev.time_slot].filter(Boolean).join(' · '),
+      // Cột này chỉ còn tên của các tiệc nhập từ trước; tiệc mới nhận diện bằng cột kế bên.
+      ev.title ?? '',
+      [ev.hall, ev.time_slot, ev.table_count ? `${ev.table_count} bàn` : null].filter(Boolean).join(' · '),
       STATUS_LABEL[ev.status as EventStatus] ?? ev.status,
       '',
       ev.note ?? '',
@@ -204,14 +221,21 @@ function sheetBreakdown(wb: ExcelJS.Workbook, opts: ExportOptions) {
           continue
         }
         for (const f of item.flowers) {
-          const total = f.quantity * item.item_quantity * pkg.package_quantity
+          // Dòng tính theo bàn: định lượng cho 1 bàn × số bàn của tiệc.
+          const tables = f.per_table ? (ev.table_count ?? 0) : 1
+          const total = f.quantity * tables * item.item_quantity * pkg.package_quantity
           const row = ws.addRow([
             '',
             '',
             '   ' + f.name,
             total,
             f.unit,
-            f.is_optional ? 'Phương án thay thế' : '',
+            [
+              f.per_table ? `${f.quantity} /bàn × ${ev.table_count ?? 0} bàn` : '',
+              f.is_optional ? 'Phương án thay thế' : '',
+            ]
+              .filter(Boolean)
+              .join(' — '),
           ])
           row.getCell(4).numFmt = NUM
           if (f.is_optional) row.font = { italic: true, color: { argb: 'FF71717A' } }
@@ -235,19 +259,27 @@ function sheetBreakdown(wb: ExcelJS.Workbook, opts: ExportOptions) {
 
 function sheetCatalog(wb: ExcelJS.Workbook) {
   const ws = wb.addWorksheet('3. Catalog gói', { views: [{ state: 'frozen', ySplit: 4 }] })
-  ws.columns = [{ width: 24 }, { width: 26 }, { width: 30 }, { width: 10 }, { width: 8 }, { width: 22 }]
+  ws.columns = [
+    { width: 24 },
+    { width: 26 },
+    { width: 30 },
+    { width: 10 },
+    { width: 8 },
+    { width: 10 },
+    { width: 22 },
+  ]
 
-  titleBlock(ws, 6, 'BẢNG ĐỊNH LƯỢNG CHUẨN CỦA CÁC GÓI TRANG TRÍ', [
+  titleBlock(ws, 7, 'BẢNG ĐỊNH LƯỢNG CHUẨN CỦA CÁC GÓI TRANG TRÍ', [
     `Xuất lúc: ${new Date().toLocaleString('vi-VN')}`,
   ])
 
-  const hRow = ws.addRow(['Gói trang trí', 'Hạng mục', 'Tên hoa', 'Số lượng', 'ĐVT', 'Ghi chú'])
+  const hRow = ws.addRow(['Gói trang trí', 'Hạng mục', 'Tên hoa', 'Số lượng', 'ĐVT', 'Theo bàn', 'Ghi chú'])
   styleHeader(hRow)
 
   const rows = db
     .prepare(
       `SELECT p.name AS package_name, pi.name AS item_name, f.name AS flower_name,
-              i.quantity, f.unit, i.is_optional, i.note
+              i.quantity, f.unit, i.per_table, i.is_optional, i.note
          FROM packages p
          JOIN package_items pi ON pi.package_id = p.id
          JOIN item_flowers  i  ON i.package_item_id = pi.id
@@ -261,6 +293,7 @@ function sheetCatalog(wb: ExcelJS.Workbook) {
     flower_name: string
     quantity: number
     unit: string
+    per_table: number
     is_optional: number
     note: string | null
   }[]
@@ -274,6 +307,7 @@ function sheetCatalog(wb: ExcelJS.Workbook) {
       r.flower_name,
       r.quantity,
       r.unit,
+      r.per_table ? 'mỗi bàn' : '',
       [r.is_optional ? 'Phương án thay thế' : '', r.note ?? ''].filter(Boolean).join(' — '),
     ])
     if (r.package_name !== lastPkg) row.getCell(1).font = { bold: true, color: { argb: BRAND } }
@@ -283,7 +317,7 @@ function sheetCatalog(wb: ExcelJS.Workbook) {
     lastItem = r.item_name
   }
 
-  ws.autoFilter = { from: { row: 4, column: 1 }, to: { row: 4, column: 6 } }
+  ws.autoFilter = { from: { row: 4, column: 1 }, to: { row: 4, column: 7 } }
 }
 
 /* -------------------- Sheet 4: Thống kê theo ngày ------------------------ */

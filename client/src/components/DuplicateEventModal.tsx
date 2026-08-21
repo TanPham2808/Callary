@@ -7,7 +7,7 @@ import { conflictsWith } from '../lib/conflicts'
 import { DateField } from './DateField'
 import { ConflictWarning } from './ConflictWarning'
 import { Modal } from './ui'
-import type { DecorEvent } from '@shared/types'
+import { eventLabel, type DecorEvent } from '@shared/types'
 
 /**
  * Nhân bản một tiệc sang ngày khác. Bản sao giữ nguyên các gói đã gắn và
@@ -26,9 +26,9 @@ export function DuplicateEventModal({
 }) {
   const navigate = useNavigate()
   const [date, setDate] = useState('')
-  const [title, setTitle] = useState('')
   const [hall, setHall] = useState('')
   const [timeSlot, setTimeSlot] = useState('')
+  const [tableCount, setTableCount] = useState('')
   const [copyAdjustments, setCopyAdjustments] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -39,9 +39,9 @@ export function DuplicateEventModal({
     if (!source) return
     const suggested = addDays(source.event_date, 7)
     setDate(isPast(suggested) ? today() : suggested)
-    setTitle(source.title)
     setHall(source.hall ?? '')
     setTimeSlot(source.time_slot ?? '')
+    setTableCount(source.table_count == null ? '' : String(source.table_count))
     setCopyAdjustments(false)
     setError(null)
   }, [source])
@@ -68,9 +68,9 @@ export function DuplicateEventModal({
     mutationFn: () =>
       api.post<DecorEvent>(`/api/events/${source!.id}/duplicate`, {
         event_date: date,
-        title: title.trim(),
         hall: hall.trim() || null,
         time_slot: timeSlot.trim() || null,
+        table_count: tableCount === '' ? null : Number(tableCount),
         copy_adjustments: copyAdjustments,
       }),
     onSuccess: (created) => {
@@ -96,11 +96,7 @@ export function DuplicateEventModal({
           <button className="btn-secondary" onClick={onClose}>
             Huỷ
           </button>
-          <button
-            className="btn-primary"
-            disabled={!date || !title.trim() || create.isPending}
-            onClick={() => create.mutate()}
-          >
+          <button className="btn-primary" disabled={!date || create.isPending} onClick={() => create.mutate()}>
             {create.isPending ? 'Đang tạo…' : 'Tạo bản sao'}
           </button>
         </>
@@ -111,11 +107,12 @@ export function DuplicateEventModal({
 
         <div className="rounded-lg bg-zinc-50 px-3 py-2.5 text-sm">
           <div className="mb-0.5 text-xs font-semibold uppercase text-zinc-500">Chép từ</div>
-          <div className="font-medium">{source.title}</div>
+          <div className="font-medium">{eventLabel(source)}</div>
           <div className="mt-0.5 text-xs text-zinc-500">
             {fmtDate(source.event_date)}
             {source.hall && ` · ${source.hall}`}
             {source.time_slot && ` · ${source.time_slot}`}
+            {source.table_count ? ` · ${source.table_count} bàn` : ''}
             {packageCount > 0 && ` · ${packageCount} gói trang trí`}
           </div>
         </div>
@@ -125,12 +122,7 @@ export function DuplicateEventModal({
           <DateField className="input" value={date} onChange={setDate} disablePast />
         </div>
 
-        <div>
-          <label className="label">Tên tiệc</label>
-          <input className="input" value={title} onChange={(e) => setTitle(e.target.value)} />
-        </div>
-
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-3 gap-3">
           <div>
             <label className="label">Sảnh</label>
             <input
@@ -160,6 +152,18 @@ export function DuplicateEventModal({
                 <option key={s} value={s} />
               ))}
             </datalist>
+          </div>
+          <div>
+            <label className="label">Số bàn</label>
+            <input
+              className="input text-right"
+              type="number"
+              min={0}
+              step={1}
+              value={tableCount}
+              onChange={(e) => setTableCount(e.target.value)}
+              placeholder="VD: 40"
+            />
           </div>
         </div>
 

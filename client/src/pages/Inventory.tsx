@@ -26,11 +26,20 @@ import {
 interface StockRow {
   flower_id: number
   name: string
+  /** Đơn vị dùng — tồn kho luôn ghi theo đơn vị này */
   unit: string
   category: FlowerCategory
+  /** Đơn giá tính theo đơn vị MUA */
   price: number
+  /** Số đơn vị dùng trong 1 đơn vị mua (1 = không quy đổi) */
+  order_factor: number
   quantity: number
   updated_at: string | null
+}
+
+/** Giá trị tồn kho: tồn ghi theo đơn vị dùng, giá theo đơn vị mua. */
+function stockValue(r: StockRow): number {
+  return (r.quantity / (r.order_factor || 1)) * r.price
 }
 
 export default function Inventory() {
@@ -76,7 +85,7 @@ export default function Inventory() {
     return (stock.data ?? []).filter((r) => !q || r.name.toLowerCase().includes(q))
   }, [stock.data, search])
 
-  const totalValue = (stock.data ?? []).reduce((s, r) => s + r.quantity * r.price, 0)
+  const totalValue = (stock.data ?? []).reduce((s, r) => s + stockValue(r), 0)
   const inStockCount = (stock.data ?? []).filter((r) => r.quantity > 0).length
 
   return (
@@ -183,7 +192,7 @@ export default function Inventory() {
                             </div>
                           </td>
                           <td className="text-right tabular-nums text-zinc-600">
-                            {r.price ? money(r.quantity * r.price) : '—'}
+                            {r.price ? money(stockValue(r)) : '—'}
                           </td>
                           <td className="text-xs text-zinc-400">{fmtDateTime(r.updated_at)}</td>
                         </tr>

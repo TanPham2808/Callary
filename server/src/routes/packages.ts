@@ -23,6 +23,8 @@ const itemSchema = z.object({
 const itemFlowerSchema = z.object({
   flower_id: z.number().int().positive(),
   quantity: z.number().min(0),
+  /** true = định lượng cho một bàn tiệc, nhân với số bàn của sự kiện */
+  per_table: z.boolean().optional(),
   is_optional: z.boolean().optional(),
   alt_group: z.string().trim().nullable().optional(),
   sort_order: z.number().int().optional(),
@@ -131,8 +133,8 @@ router.post(
           .prepare('INSERT INTO package_items (package_id, name, sort_order, note) VALUES (?, ?, ?, ?)')
           .run(targetId, it.name, it.sort_order, it.note)
         db.prepare(
-          `INSERT INTO item_flowers (package_item_id, flower_id, quantity, is_optional, alt_group, sort_order, note)
-           SELECT ?, flower_id, quantity, is_optional, alt_group, sort_order, note
+          `INSERT INTO item_flowers (package_item_id, flower_id, quantity, per_table, is_optional, alt_group, sort_order, note)
+           SELECT ?, flower_id, quantity, per_table, is_optional, alt_group, sort_order, note
              FROM item_flowers WHERE package_item_id = ?`,
         ).run(Number(newItem.lastInsertRowid), it.id)
       }
@@ -214,13 +216,14 @@ router.post(
     ).m
     const info = db
       .prepare(
-        `INSERT INTO item_flowers (package_item_id, flower_id, quantity, is_optional, alt_group, sort_order, note)
-         VALUES (?, ?, ?, ?, ?, ?, ?)`,
+        `INSERT INTO item_flowers (package_item_id, flower_id, quantity, per_table, is_optional, alt_group, sort_order, note)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
       )
       .run(
         itemId,
         data.flower_id,
         data.quantity,
+        data.per_table ? 1 : 0,
         data.is_optional ? 1 : 0,
         data.alt_group ?? null,
         data.sort_order ?? maxOrder + 10,
@@ -238,11 +241,13 @@ router.put(
     const cur = db.prepare('SELECT * FROM item_flowers WHERE id = ?').get(rowId) as ItemFlower | undefined
     if (!cur) throw notFound('Không tìm thấy dòng định lượng này')
     db.prepare(
-      `UPDATE item_flowers SET flower_id = ?, quantity = ?, is_optional = ?, alt_group = ?, sort_order = ?, note = ?
+      `UPDATE item_flowers
+          SET flower_id = ?, quantity = ?, per_table = ?, is_optional = ?, alt_group = ?, sort_order = ?, note = ?
         WHERE id = ?`,
     ).run(
       data.flower_id ?? cur.flower_id,
       data.quantity ?? cur.quantity,
+      data.per_table !== undefined ? (data.per_table ? 1 : 0) : cur.per_table,
       data.is_optional !== undefined ? (data.is_optional ? 1 : 0) : cur.is_optional,
       data.alt_group !== undefined ? data.alt_group : cur.alt_group,
       data.sort_order ?? cur.sort_order,

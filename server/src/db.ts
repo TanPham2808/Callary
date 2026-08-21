@@ -20,8 +20,27 @@ db.pragma('foreign_keys = ON')
 export function migrate() {
   const schema = readFileSync(resolve(__dirname, 'schema.sql'), 'utf8')
   db.exec(schema)
+  addMissingColumns()
   seedSettings()
   renameLegacyTimeSlots()
+}
+
+/**
+ * schema.sql dùng `CREATE TABLE IF NOT EXISTS` nên các cột thêm sau này không
+ * tự xuất hiện trong database đã tạo từ trước — phải ALTER tay ở đây.
+ */
+function addMissingColumns() {
+  addColumnIfMissing('flowers', 'order_unit', 'TEXT')
+  addColumnIfMissing('flowers', 'order_factor', 'REAL NOT NULL DEFAULT 1')
+  addColumnIfMissing('item_flowers', 'per_table', 'INTEGER NOT NULL DEFAULT 0')
+  addColumnIfMissing('events', 'table_count', 'INTEGER')
+}
+
+function addColumnIfMissing(table: string, column: string, ddl: string) {
+  const cols = db.prepare(`PRAGMA table_info(${table})`).all() as { name: string }[]
+  if (cols.some((c) => c.name === column)) return
+  db.exec(`ALTER TABLE ${table} ADD COLUMN ${column} ${ddl}`)
+  console.log(`[callary] Đã thêm cột ${table}.${column}`)
 }
 
 /** Đổi tên ca "Trưa/Tối" cũ thành "Sáng/Chiều" — một lần, idempotent. */
@@ -38,7 +57,7 @@ function seedSettings() {
   const defaults: Record<string, string> = {
     halls: JSON.stringify(['Lầu 2', 'Lầu 3', 'Lầu 4', 'Lầu 5', 'Lầu 6']),
     time_slots: JSON.stringify(['Sáng', 'Chiều']),
-    units: JSON.stringify(['cành', 'bó', 'kg', 'cây', 'chiếc', 'mét']),
+    units: JSON.stringify(['cành', 'bó', 'kg', 'cây', 'chiếc', 'mét', 'cục', 'bịch']),
   }
   const stmt = db.prepare('INSERT OR IGNORE INTO settings (key, value) VALUES (?, ?)')
   for (const [key, value] of Object.entries(defaults)) stmt.run(key, value)

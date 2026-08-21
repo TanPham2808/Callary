@@ -14,7 +14,7 @@ router.get(
     const all = req.query.all === '1'
     const rows = db
       .prepare(
-        `SELECT f.id AS flower_id, f.name, f.unit, f.category, f.price,
+        `SELECT f.id AS flower_id, f.name, f.unit, f.category, f.price, f.order_factor,
                 COALESCE(v.quantity, 0) AS quantity, v.updated_at
            FROM flowers f
            LEFT JOIN inventory v ON v.flower_id = f.id

@@ -32,13 +32,14 @@ router.get(
     const events = (
       db
         .prepare(
-          `SELECT id, event_date, title, hall, time_slot, status
+          `SELECT id, event_date, title, hall, time_slot, table_count, status
              FROM events
             ORDER BY event_date DESC, id DESC`,
         )
         .all() as SearchResult['events']
     )
-      .filter((e) => matches(e.title, e.hall))
+      // Tiệc mới không còn tên, nên cho tìm cả theo sảnh và số bàn ("40 ban").
+      .filter((e) => matches(e.title, e.hall, e.table_count ? `${e.table_count} bàn` : null))
       .slice(0, limit)
 
     const packages = (

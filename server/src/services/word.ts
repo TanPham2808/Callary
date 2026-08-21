@@ -8,7 +8,11 @@ const qtyFmt = new Intl.NumberFormat('vi-VN', { maximumFractionDigits: 3 })
 
 /**
  * Tạo file Word tối giản để gửi thẳng cho nhà cung cấp: chỉ gồm tiêu đề,
- * ngày gửi order (làm nổi bật) và danh sách gạch đầu dòng "SL + Tên hoa".
+ * ngày gửi order (làm nổi bật) và danh sách gạch đầu dòng "SL + ĐVT + Tên hoa".
+ *
+ * Số lượng ghi theo ĐƠN VỊ MUA của nhà cung cấp (VD "4 bịch Lan trắng" thay vì
+ * "40 cành"), đã làm tròn lên nguyên đơn vị. Phần dư không in ở đây để đơn gọn
+ * — xem trang Báo cáo hoặc file Excel nếu cần biết.
  */
 export async function buildSupplierOrderDoc(opts: ExportOptions): Promise<Buffer> {
   const data = computeRequirement(opts.from, opts.to, {
@@ -17,7 +21,7 @@ export async function buildSupplierOrderDoc(opts: ExportOptions): Promise<Buffer
     useStock: true,
   })
 
-  const items = CATEGORY_ORDER.flatMap((cat) => data.rows.filter((r) => r.category === cat && r.to_buy > 0))
+  const items = CATEGORY_ORDER.flatMap((cat) => data.rows.filter((r) => r.category === cat && r.order_qty > 0))
 
   const dateLabel =
     opts.from === opts.to
@@ -52,7 +56,9 @@ export async function buildSupplierOrderDoc(opts: ExportOptions): Promise<Buffer
                   new Paragraph({
                     bullet: { level: 0 },
                     spacing: { after: 120 },
-                    children: [new TextRun({ text: `${qtyFmt.format(r.to_buy)} ${r.name}`, size: 24 })],
+                    children: [
+                      new TextRun({ text: `${qtyFmt.format(r.order_qty)} ${r.order_unit} ${r.name}`, size: 24 }),
+                    ],
                   }),
               )
             : [

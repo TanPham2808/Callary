@@ -238,7 +238,7 @@ export default function Reports() {
               <div className="card-head">
                 <h2 className="card-title">Chi tiết theo loại hoa</h2>
                 <span className="text-xs text-zinc-400">
-                  Cần mua = Nhu cầu − Tồn kho · {rows.length} dòng
+                  Cần mua = Nhu cầu − Tồn kho · Đặt NCC làm tròn lên nguyên đơn vị mua · {rows.length} dòng
                 </span>
               </div>
               <div className="max-h-[65vh] overflow-auto">
@@ -247,13 +247,14 @@ export default function Reports() {
                     <tr>
                       <th className="w-10 text-right">#</th>
                       <th className="sticky left-0 z-20 min-w-48 bg-zinc-50">Tên hoa</th>
-                      <th className="w-16">ĐVT</th>
+                      <th className="w-16">ĐV dùng</th>
                       <th className="w-28 text-right">Định lượng gói</th>
                       <th className="w-24 text-right">Điều chỉnh</th>
                       <th className="w-24 text-right">Nhu cầu</th>
                       <th className="w-24 text-right">Tồn kho</th>
                       <th className="w-28 text-right">Cần mua</th>
-                      <th className="w-28 text-right">Đơn giá</th>
+                      <th className="w-32 text-right">Đặt NCC</th>
+                      <th className="w-28 text-right">Đơn giá / ĐV mua</th>
                       <th className="w-32 text-right">Thành tiền</th>
                     </tr>
                   </thead>
@@ -265,7 +266,7 @@ export default function Reports() {
                       const subAmount = catRows.reduce((s, r) => s + r.amount, 0)
                       return [
                         <tr key={`h-${cat}`} className="bg-brand-50/60">
-                          <td colSpan={10} className="text-[11px] font-bold uppercase tracking-wide text-brand-700">
+                          <td colSpan={11} className="text-[11px] font-bold uppercase tracking-wide text-brand-700">
                             {CATEGORY_LABEL[cat]}
                           </td>
                         </tr>,
@@ -291,6 +292,22 @@ export default function Reports() {
                             >
                               {r.to_buy === 0 ? 'Đủ' : num(r.to_buy)}
                             </td>
+                            <td className="text-right">
+                              {r.order_factor > 1 ? (
+                                <>
+                                  <div className="font-bold tabular-nums">
+                                    {num(r.order_qty)} <span className="text-xs font-normal">{r.order_unit}</span>
+                                  </div>
+                                  {r.leftover > 0 && (
+                                    <div className="text-[11px] text-amber-600">
+                                      dư {num(r.leftover)} {r.unit}
+                                    </div>
+                                  )}
+                                </>
+                              ) : (
+                                <span className="text-zinc-300">—</span>
+                              )}
+                            </td>
                             <td className="text-right tabular-nums text-zinc-500">{r.price ? money(r.price) : '—'}</td>
                             <td className="text-right tabular-nums">{r.amount ? money(r.amount) : '—'}</td>
                           </tr>
@@ -300,6 +317,7 @@ export default function Reports() {
                             Cộng {CATEGORY_LABEL[cat].toLowerCase()}
                           </td>
                           <td className="text-right tabular-nums">{num(subQty)}</td>
+                          <td></td>
                           <td></td>
                           <td className="text-right tabular-nums">{subAmount ? money(subAmount) : '—'}</td>
                         </tr>,
@@ -312,6 +330,7 @@ export default function Reports() {
                         TỔNG CỘNG
                       </td>
                       <td className="px-3 py-2.5 text-right tabular-nums">{num(totals.toBuy)}</td>
+                      <td></td>
                       <td></td>
                       <td className="px-3 py-2.5 text-right tabular-nums">{money(totals.amount)}</td>
                     </tr>

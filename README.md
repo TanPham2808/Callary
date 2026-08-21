@@ -71,10 +71,10 @@ vào bằng địa chỉ IP của máy chủ, ví dụ `http://192.168.1.50:3001
 | Trang | Dùng để làm gì |
 |---|---|
 | **Tổng quan** | Sự kiện 7 ngày tới, hoa cần mua trong tuần, hoa đang tồn kho |
-| **Lịch sự kiện** | Xem theo **tháng hoặc tuần**, bấm ô ngày để thêm tiệc, **kéo thả tiệc sang ngày khác** |
-| **Chi tiết sự kiện** | Gắn gói trang trí, bỏ/nhân đôi từng hạng mục, điều chỉnh +/- từng loại hoa, **nhân bản sang ngày khác** |
-| **Gói trang trí** | Tạo/sửa/xoá gói, hạng mục và bảng định lượng. Có nút **Nhân bản gói** |
-| **Danh mục hoa** | Sửa tên, đơn vị, nhóm, đơn giá. Có chức năng **Gộp** hai loại hoa trùng nhau |
+| **Lịch sự kiện** | Xem theo **tháng hoặc tuần**, bấm ô ngày để thêm tiệc (sảnh · buổi · số bàn), **kéo thả tiệc sang ngày khác** |
+| **Chi tiết sự kiện** | Nhập **số bàn tiệc**, gắn gói trang trí, bỏ/nhân đôi từng hạng mục, điều chỉnh +/- từng loại hoa, **nhân bản sang ngày khác** |
+| **Gói trang trí** | Tạo/sửa/xoá gói, hạng mục và bảng định lượng. Đánh dấu dòng **tính theo số bàn**. Có nút **Nhân bản gói** |
+| **Danh mục hoa** | Sửa tên, nhóm, đơn giá, **đơn vị dùng / đơn vị mua và quy đổi**. Có chức năng **Gộp** hai loại hoa trùng nhau |
 | **Kho hoa dư** | Ghi nhận hoa còn lại sau tiệc để trừ vào lần mua sau |
 | **Báo cáo** | Chọn khoảng ngày → bảng hoa cần mua → **Xuất file Excel** (4 sheet) hoặc **Xuất file Word** (đơn gọn, để gửi thẳng cho nhà cung cấp) |
 
@@ -131,9 +131,12 @@ chuyển thành **Đã xong**, không phải sửa tay.
 ## Cách tính toán
 
 ```
-Nhu cầu  = Σ (định lượng trong gói × số lượng hạng mục × số lần áp dụng gói)
+Nhu cầu  = Σ (định lượng trong gói × số lượng hạng mục × số lần áp dụng gói
+               × số bàn tiệc — nếu dòng đó đánh dấu "tính theo số bàn")
            + Σ điều chỉnh linh động của sự kiện
-Cần mua  = max(0, Nhu cầu − Tồn kho)
+Cần mua  = max(0, Nhu cầu − Tồn kho)                     (theo đơn vị dùng)
+Đặt NCC  = làm tròn LÊN của (Cần mua ÷ quy đổi)           (theo đơn vị mua)
+Thành tiền = Đặt NCC × đơn giá                            (giá theo đơn vị mua)
 ```
 
 - Sự kiện ở trạng thái **Huỷ** không được tính vào bất kỳ báo cáo nào.
@@ -142,6 +145,35 @@ Cần mua  = max(0, Nhu cầu − Tồn kho)
   *"Tính cả phương án thay thế"* ở trang Báo cáo.
 - Điều chỉnh mang dấu âm để bớt (ví dụ `-3` khi tận dụng hoa dư của tiệc trước),
   dấu dương để thêm.
+- Nếu gói đã gắn có dòng **tính theo số bàn** mà lịch tiệc chưa nhập số bàn, các dòng
+  đó tính là 0 và trang chi tiết sự kiện hiện cảnh báo nhắc nhập.
+
+---
+
+## Quy đổi đơn vị mua và số bàn tiệc
+
+**Đơn vị dùng ≠ đơn vị mua**
+Định lượng trong gói ghi theo *đơn vị dùng* (VD Lan trắng: `cành`), còn nhà cung cấp bán
+theo *đơn vị mua* (`bịch`). Ở trang **Danh mục hoa**, khai báo đơn vị mua và quy đổi
+(`1 bịch = 12 cành`); **đơn giá luôn nhập theo đơn vị mua**. Loại nào không khai báo thì
+mua bằng chính đơn vị dùng, mọi thứ như cũ.
+
+Báo cáo giữ cả hai con số: cột **Cần mua** theo đơn vị dùng (40 cành) và cột **Đặt NCC**
+đã làm tròn lên nguyên đơn vị mua (4 bịch) kèm phần **dư 8 cành** để bạn biết. Đơn Word
+gửi nhà cung cấp ghi theo đơn vị mua. Phần dư chỉ để tham khảo — muốn tính vào lần sau
+thì tự ghi ở trang **Kho hoa dư**.
+
+Số làm tròn lên chỉ áp dụng khi có quy đổi thật, nên các loại tính số lẻ (`0,5 kg Baby`)
+vẫn giữ nguyên số lẻ.
+
+**Định lượng theo số bàn**
+Ở bảng định lượng của gói, tick **Theo số bàn** cho dòng nào là định lượng của *một bàn*
+(VD 1 cành Lan trắng / bàn). Khi lịch tiệc nhập **40 bàn**, dòng đó tự ra 40 cành →
+4 bịch. Tồn kho, điều chỉnh linh động và mọi con số khác vẫn ghi theo đơn vị dùng.
+
+**Không còn ô "Tên tiệc"**
+Lịch tiệc được nhận diện bằng `Sảnh · Buổi · Số bàn` (VD *Lầu 3 · Sáng · 40 bàn*). Các
+tiệc nhập từ trước đã có tên thì vẫn hiển thị tên cũ và tra được bằng `Ctrl + K`.
 
 ---
 

@@ -23,6 +23,9 @@ interface Snapshot {
     name: string
     slug: string
     unit: string
+    /** Có thể thiếu trong snapshot xuất trước khi có tính năng quy đổi đơn vị */
+    order_unit?: string | null
+    order_factor?: number
     category: string
     price: number
     note: string | null
@@ -44,6 +47,8 @@ interface Snapshot {
     package_item_id: number
     flower_id: number
     quantity: number
+    /** Có thể thiếu trong snapshot cũ */
+    per_table?: number
     is_optional: number
     alt_group: string | null
     sort_order: number
@@ -68,11 +73,15 @@ export function seedCatalogFromSnapshot(force = false) {
       db.prepare('DELETE FROM flowers').run()
     }
 
+    // Snapshot cũ chưa có các cột quy đổi đơn vị / theo bàn — đổ mặc định để
+    // named params của better-sqlite3 không thiếu khoá.
     const insertFlower = db.prepare(
-      `INSERT INTO flowers (id, name, slug, unit, category, price, note, needs_review, is_active)
-       VALUES (@id, @name, @slug, @unit, @category, @price, @note, @needs_review, @is_active)`,
+      `INSERT INTO flowers (id, name, slug, unit, order_unit, order_factor, category, price, note, needs_review, is_active)
+       VALUES (@id, @name, @slug, @unit, @order_unit, @order_factor, @category, @price, @note, @needs_review, @is_active)`,
     )
-    for (const f of snapshot.flowers) insertFlower.run(f)
+    for (const f of snapshot.flowers) {
+      insertFlower.run({ ...f, order_unit: f.order_unit ?? null, order_factor: f.order_factor ?? 1 })
+    }
 
     const insertAlias = db.prepare('INSERT INTO flower_aliases (flower_id, alias) VALUES (?, ?)')
     for (const a of snapshot.flower_aliases) insertAlias.run(a.flower_id, a.alias)
@@ -90,10 +99,10 @@ export function seedCatalogFromSnapshot(force = false) {
     for (const i of snapshot.package_items) insertItem.run(i)
 
     const insertLine = db.prepare(
-      `INSERT INTO item_flowers (id, package_item_id, flower_id, quantity, is_optional, alt_group, sort_order, note)
-       VALUES (@id, @package_item_id, @flower_id, @quantity, @is_optional, @alt_group, @sort_order, @note)`,
+      `INSERT INTO item_flowers (id, package_item_id, flower_id, quantity, per_table, is_optional, alt_group, sort_order, note)
+       VALUES (@id, @package_item_id, @flower_id, @quantity, @per_table, @is_optional, @alt_group, @sort_order, @note)`,
     )
-    for (const l of snapshot.item_flowers) insertLine.run(l)
+    for (const l of snapshot.item_flowers) insertLine.run({ ...l, per_table: l.per_table ?? 0 })
   })
 
   console.log(

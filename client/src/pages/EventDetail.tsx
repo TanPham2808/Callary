@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Copy, Gift, Leaf, Trash2 } from 'lucide-react'
+import { Copy, Gift, Leaf, Trash2, TriangleAlert } from 'lucide-react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { api, qs } from '../lib/api'
@@ -21,6 +21,7 @@ import {
 import {
   CATEGORY_LABEL,
   CATEGORY_ORDER,
+  eventLabel,
   STATUS_LABEL,
   type DecorEvent,
   type DecorPackage,
@@ -142,12 +143,13 @@ export default function EventDetail() {
       </div>
 
       <PageHeader
-        title={ev.title}
+        title={eventLabel(ev)}
         subtitle={
           <span className="flex flex-wrap items-center gap-2">
             {fmtDateLong(ev.event_date)}
             {ev.hall && <>· {ev.hall}</>}
             {ev.time_slot && <>· {ev.time_slot}</>}
+            {ev.table_count ? <>· {ev.table_count} bàn</> : null}
             <StatusBadge status={ev.status} />
           </span>
         }
@@ -158,7 +160,7 @@ export default function EventDetail() {
             </button>
             <ConfirmButton
               className="btn-danger"
-              message={`Xoá lịch tiệc "${ev.title}"?`}
+              message={`Xoá lịch tiệc "${eventLabel(ev)}"?`}
               onConfirm={() => removeEvent.mutate()}
             >
               Xoá lịch tiệc
@@ -173,6 +175,14 @@ export default function EventDetail() {
         </div>
       )}
 
+      {ev.has_per_table === 1 && !ev.table_count && (
+        <div className="mb-5 flex items-center gap-1.5 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+          <TriangleAlert className="h-4 w-4 shrink-0" />
+          Gói đã gắn có định lượng <strong>tính theo số bàn</strong> nhưng lịch tiệc chưa nhập số bàn — các dòng đó
+          đang được tính là 0. Nhập số bàn ở phần Thông tin lịch tiệc bên dưới.
+        </div>
+      )}
+
       <div className="grid gap-5 lg:grid-cols-[1fr_22rem]">
         <div className="space-y-5">
           {/* Thông tin chung */}
@@ -182,11 +192,17 @@ export default function EventDetail() {
             </div>
             <div className="grid gap-4 px-4 py-4 sm:grid-cols-2 xl:grid-cols-3">
               <div>
-                <label className="label">Tên tiệc / Cô dâu — Chú rể</label>
+                <label className="label">Số bàn tiệc</label>
                 <InlineInput
-                  className="input"
-                  value={ev.title}
-                  onCommit={(v) => v.trim() && updateEvent.mutate({ title: v.trim() })}
+                  type="number"
+                  min={0}
+                  step={1}
+                  className="input text-right"
+                  value={ev.table_count ?? ''}
+                  placeholder="VD: 40"
+                  onCommit={(v) =>
+                    updateEvent.mutate({ table_count: v.trim() === '' ? null : Number(v) || 0 })
+                  }
                 />
               </div>
               <div>
@@ -606,7 +622,8 @@ function AdjustmentsCard({
 function RequirementPanel({ data, loading }: { data?: RequirementResult; loading: boolean }) {
   if (!data) return <div className="card">{loading ? <Loading /> : null}</div>
 
-  const total = data.rows.reduce((s, r) => s + r.need * r.price, 0)
+  // Đơn giá tính theo đơn vị mua nên phải chia hệ số quy đổi (40 cành ÷ 12 × giá bịch).
+  const total = data.rows.reduce((s, r) => s + (r.need / r.order_factor) * r.price, 0)
 
   return (
     <div className="card">

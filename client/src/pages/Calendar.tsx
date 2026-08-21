@@ -18,7 +18,7 @@ import { conflictsWith, findConflicts, slotLabel } from '../lib/conflicts'
 import { ConflictSummary, ConflictWarning } from '../components/ConflictWarning'
 import { DuplicateEventModal } from '../components/DuplicateEventModal'
 import { ErrorBox, Loading, Modal, PageHeader, STATUS_STYLE, StatusBadge, useToast } from '../components/ui'
-import { STATUS_LABEL, type DecorEvent, type DecorPackage, type EventStatus } from '@shared/types'
+import { eventLabel, STATUS_LABEL, type DecorEvent, type DecorPackage, type EventStatus } from '@shared/types'
 
 const WEEKDAY_HEAD = ['T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'CN']
 
@@ -104,8 +104,10 @@ export default function CalendarPage() {
       const clash = conflictsWith({ ...moved, event_date: date }, qc.getQueryData<DecorEvent[]>(rangeKey) ?? [], eventId)
       toast.show(
         clash.length
-          ? `Đã chuyển "${moved.title}" sang ${fmtDate(date)} — lưu ý trùng ${slotLabel(moved)} với "${clash[0].title}"`
-          : `Đã chuyển "${moved.title}" sang ${fmtDate(date)}`,
+          ? `Đã chuyển "${eventLabel(moved)}" sang ${fmtDate(date)} — lưu ý trùng ${slotLabel(moved)} với "${eventLabel(
+              clash[0],
+            )}"`
+          : `Đã chuyển "${eventLabel(moved)}" sang ${fmtDate(date)}`,
         clash.length ? 'error' : 'ok',
       )
     },
@@ -304,8 +306,9 @@ export default function CalendarPage() {
                 <tr>
                   <th className="w-32">Ngày</th>
                   <th className="w-20">Giờ</th>
-                  <th>Tên tiệc</th>
+                  <th>Lịch tiệc</th>
                   <th className="w-32">Sảnh</th>
+                  <th className="w-24 text-right">Số bàn</th>
                   <th>Gói trang trí</th>
                   <th className="w-28">Trạng thái</th>
                   <th className="w-28"></th>
@@ -322,7 +325,7 @@ export default function CalendarPage() {
                     <td className="text-zinc-500">{e.time_slot || '—'}</td>
                     <td className="font-medium">
                       <span className="inline-flex items-center gap-1.5">
-                        {e.title}
+                        {eventLabel(e)}
                         {conflicts.has(e.id) && (
                           <span title={`Trùng ${slotLabel(e)}`}>
                             <TriangleAlert className="h-3.5 w-3.5 shrink-0 text-red-500" />
@@ -331,6 +334,7 @@ export default function CalendarPage() {
                       </span>
                     </td>
                     <td className="text-zinc-500">{e.hall || '—'}</td>
+                    <td className="text-right tabular-nums text-zinc-500">{e.table_count || '—'}</td>
                     <td className="text-sm text-zinc-500">{e.package_names || '—'}</td>
                     <td>
                       <StatusBadge status={e.status} />
@@ -406,10 +410,12 @@ function EventChip({
   // Tiệc đã diễn ra thì không kéo đi được nữa — muốn dùng lại thì nhân bản.
   const past = isPast(event.event_date)
   const tooltip = [
-    event.title,
-    [event.hall, event.time_slot].filter(Boolean).join(' · '),
+    eventLabel(event),
+    [event.hall, event.time_slot, event.table_count ? `${event.table_count} bàn` : null]
+      .filter(Boolean)
+      .join(' · '),
     event.package_names,
-    hasConflict ? `⚠ Trùng ${slotLabel(event)} với: ${conflicts.map((c) => c.title).join(', ')}` : '',
+    hasConflict ? `⚠ Trùng ${slotLabel(event)} với: ${conflicts.map((c) => eventLabel(c)).join(', ')}` : '',
     past ? 'Tiệc đã diễn ra — dùng "Copy" nếu muốn xếp lại vào ngày mới' : '',
   ]
     .filter(Boolean)
@@ -436,6 +442,7 @@ function EventChip({
         {hasConflict && <TriangleAlert className="h-3 w-3 shrink-0 text-red-600" />}
         {event.time_slot && <span className="shrink-0 opacity-70">{event.time_slot}</span>}
         <span className="truncate">{event.hall || '—'}</span>
+        {event.table_count ? <span className="ml-auto shrink-0 opacity-70">{event.table_count}b</span> : null}
       </div>
       {detailed && event.package_names && (
         <div className="mt-0.5 flex items-center gap-1 truncate opacity-60">
@@ -459,9 +466,9 @@ export function CreateEventModal({
   onCreated: () => void
 }) {
   const navigate = useNavigate()
-  const [title, setTitle] = useState('')
   const [hall, setHall] = useState('')
   const [timeSlot, setTimeSlot] = useState('')
+  const [tableCount, setTableCount] = useState('')
   const [status, setStatus] = useState<EventStatus>('DU_KIEN')
   const [packageIds, setPackageIds] = useState<number[]>([])
   const [error, setError] = useState<string | null>(null)
@@ -492,9 +499,9 @@ export function CreateEventModal({
     mutationFn: async () => {
       const ev = await api.post<DecorEvent>('/api/events', {
         event_date: date,
-        title: title.trim(),
         hall: hall || null,
         time_slot: timeSlot || null,
+        table_count: tableCount === '' ? null : Number(tableCount),
         status,
       })
       for (const pid of packageIds) {
@@ -512,9 +519,9 @@ export function CreateEventModal({
   })
 
   const reset = () => {
-    setTitle('')
     setHall('')
     setTimeSlot('')
+    setTableCount('')
     setStatus('DU_KIEN')
     setPackageIds([])
     setError(null)
@@ -534,11 +541,7 @@ export function CreateEventModal({
           <button className="btn-secondary" onClick={onClose}>
             Huỷ
           </button>
-          <button
-            className="btn-primary"
-            disabled={past || !title.trim() || create.isPending}
-            onClick={() => create.mutate()}
-          >
+          <button className="btn-primary" disabled={past || create.isPending} onClick={() => create.mutate()}>
             {create.isPending ? 'Đang tạo…' : 'Tạo lịch tiệc'}
           </button>
         </>
@@ -553,22 +556,12 @@ export function CreateEventModal({
           </div>
         )}
 
-        <div>
-          <label className="label">Tên tiệc / Cô dâu — Chú rể</label>
-          <input
-            className="input"
-            autoFocus
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            placeholder="VD: Xuân Tân — Quỳnh Ly"
-          />
-        </div>
-
-        <div className="grid grid-cols-3 gap-3">
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
           <div>
             <label className="label">Sảnh</label>
             <input
               className="input"
+              autoFocus
               list="halls"
               value={hall}
               onChange={(e) => setHall(e.target.value)}
@@ -594,6 +587,18 @@ export function CreateEventModal({
                 <option key={s} value={s} />
               ))}
             </datalist>
+          </div>
+          <div>
+            <label className="label">Số bàn</label>
+            <input
+              className="input text-right"
+              type="number"
+              min={0}
+              step={1}
+              value={tableCount}
+              onChange={(e) => setTableCount(e.target.value)}
+              placeholder="VD: 40"
+            />
           </div>
           <div>
             <label className="label">Trạng thái</label>
