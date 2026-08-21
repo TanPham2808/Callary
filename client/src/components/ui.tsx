@@ -106,6 +106,69 @@ export function Empty({ children, icon }: { children: ReactNode; icon?: ReactNod
   )
 }
 
+/* ------------------------------- Màu sắc ---------------------------------- */
+
+/** Bảng màu cố định để gán cho card (gói trang trí, …) — đủ tương phản trên nền trắng. */
+export const SWATCH_COLORS = [
+  { name: 'Đỏ', value: '#ef4444' },
+  { name: 'Cam', value: '#f97316' },
+  { name: 'Vàng', value: '#eab308' },
+  { name: 'Lục', value: '#22c55e' },
+  { name: 'Ngọc', value: '#14b8a6' },
+  { name: 'Lam', value: '#3b82f6' },
+  { name: 'Chàm', value: '#6366f1' },
+  { name: 'Tím', value: '#a855f7' },
+  { name: 'Hồng', value: '#ec4899' },
+  { name: 'Xám', value: '#71717a' },
+] as const
+
+/** "#3b82f6" + 0.08 -> "rgba(59,130,246,0.08)". Trả về undefined nếu hex không hợp lệ. */
+export function hexToRgba(hex: string | null | undefined, alpha: number): string | undefined {
+  if (!hex) return undefined
+  const m = /^#([0-9a-f]{6})$/i.exec(hex.trim())
+  if (!m) return undefined
+  const n = parseInt(m[1], 16)
+  return `rgba(${(n >> 16) & 255}, ${(n >> 8) & 255}, ${n & 255}, ${alpha})`
+}
+
+/** Dãy chấm tròn để chọn 1 màu trong SWATCH_COLORS, kèm tuỳ chọn "không màu". */
+export function ColorSwatchPicker({
+  value,
+  onChange,
+}: {
+  value: string | null
+  onChange: (color: string | null) => void
+}) {
+  return (
+    <div className="flex flex-wrap items-center gap-2">
+      <button
+        type="button"
+        title="Không màu"
+        aria-label="Không màu"
+        onClick={() => onChange(null)}
+        className={`flex h-7 w-7 items-center justify-center rounded-full border-2 bg-white text-zinc-400 transition ${
+          value ? 'border-zinc-200 hover:border-zinc-300' : 'border-brand-500'
+        }`}
+      >
+        <X className="h-3.5 w-3.5" />
+      </button>
+      {SWATCH_COLORS.map((c) => (
+        <button
+          key={c.value}
+          type="button"
+          title={c.name}
+          aria-label={c.name}
+          onClick={() => onChange(c.value)}
+          className={`h-7 w-7 rounded-full transition ${
+            value === c.value ? 'ring-2 ring-offset-2 ring-zinc-400' : 'hover:scale-110'
+          }`}
+          style={{ backgroundColor: c.value }}
+        />
+      ))}
+    </div>
+  )
+}
+
 /* -------------------------------- Badges --------------------------------- */
 
 const CATEGORY_STYLE: Record<FlowerCategory, string> = {

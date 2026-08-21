@@ -41,6 +41,7 @@ CREATE TABLE IF NOT EXISTS packages (
   name        TEXT    NOT NULL,
   code        TEXT,
   description TEXT,
+  color       TEXT,                                -- mã màu hex để nhận diện card, VD "#3b82f6"
   sort_order  INTEGER NOT NULL DEFAULT 0,
   is_active   INTEGER NOT NULL DEFAULT 1,
   created_at  TEXT    NOT NULL DEFAULT (datetime('now','localtime')),

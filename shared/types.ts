@@ -100,6 +100,7 @@ export interface DecorPackage {
   name: string
   code: string | null
   description: string | null
+  color: string | null
   sort_order: number
   is_active: number
   items?: PackageItem[]

@@ -34,6 +34,7 @@ function addMissingColumns() {
   addColumnIfMissing('flowers', 'order_factor', 'REAL NOT NULL DEFAULT 1')
   addColumnIfMissing('item_flowers', 'per_table', 'INTEGER NOT NULL DEFAULT 0')
   addColumnIfMissing('events', 'table_count', 'INTEGER')
+  addColumnIfMissing('packages', 'color', 'TEXT')
 }
 
 function addColumnIfMissing(table: string, column: string, ddl: string) {

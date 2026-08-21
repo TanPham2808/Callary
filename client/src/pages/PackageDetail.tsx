@@ -7,6 +7,7 @@ import { num } from '../lib/format'
 import FlowerPicker from '../components/FlowerPicker'
 import {
   CategoryBadge,
+  ColorSwatchPicker,
   ConfirmButton,
   Empty,
   ErrorBox,
@@ -150,6 +151,10 @@ export default function PackageDetail() {
               placeholder="Ghi chú ngắn về gói này"
               onCommit={(v) => updatePkg.mutate({ description: v.trim() || null })}
             />
+          </div>
+          <div className="sm:col-span-2">
+            <label className="label">Màu thẻ</label>
+            <ColorSwatchPicker value={pkg.color} onChange={(color) => updatePkg.mutate({ color })} />
           </div>
         </div>
       </div>

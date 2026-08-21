@@ -10,6 +10,12 @@ const packageSchema = z.object({
   name: z.string().trim().min(1, 'Tên gói không được để trống'),
   code: z.string().trim().nullable().optional(),
   description: z.string().trim().nullable().optional(),
+  color: z
+    .string()
+    .trim()
+    .regex(/^#[0-9a-fA-F]{6}$/, 'Mã màu không hợp lệ')
+    .nullable()
+    .optional(),
   sort_order: z.number().int().optional(),
   is_active: z.boolean().optional(),
 })
@@ -69,11 +75,14 @@ router.post(
     const data = parseBody(packageSchema, req.body)
     const maxOrder = (db.prepare('SELECT COALESCE(MAX(sort_order), 0) AS m FROM packages').get() as { m: number }).m
     const info = db
-      .prepare('INSERT INTO packages (name, code, description, sort_order, is_active) VALUES (?, ?, ?, ?, ?)')
+      .prepare(
+        'INSERT INTO packages (name, code, description, color, sort_order, is_active) VALUES (?, ?, ?, ?, ?, ?)',
+      )
       .run(
         data.name,
         data.code ?? null,
         data.description ?? null,
+        data.color ?? null,
         data.sort_order ?? maxOrder + 10,
         data.is_active === false ? 0 : 1,
       )
@@ -89,12 +98,13 @@ router.put(
     const cur = db.prepare('SELECT * FROM packages WHERE id = ?').get(pkgId) as DecorPackage | undefined
     if (!cur) throw notFound('Không tìm thấy gói trang trí này')
     db.prepare(
-      `UPDATE packages SET name = ?, code = ?, description = ?, sort_order = ?, is_active = ?,
+      `UPDATE packages SET name = ?, code = ?, description = ?, color = ?, sort_order = ?, is_active = ?,
               updated_at = datetime('now','localtime') WHERE id = ?`,
     ).run(
       data.name ?? cur.name,
       data.code !== undefined ? data.code : cur.code,
       data.description !== undefined ? data.description : cur.description,
+      data.color !== undefined ? data.color : cur.color,
       data.sort_order ?? cur.sort_order,
       data.is_active !== undefined ? (data.is_active ? 1 : 0) : cur.is_active,
       pkgId,
@@ -123,8 +133,10 @@ router.post(
     const newId = tx(() => {
       const maxOrder = (db.prepare('SELECT COALESCE(MAX(sort_order), 0) AS m FROM packages').get() as { m: number }).m
       const info = db
-        .prepare('INSERT INTO packages (name, code, description, sort_order, is_active) VALUES (?, ?, ?, ?, 1)')
-        .run(name ?? `${src.name} (bản sao)`, src.code, src.description, maxOrder + 10)
+        .prepare(
+          'INSERT INTO packages (name, code, description, color, sort_order, is_active) VALUES (?, ?, ?, ?, ?, 1)',
+        )
+        .run(name ?? `${src.name} (bản sao)`, src.code, src.description, src.color, maxOrder + 10)
       const targetId = Number(info.lastInsertRowid)
 
       const items = db.prepare('SELECT * FROM package_items WHERE package_id = ? ORDER BY sort_order').all(pkgId) as PackageItem[]

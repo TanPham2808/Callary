@@ -3,7 +3,17 @@ import { Copy, Gift, Plus } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { api } from '../lib/api'
-import { ConfirmButton, Empty, ErrorBox, Loading, Modal, PageHeader, useToast } from '../components/ui'
+import {
+  ColorSwatchPicker,
+  ConfirmButton,
+  Empty,
+  ErrorBox,
+  hexToRgba,
+  Loading,
+  Modal,
+  PageHeader,
+  useToast,
+} from '../components/ui'
 import type { DecorPackage } from '@shared/types'
 
 export default function Packages() {
@@ -62,7 +72,15 @@ export default function Packages() {
 
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {(query.data ?? []).map((p) => (
-          <div key={p.id} className="card card-interactive flex flex-col">
+          <div
+            key={p.id}
+            className="card card-interactive flex flex-col"
+            style={
+              p.color
+                ? { borderLeft: `4px solid ${p.color}`, backgroundColor: hexToRgba(p.color, 0.06) }
+                : undefined
+            }
+          >
             <Link to={`/packages/${p.id}`} className="flex-1 px-4 py-4">
               <div className="flex items-start justify-between gap-2">
                 <h3 className="text-base font-bold text-zinc-900">{p.name}</h3>
@@ -120,14 +138,17 @@ function CreatePackageModal({
 }) {
   const [name, setName] = useState('')
   const [description, setDescription] = useState('')
+  const [color, setColor] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
 
   const create = useMutation({
-    mutationFn: () => api.post('/api/packages', { name: name.trim(), description: description.trim() || null }),
+    mutationFn: () =>
+      api.post('/api/packages', { name: name.trim(), description: description.trim() || null, color }),
     onSuccess: () => {
       onCreated()
       setName('')
       setDescription('')
+      setColor(null)
       onClose()
     },
     onError: (e: Error) => setError(e.message),
@@ -170,6 +191,10 @@ function CreatePackageModal({
             onChange={(e) => setDescription(e.target.value)}
             placeholder="Ghi chú ngắn về gói này"
           />
+        </div>
+        <div>
+          <label className="label">Màu thẻ</label>
+          <ColorSwatchPicker value={color} onChange={setColor} />
         </div>
         <p className="text-xs text-zinc-500">
           Sau khi tạo, mở gói để thêm các hạng mục (Cổng hoa, Lối đi, Bàn gallery…) và định lượng hoa.
