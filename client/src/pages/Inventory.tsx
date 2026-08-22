@@ -220,7 +220,7 @@ export default function Inventory() {
                 <div key={m.id} className="px-4 py-2.5 text-sm">
                   <div className="flex items-baseline justify-between gap-2">
                     <span className="font-medium text-zinc-800">{m.flower_name}</span>
-                    <span className={`font-semibold tabular-nums ${m.delta >= 0 ? 'text-emerald-600' : 'text-red-600'}`}>
+                    <span className={`font-semibold tabular-nums ${m.delta >= 0 ? 'text-brand-600' : 'text-red-600'}`}>
                       {signed(m.delta)} <span className="text-xs font-normal text-zinc-400">{m.flower_unit}</span>
                     </span>
                   </div>

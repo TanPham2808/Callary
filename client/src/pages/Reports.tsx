@@ -221,9 +221,9 @@ export default function Reports() {
       {report.data && (
         <>
           <div className="mb-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            <Stat label="Lịch tiệc" value={String(report.data.event_count)} icon={CalendarDays} tone="sky" />
-            <Stat label="Loại hoa cần" value={String(report.data.rows.length)} icon={Flower2} tone="pink" />
-            <Stat label="Tận dụng từ kho" value={num(totals.stockUsed)} icon={PackageCheck} tone="emerald" />
+            <Stat label="Lịch tiệc" value={String(report.data.event_count)} icon={CalendarDays} tone="accent" />
+            <Stat label="Loại hoa cần" value={String(report.data.rows.length)} icon={Flower2} tone="gold" />
+            <Stat label="Tận dụng từ kho" value={num(totals.stockUsed)} icon={PackageCheck} tone="primary" />
             <Stat label="Chi phí cần mua" value={money(totals.amount)} icon={Wallet} tone="brand" />
           </div>
 
@@ -278,7 +278,7 @@ export default function Reports() {
                             <td className="text-right tabular-nums text-zinc-500">{num(r.base)}</td>
                             <td
                               className={`text-right tabular-nums text-xs ${
-                                r.adjustment > 0 ? 'text-emerald-600' : r.adjustment < 0 ? 'text-red-500' : 'text-zinc-300'
+                                r.adjustment > 0 ? 'text-brand-600' : r.adjustment < 0 ? 'text-red-500' : 'text-zinc-300'
                               }`}
                             >
                               {r.adjustment ? (r.adjustment > 0 ? '+' : '') + num(r.adjustment) : '—'}
@@ -287,7 +287,7 @@ export default function Reports() {
                             <td className="text-right tabular-nums text-zinc-500">{r.stock ? num(r.stock) : '—'}</td>
                             <td
                               className={`text-right font-bold tabular-nums ${
-                                r.to_buy === 0 ? 'text-emerald-600' : 'text-zinc-900'
+                                r.to_buy === 0 ? 'text-brand-600' : 'text-zinc-900'
                               }`}
                             >
                               {r.to_buy === 0 ? 'Đủ' : num(r.to_buy)}
@@ -299,7 +299,7 @@ export default function Reports() {
                                     {num(r.order_qty)} <span className="text-xs font-normal">{r.order_unit}</span>
                                   </div>
                                   {r.leftover > 0 && (
-                                    <div className="text-[11px] text-amber-600">
+                                    <div className="text-[11px] text-gold-600">
                                       dư {num(r.leftover)} {r.unit}
                                     </div>
                                   )}

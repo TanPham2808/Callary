@@ -1,18 +1,36 @@
+@import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@600;700;800&family=Work+Sans:wght@400;500;600;700&display=swap');
 @import 'tailwindcss';
 
 @theme {
-  --color-brand-50: #f5f3ff;
-  --color-brand-100: #ede9fe;
-  --color-brand-200: #ddd6fe;
-  --color-brand-300: #c4b5fd;
-  --color-brand-400: #a78bfa;
-  --color-brand-500: #8b5cf6;
-  --color-brand-600: #7c3aed;
-  --color-brand-700: #6d28d9;
-  --color-brand-800: #5b21b6;
-  --color-brand-900: #4c1d95;
+  /* Bạc Hà (mint) — màu thương hiệu chính, thay cho tím trước đây */
+  --color-brand-50: #eaf7f2;
+  --color-brand-100: #d3eee3;
+  --color-brand-200: #a9ddc9;
+  --color-brand-300: #7bc9ac;
+  --color-brand-400: #4cae8c;
+  --color-brand-500: #2c9370;
+  --color-brand-600: #1f7a63;
+  --color-brand-700: #186052;
+  --color-brand-800: #124a3f;
+  --color-brand-900: #0d372f;
 
-  --font-sans: 'Segoe UI', 'Inter', system-ui, -apple-system, sans-serif;
+  /* Đào (peach) — điểm nhấn ấm: hoa tươi, lịch tiệc */
+  --color-accent-50: #fbe9dc;
+  --color-accent-100: #f6d6bd;
+  --color-accent-600: #b8703e;
+  --color-accent-700: #9a5b30;
+
+  /* Vàng Bơ (butter gold) — vật tư, trạng thái cần chú ý */
+  --color-gold-50: #fbf3de;
+  --color-gold-100: #f7e7bd;
+  --color-gold-200: #efd48c;
+  --color-gold-500: #b4901d;
+  --color-gold-600: #8f6a16;
+  --color-gold-700: #745314;
+  --color-gold-800: #5c4110;
+
+  --font-sans: 'Work Sans', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --font-heading: 'Be Vietnam Pro', 'Segoe UI', system-ui, -apple-system, sans-serif;
 }
 
 @layer base {
@@ -21,6 +39,10 @@
   }
   body {
     @apply bg-zinc-50 text-zinc-900 antialiased;
+  }
+  /* Be Vietnam Pro cho tiêu đề — đọc dấu tiếng Việt rõ hơn Work Sans ở cỡ lớn */
+  h1, h2, h3 {
+    font-family: var(--font-heading);
   }
   /* Ẩn mũi tên tăng/giảm của input number để bảng gọn hơn */
   input[type='number']::-webkit-outer-spin-button,
@@ -62,7 +84,7 @@
     @apply border border-red-200 bg-white text-red-600 hover:bg-red-50;
   }
   .btn-success {
-    @apply bg-emerald-600 text-white hover:bg-emerald-700;
+    @apply bg-brand-600 text-white hover:bg-brand-700;
   }
   .btn-sm {
     @apply px-2 py-1 text-xs pointer-coarse:min-h-9 pointer-coarse:px-2.5;
@@ -87,7 +109,7 @@
   }
   .card-interactive {
     @apply transition-all duration-150 hover:-translate-y-0.5 hover:border-brand-200
-           hover:shadow-[0_16px_32px_-16px_rgba(124,58,237,0.28)];
+           hover:shadow-[0_16px_32px_-16px_rgba(31,122,99,0.28)];
   }
   .card-head {
     @apply flex flex-wrap items-center justify-between gap-3 border-b border-zinc-200 px-4 py-3;

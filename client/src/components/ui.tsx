@@ -28,13 +28,18 @@ export function PageHeader({
 /* --------------------------------- Stat ----------------------------------- */
 
 export const STAT_TONE = {
+  /** Thẻ nổi bật nhất — số quan trọng cần thấy đầu tiên (VD chi phí). Card tự đổi hẳn sang nền đậm. */
   brand: 'bg-brand-50 text-brand-600',
-  sky: 'bg-sky-50 text-sky-600',
-  pink: 'bg-pink-50 text-pink-600',
-  emerald: 'bg-emerald-50 text-emerald-600',
+  /** Đào — lịch tiệc / thời gian. */
+  accent: 'bg-accent-50 text-accent-600',
+  /** Bạc Hà nhạt — số liệu tích cực (gói trang trí, tận dụng tồn kho…). */
+  primary: 'bg-brand-50 text-brand-600',
+  /** Vàng Bơ — số lượng danh mục / vật tư. */
+  gold: 'bg-gold-50 text-gold-600',
 } as const
 
-/** Ô số liệu nổi bật: khung icon màu riêng + nhãn + giá trị. `to` biến nó thành link có thể bấm. */
+/** Ô số liệu nổi bật: khung icon màu riêng + nhãn + giá trị. `to` biến nó thành link có thể bấm.
+ *  tone="brand" là ô quan trọng nhất trên trang (VD chi phí) nên tự đổi sang thẻ nền đậm. */
 export function Stat({
   to,
   label,
@@ -48,20 +53,31 @@ export function Stat({
   icon?: LucideIcon
   tone?: keyof typeof STAT_TONE
 }) {
+  const hero = tone === 'brand'
   const content = (
     <>
       {Icon && (
-        <span className={`icon-badge rounded-full ${STAT_TONE[tone]}`}>
+        <span className={`icon-badge rounded-full ${hero ? 'bg-white/15 text-white' : STAT_TONE[tone]}`}>
           <Icon />
         </span>
       )}
       <div className="min-w-0">
-        <div className="truncate text-xs font-medium uppercase tracking-wide text-zinc-500">{label}</div>
-        <div className="mt-0.5 text-2xl font-bold text-zinc-900">{value}</div>
+        <div
+          className={`truncate text-xs font-medium uppercase tracking-wide ${hero ? 'text-white/70' : 'text-zinc-500'}`}
+        >
+          {label}
+        </div>
+        <div className={`mt-0.5 text-2xl font-bold ${hero ? 'text-white' : 'text-zinc-900'}`}>{value}</div>
       </div>
     </>
   )
-  const className = `card flex items-center gap-3 px-4 py-3 ${to ? 'card-interactive' : ''}`
+  const className = `card flex items-center gap-3 px-4 py-3 ${
+    hero
+      ? `border-transparent bg-gradient-to-br from-brand-700 to-brand-900 ${to ? 'transition hover:brightness-110' : ''}`
+      : to
+        ? 'card-interactive'
+        : ''
+  }`
   return to ? (
     <Link to={to} className={className}>
       {content}
@@ -172,9 +188,9 @@ export function ColorSwatchPicker({
 /* -------------------------------- Badges --------------------------------- */
 
 const CATEGORY_STYLE: Record<FlowerCategory, string> = {
-  HOA: 'bg-pink-50 text-pink-700',
-  LA: 'bg-emerald-50 text-emerald-700',
-  VAT_TU: 'bg-amber-50 text-amber-700',
+  HOA: 'bg-accent-50 text-accent-700',
+  LA: 'bg-brand-50 text-brand-700',
+  VAT_TU: 'bg-zinc-100 text-zinc-600',
 }
 
 export function CategoryBadge({ category }: { category: FlowerCategory }) {
@@ -182,10 +198,10 @@ export function CategoryBadge({ category }: { category: FlowerCategory }) {
 }
 
 export const STATUS_STYLE: Record<EventStatus, string> = {
-  DU_KIEN: 'bg-amber-50 text-amber-700 ring-amber-200',
+  DU_KIEN: 'bg-gold-50 text-gold-700 ring-gold-200',
   DA_CHOT: 'bg-brand-50 text-brand-700 ring-brand-200',
-  DA_XONG: 'bg-emerald-50 text-emerald-700 ring-emerald-200',
-  HUY: 'bg-zinc-100 text-zinc-500 ring-zinc-200',
+  DA_XONG: 'bg-zinc-100 text-zinc-500 ring-zinc-200',
+  HUY: 'bg-red-50 text-red-600 ring-red-200',
 }
 
 export function StatusBadge({ status }: { status: EventStatus }) {

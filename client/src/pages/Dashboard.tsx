@@ -65,15 +65,15 @@ export default function Dashboard() {
           label="Lịch tiệc 7 ngày tới"
           value={String(d.upcoming.length)}
           icon={CalendarDays}
-          tone="sky"
+          tone="accent"
         />
-        <Stat to="/packages" label="Gói trang trí" value={String(d.counts.packages)} icon={Gift} tone="pink" />
+        <Stat to="/packages" label="Gói trang trí" value={String(d.counts.packages)} icon={Gift} tone="primary" />
         <Stat
           to="/flowers"
           label="Loại hoa / vật tư"
           value={String(d.counts.flowers)}
           icon={Flower2}
-          tone="emerald"
+          tone="gold"
         />
         <Stat
           to={`/reports?from=${d.today}&to=${d.until}`}
@@ -87,7 +87,7 @@ export default function Dashboard() {
       {d.counts.needs_review > 0 && (
         <Link
           to="/flowers"
-          className="mb-5 flex items-center justify-between gap-3 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800 transition hover:bg-amber-100"
+          className="mb-5 flex items-center justify-between gap-3 rounded-xl border border-gold-200 bg-gold-50 px-4 py-3 text-sm text-gold-800 transition hover:bg-gold-100"
         >
           <span className="flex items-center gap-1.5">
             <TriangleAlert className="h-4 w-4 shrink-0" />
@@ -204,7 +204,7 @@ export default function Dashboard() {
             {d.stock.map((s) => (
               <span
                 key={s.flower_id}
-                className="badge bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200"
+                className="badge bg-brand-50 text-brand-700 ring-1 ring-brand-200"
                 title={`Cập nhật ${s.updated_at}`}
               >
                 {s.name}
@@ -230,7 +230,7 @@ export default function Dashboard() {
               <Link
                 key={`${b.range_from}_${b.range_to}`}
                 to={`/reports?from=${b.range_from}&to=${b.range_to}`}
-                className="badge bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200 transition hover:bg-emerald-100"
+                className="badge bg-brand-50 text-brand-700 ring-1 ring-brand-200 transition hover:bg-brand-100"
                 title={`Đã đặt lúc ${fmtDateTime(b.ordered_at)}`}
               >
                 {fmtDate(b.range_from)}
