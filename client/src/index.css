@@ -1,18 +1,36 @@
+@import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@600;700;800&family=Work+Sans:wght@400;500;600;700&display=swap');
 @import 'tailwindcss';
 
 @theme {
-  --color-brand-50: #f5f3ff;
-  --color-brand-100: #ede9fe;
-  --color-brand-200: #ddd6fe;
-  --color-brand-300: #c4b5fd;
-  --color-brand-400: #a78bfa;
-  --color-brand-500: #8b5cf6;
-  --color-brand-600: #7c3aed;
-  --color-brand-700: #6d28d9;
-  --color-brand-800: #5b21b6;
-  --color-brand-900: #4c1d95;
+  /* Hồng Phấn (pastel pink) — màu thương hiệu chính, thay cho tím trước đây */
+  --color-brand-50: #fbe6ec;
+  --color-brand-100: #f6d0dc;
+  --color-brand-200: #eda9c0;
+  --color-brand-300: #e181a3;
+  --color-brand-400: #cd638a;
+  --color-brand-500: #bc5279;
+  --color-brand-600: #ad4a6c;
+  --color-brand-700: #8c3a5a;
+  --color-brand-800: #6e2d46;
+  --color-brand-900: #522135;
 
-  --font-sans: 'Segoe UI', 'Inter', system-ui, -apple-system, sans-serif;
+  /* Hoa Cà (lilac) — điểm nhấn phụ: lịch tiệc */
+  --color-accent-50: #f1e9f8;
+  --color-accent-100: #e4d3f1;
+  --color-accent-600: #8a6bae;
+  --color-accent-700: #6f5389;
+
+  /* Vàng Bơ (butter gold) — vật tư, trạng thái cần chú ý */
+  --color-gold-50: #fbf3de;
+  --color-gold-100: #f7e7bd;
+  --color-gold-200: #efd48c;
+  --color-gold-500: #b4901d;
+  --color-gold-600: #8f6a16;
+  --color-gold-700: #745314;
+  --color-gold-800: #5c4110;
+
+  --font-sans: 'Work Sans', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --font-heading: 'Be Vietnam Pro', 'Segoe UI', system-ui, -apple-system, sans-serif;
 }
 
 @layer base {
@@ -21,6 +39,10 @@
   }
   body {
     @apply bg-zinc-50 text-zinc-900 antialiased;
+  }
+  /* Be Vietnam Pro cho tiêu đề — đọc dấu tiếng Việt rõ hơn Work Sans ở cỡ lớn */
+  h1, h2, h3 {
+    font-family: var(--font-heading);
   }
   /* Ẩn mũi tên tăng/giảm của input number để bảng gọn hơn */
   input[type='number']::-webkit-outer-spin-button,
@@ -87,7 +109,7 @@
   }
   .card-interactive {
     @apply transition-all duration-150 hover:-translate-y-0.5 hover:border-brand-200
-           hover:shadow-[0_16px_32px_-16px_rgba(124,58,237,0.28)];
+           hover:shadow-[0_16px_32px_-16px_rgba(173,74,108,0.28)];
   }
   .card-head {
     @apply flex flex-wrap items-center justify-between gap-3 border-b border-zinc-200 px-4 py-3;
