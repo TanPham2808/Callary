@@ -65,15 +65,15 @@ export default function Dashboard() {
           label="Lịch tiệc 7 ngày tới"
           value={String(d.upcoming.length)}
           icon={CalendarDays}
-          tone="accent"
+          tone="sky"
         />
-        <Stat to="/packages" label="Gói trang trí" value={String(d.counts.packages)} icon={Gift} tone="primary" />
+        <Stat to="/packages" label="Gói trang trí" value={String(d.counts.packages)} icon={Gift} tone="pink" />
         <Stat
           to="/flowers"
           label="Loại hoa / vật tư"
           value={String(d.counts.flowers)}
           icon={Flower2}
-          tone="gold"
+          tone="emerald"
         />
         <Stat
           to={`/reports?from=${d.today}&to=${d.until}`}
@@ -87,7 +87,7 @@ export default function Dashboard() {
       {d.counts.needs_review > 0 && (
         <Link
           to="/flowers"
-          className="mb-5 flex items-center justify-between gap-3 rounded-xl border border-gold-200 bg-gold-50 px-4 py-3 text-sm text-gold-800 transition hover:bg-gold-100"
+          className="mb-5 flex items-center justify-between gap-3 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800 transition hover:bg-amber-100"
         >
           <span className="flex items-center gap-1.5">
             <TriangleAlert className="h-4 w-4 shrink-0" />

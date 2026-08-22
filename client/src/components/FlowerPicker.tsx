@@ -123,7 +123,7 @@ export default function FlowerPicker({
             >
               <span className="flex min-w-0 items-center gap-1 truncate">
                 {f.name}
-                {f.needs_review === 1 && <TriangleAlert className="h-3 w-3 shrink-0 text-gold-500" />}
+                {f.needs_review === 1 && <TriangleAlert className="h-3 w-3 shrink-0 text-amber-500" />}
               </span>
               <span className="shrink-0 text-[11px] text-zinc-400">
                 {f.unit} · {CATEGORY_LABEL[f.category]}

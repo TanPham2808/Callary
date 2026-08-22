@@ -221,9 +221,9 @@ export default function Reports() {
       {report.data && (
         <>
           <div className="mb-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            <Stat label="Lịch tiệc" value={String(report.data.event_count)} icon={CalendarDays} tone="accent" />
-            <Stat label="Loại hoa cần" value={String(report.data.rows.length)} icon={Flower2} tone="gold" />
-            <Stat label="Tận dụng từ kho" value={num(totals.stockUsed)} icon={PackageCheck} tone="primary" />
+            <Stat label="Lịch tiệc" value={String(report.data.event_count)} icon={CalendarDays} tone="sky" />
+            <Stat label="Loại hoa cần" value={String(report.data.rows.length)} icon={Flower2} tone="pink" />
+            <Stat label="Tận dụng từ kho" value={num(totals.stockUsed)} icon={PackageCheck} tone="emerald" />
             <Stat label="Chi phí cần mua" value={money(totals.amount)} icon={Wallet} tone="brand" />
           </div>
 
@@ -299,7 +299,7 @@ export default function Reports() {
                                     {num(r.order_qty)} <span className="text-xs font-normal">{r.order_unit}</span>
                                   </div>
                                   {r.leftover > 0 && (
-                                    <div className="text-[11px] text-gold-600">
+                                    <div className="text-[11px] text-amber-600">
                                       dư {num(r.leftover)} {r.unit}
                                     </div>
                                   )}

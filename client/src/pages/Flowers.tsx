@@ -98,7 +98,7 @@ export default function Flowers() {
       />
 
       {reviewCount > 0 && !onlyReview && (
-        <div className="mb-4 flex flex-wrap items-center justify-between gap-2 rounded-xl border border-gold-200 bg-gold-50 px-4 py-3 text-sm text-gold-800">
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-2 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
           <span className="flex items-center gap-1.5">
             <TriangleAlert className="h-4 w-4 shrink-0" />
             Có <strong>{reviewCount}</strong> loại được nhập từ Excel với tên chưa rõ ràng, nên kiểm tra lại.
@@ -161,8 +161,8 @@ export default function Flowers() {
               </thead>
               <tbody>
                 {rows.map((f) => (
-                  <tr key={f.id} className={f.needs_review === 1 ? 'bg-gold-50/50' : undefined}>
-                    <td className={`sticky left-0 z-10 ${f.needs_review === 1 ? 'bg-gold-50' : 'bg-white'}`}>
+                  <tr key={f.id} className={f.needs_review === 1 ? 'bg-amber-50/50' : undefined}>
+                    <td className={`sticky left-0 z-10 ${f.needs_review === 1 ? 'bg-amber-50' : 'bg-white'}`}>
                       <div className="flex items-center gap-2">
                         <InlineInput
                           value={f.name}
@@ -170,13 +170,13 @@ export default function Flowers() {
                           onCommit={(v) => v.trim() && update.mutate({ id: f.id, patch: { name: v.trim() } })}
                         />
                         {f.needs_review === 1 && (
-                          <span className="shrink-0 text-gold-500" title={f.note ?? 'Cần kiểm tra'}>
+                          <span className="shrink-0 text-amber-500" title={f.note ?? 'Cần kiểm tra'}>
                             <TriangleAlert className="h-3.5 w-3.5" />
                           </span>
                         )}
                       </div>
                       {f.needs_review === 1 && f.note && (
-                        <div className="mt-1 flex items-center gap-2 text-[11px] text-gold-700">
+                        <div className="mt-1 flex items-center gap-2 text-[11px] text-amber-700">
                           <span>{f.note}</span>
                           <button
                             className="underline hover:no-underline"
