@@ -177,7 +177,7 @@ export default function EventDetail() {
       )}
 
       {ev.has_per_table === 1 && !ev.table_count && (
-        <div className="mb-5 flex items-center gap-1.5 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+        <div className="mb-5 flex items-center gap-1.5 rounded-xl border border-gold-200 bg-gold-50 px-4 py-3 text-sm text-gold-800">
           <TriangleAlert className="h-4 w-4 shrink-0" />
           Gói đã gắn có định lượng <strong>tính theo số bàn</strong> nhưng lịch tiệc chưa nhập số bàn — các dòng đó
           đang được tính là 0. Nhập số bàn ở phần Thông tin lịch tiệc bên dưới.
@@ -502,7 +502,7 @@ function AdjustmentsCard({
                     <InlineInput
                       type="number"
                       step={0.5}
-                      className={`input input-sm w-20 text-right font-semibold ${a.delta >= 0 ? 'text-emerald-700' : 'text-red-600'
+                      className={`input input-sm w-20 text-right font-semibold ${a.delta >= 0 ? 'text-brand-700' : 'text-red-600'
                         }`}
                       value={a.delta}
                       onCommit={(v) => update.mutate({ adjId: a.id, patch: { delta: Number(v) || 0 } })}
@@ -658,7 +658,7 @@ function RequirementPanel({ data, loading }: { data?: RequirementResult; loading
                           {r.name}
                           {r.adjustment !== 0 && (
                             <span
-                              className={`ml-1.5 text-[11px] ${r.adjustment > 0 ? 'text-emerald-600' : 'text-red-500'}`}
+                              className={`ml-1.5 text-[11px] ${r.adjustment > 0 ? 'text-brand-600' : 'text-red-500'}`}
                             >
                               ({signed(r.adjustment)})
                             </span>
