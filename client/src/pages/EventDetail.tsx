@@ -3,10 +3,11 @@ import { Copy, Gift, Leaf, Trash2, TriangleAlert } from 'lucide-react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { api, qs } from '../lib/api'
-import { fmtDateLong, isPast, money, num, signed, today } from '../lib/format'
+import { fmtDateLong, isPast, money, num, signed } from '../lib/format'
 import { conflictsWith } from '../lib/conflicts'
 import FlowerPicker from '../components/FlowerPicker'
 import { ConflictWarning } from '../components/ConflictWarning'
+import { DateField } from '../components/DateField'
 import { DuplicateEventModal } from '../components/DuplicateEventModal'
 import {
   ConfirmButton,
@@ -207,12 +208,11 @@ export default function EventDetail() {
               </div>
               <div>
                 <label className="label">Ngày tổ chức</label>
-                <input
-                  type="date"
+                <DateField
                   className="input"
                   value={ev.event_date}
-                  min={today()}
-                  onChange={(e) => e.target.value && updateEvent.mutate({ event_date: e.target.value })}
+                  onChange={(v) => updateEvent.mutate({ event_date: v })}
+                  disablePast
                 />
                 {isEventPast && (
                   <p className="mt-1 text-[11px] text-zinc-500">
@@ -245,12 +245,18 @@ export default function EventDetail() {
               </div>
               <div>
                 <label className="label">Tiệc buổi</label>
-                <InlineInput
+                <select
                   className="input"
                   value={ev.time_slot ?? ''}
-                  placeholder="VD: Sáng"
-                  onCommit={(v) => updateEvent.mutate({ time_slot: v.trim() || null })}
-                />
+                  onChange={(e) => updateEvent.mutate({ time_slot: e.target.value || null })}
+                >
+                  <option value="">— Chưa chọn —</option>
+                  {(settings.data?.time_slots ?? ['Sáng', 'Chiều']).map((s) => (
+                    <option key={s} value={s}>
+                      {s}
+                    </option>
+                  ))}
+                </select>
               </div>
               <div className="sm:col-span-2 xl:col-span-1">
                 <label className="label">Ghi chú</label>

@@ -575,18 +575,14 @@ export function CreateEventModal({
           </div>
           <div>
             <label className="label">Tiệc buổi</label>
-            <input
-              className="input"
-              list="slots"
-              value={timeSlot}
-              onChange={(e) => setTimeSlot(e.target.value)}
-              placeholder="Sáng"
-            />
-            <datalist id="slots">
-              {(settings.data?.time_slots ?? []).map((s) => (
-                <option key={s} value={s} />
+            <select className="input" value={timeSlot} onChange={(e) => setTimeSlot(e.target.value)}>
+              <option value="">— Chưa chọn —</option>
+              {(settings.data?.time_slots ?? ['Sáng', 'Chiều']).map((s) => (
+                <option key={s} value={s}>
+                  {s}
+                </option>
               ))}
-            </datalist>
+            </select>
           </div>
           <div>
             <label className="label">Số bàn</label>
