@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS flowers (
   id          INTEGER PRIMARY KEY AUTOINCREMENT,
   name        TEXT    NOT NULL,
   slug        TEXT    NOT NULL UNIQUE,          -- khoá chuẩn hoá (bỏ dấu, thường) để dò trùng
-  unit        TEXT    NOT NULL DEFAULT 'cành',  -- đơn vị DÙNG trong định lượng: cành | bó | kg | cây | chiếc | mét | cục | bịch
+  unit        TEXT    NOT NULL DEFAULT 'cành',  -- đơn vị DÙNG trong định lượng: cành | bó | kg | cây | chiếc | mét | cục | bịch | Thùng
   category    TEXT    NOT NULL DEFAULT 'HOA',   -- HOA | LA | VAT_TU
   -- Đơn vị MUA của nhà cung cấp, khi khác đơn vị dùng (VD dùng "cành", mua "bịch").
   -- NULL = không quy đổi, mua bằng chính đơn vị dùng.

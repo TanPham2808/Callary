@@ -72,7 +72,7 @@ vào bằng địa chỉ IP của máy chủ, ví dụ `http://192.168.1.50:3001
 |---|---|
 | **Tổng quan** | Sự kiện 7 ngày tới, hoa cần mua trong tuần, hoa đang tồn kho |
 | **Lịch sự kiện** | Xem theo **tháng hoặc tuần**, bấm ô ngày để thêm tiệc (sảnh · buổi · số bàn), **kéo thả tiệc sang ngày khác** |
-| **Chi tiết sự kiện** | Nhập **số bàn tiệc**, gắn gói trang trí, bỏ/nhân đôi từng hạng mục, điều chỉnh +/- từng loại hoa, **nhân bản sang ngày khác** |
+| **Chi tiết sự kiện** | Nhập **số bàn tiệc**, gắn gói trang trí (hiện **giá tiền từng gói và tổng**), bỏ/nhân đôi từng hạng mục, điều chỉnh +/- · thay thế · **trừ theo gói** từng loại hoa, **nhân bản sang ngày khác** |
 | **Gói trang trí** | Tạo/sửa/xoá gói, hạng mục và bảng định lượng. Đánh dấu dòng **tính theo số bàn**. Có nút **Nhân bản gói** |
 | **Danh mục hoa** | Sửa tên, nhóm, đơn giá, **đơn vị dùng / đơn vị mua và quy đổi**. Có chức năng **Gộp** hai loại hoa trùng nhau |
 | **Kho hoa dư** | Ghi nhận hoa còn lại sau tiệc để trừ vào lần mua sau |
@@ -97,6 +97,13 @@ không chép theo vì nó gắn với lượng hoa dư của đúng ngày hôm �
 Ở tab **Thay thế** (thay vì **Điều chỉnh**) trong phần điều chỉnh linh động của sự kiện,
 chọn hoa cũ → hoa mới → số lượng: hệ thống tự tạo cặp điều chỉnh (trừ hoa cũ, cộng hoa mới)
 mà không cần nhập tay hai dòng riêng.
+
+**Trừ theo gói trong điều chỉnh linh động**
+Ở tab **Trừ theo gói**, chọn một gói bất kỳ trong danh mục và số lần áp dụng → bấm
+**Xem trước** để hệ thống tự tính sẵn danh sách hoa cần trừ (định lượng của gói đó, nhân
+theo số bàn tiệc nếu có dòng tính theo bàn, bỏ qua dòng "Phương án thay thế"). Xem/sửa số
+lượng hoặc bỏ bớt dòng ngay trên bảng xem trước, rồi bấm **Lưu điều chỉnh** — tiện khi
+muốn trừ nguyên một gói mà không phải tự tra và nhập tay từng loại hoa.
 
 **Cảnh báo trùng chỗ**
 Khi hai tiệc bị xếp cùng ngày, cùng sảnh, cùng ca, hệ thống tô viền đỏ ⚠ lên chip trên
@@ -131,7 +138,7 @@ chuyển thành **Đã xong**, không phải sửa tay.
 ## Cách tính toán
 
 ```
-Nhu cầu  = Σ (định lượng trong gói × số lượng hạng mục × số lần áp dụng gói
+Nhu cầu  = Σ (định lượng trong gói × số lượng hạng mục
                × số bàn tiệc — nếu dòng đó đánh dấu "tính theo số bàn")
            + Σ điều chỉnh linh động của sự kiện
 Cần mua  = max(0, Nhu cầu − Tồn kho)                     (theo đơn vị dùng)
@@ -147,6 +154,12 @@ Thành tiền = Đặt NCC × đơn giá                            (giá theo �
   dấu dương để thêm.
 - Nếu gói đã gắn có dòng **tính theo số bàn** mà lịch tiệc chưa nhập số bàn, các dòng
   đó tính là 0 và trang chi tiết sự kiện hiện cảnh báo nhắc nhập.
+- Mỗi gói chỉ tính **một lần áp dụng** (không còn tuỳ chỉnh nhân thêm cho cả gói); muốn
+  nhân đôi thì tăng số lượng ở từng hạng mục bên trong gói.
+- Ở mục **Gói trang trí đã gắn**, mỗi gói còn hiện thêm **giá tiền ước tính** = SL hoa
+  (trong các hạng mục đang chọn, cũng loại trừ **Phương án thay thế**) × đơn giá, quy đổi
+  theo đơn vị mua; cộng dồn thành **tổng** cho cả sự kiện. Đây là số tham khảo nhanh, tính
+  theo phép chia thường (không làm tròn lên như **Đặt NCC** ở trang Báo cáo).
 
 ---
 

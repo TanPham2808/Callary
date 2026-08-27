@@ -23,6 +23,8 @@ export function migrate() {
   addMissingColumns()
   seedSettings()
   renameLegacyTimeSlots()
+  addMissingUnits()
+  normalizePackageQuantities()
 }
 
 /**
@@ -54,14 +56,36 @@ function renameLegacyTimeSlots() {
   db.prepare("UPDATE events SET time_slot = 'Chiều' WHERE time_slot = 'Tối'").run()
 }
 
+/** DB đã tồn tại từ trước có thể đã seed `units` thiếu "Thùng" — bổ sung, idempotent. */
+function addMissingUnits() {
+  const row = db.prepare("SELECT value FROM settings WHERE key = 'units'").get() as
+    | { value: string }
+    | undefined
+  if (!row) return
+  try {
+    const units = JSON.parse(row.value) as string[]
+    if (!units.includes('Thùng')) {
+      units.push('Thùng')
+      db.prepare("UPDATE settings SET value = ? WHERE key = 'units'").run(JSON.stringify(units))
+    }
+  } catch {
+    /* dữ liệu cũ không hợp lệ — bỏ qua */
+  }
+}
+
 function seedSettings() {
   const defaults: Record<string, string> = {
     halls: JSON.stringify(['Lầu 2', 'Lầu 3', 'Lầu 4', 'Lầu 5', 'Lầu 6']),
     time_slots: JSON.stringify(['Sáng', 'Chiều']),
-    units: JSON.stringify(['cành', 'bó', 'kg', 'cây', 'chiếc', 'mét', 'cục', 'bịch']),
+    units: JSON.stringify(['cành', 'bó', 'kg', 'cây', 'chiếc', 'mét', 'cục', 'bịch', 'Thùng']),
   }
   const stmt = db.prepare('INSERT OR IGNORE INTO settings (key, value) VALUES (?, ?)')
   for (const [key, value] of Object.entries(defaults)) stmt.run(key, value)
+}
+
+/** "Số lần áp dụng" của gói đã bỏ khỏi giao diện — chuẩn hoá các giá trị cũ khác 1 về lại 1, một lần. */
+function normalizePackageQuantities() {
+  db.prepare('UPDATE event_packages SET quantity = 1 WHERE quantity <> 1').run()
 }
 
 /** Bọc một hàm trong transaction. */

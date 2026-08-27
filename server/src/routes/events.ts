@@ -4,6 +4,7 @@ import { db, tx } from '../db.ts'
 import { ah, badRequest, id, notFound, parseBody } from '../lib/http.ts'
 import { isPastDate, todayLocal } from '../lib/date.ts'
 import { computeRequirement } from '../services/calc.ts'
+import { round } from '../lib/text.ts'
 import type { DecorEvent, EventPackage, PackageItem } from '../../../shared/types.ts'
 
 const router = Router()
@@ -262,20 +263,6 @@ router.post(
   }),
 )
 
-router.put(
-  '/packages/:epId',
-  ah((req, res) => {
-    const epId = id(req.params.epId)
-    const { quantity } = parseBody(z.object({ quantity: z.number().min(0) }), req.body)
-    const ep = db.prepare('SELECT event_id FROM event_packages WHERE id = ?').get(epId) as
-      | { event_id: number }
-      | undefined
-    if (!ep) throw notFound('Không tìm thấy gói trong lịch tiệc này')
-    db.prepare('UPDATE event_packages SET quantity = ? WHERE id = ?').run(quantity, epId)
-    res.json(loadEvent(ep.event_id))
-  }),
-)
-
 router.delete(
   '/packages/:epId',
   ah((req, res) => {
@@ -397,6 +384,38 @@ router.post(
   }),
 )
 
+/** Trừ hàng loạt — dùng khi trừ toàn bộ định lượng hoa của 1 gói đã xem trước ở client. */
+router.post(
+  '/:id/adjustments/bulk',
+  ah((req, res) => {
+    const eventId = id(req.params.id)
+    const data = parseBody(
+      z.object({
+        items: z
+          .array(
+            z.object({
+              flower_id: z.number().int().positive(),
+              delta: z.number(),
+              reason: z.string().trim().nullable().optional(),
+            }),
+          )
+          .min(1),
+      }),
+      req.body,
+    )
+    tx(() => {
+      const insert = db.prepare(
+        'INSERT INTO event_adjustments (event_id, flower_id, delta, reason) VALUES (?, ?, ?, ?)',
+      )
+      for (const it of data.items) {
+        if (it.delta === 0) continue
+        insert.run(eventId, it.flower_id, it.delta, it.reason ?? null)
+      }
+    })
+    res.status(201).json(loadEvent(eventId))
+  }),
+)
+
 router.put(
   '/adjustments/:adjId',
   ah((req, res) => {
@@ -443,7 +462,29 @@ export function loadEvent(eventId: number): DecorEvent {
     )
     .all(eventId) as EventPackage[]
 
+  // Giá ước tính từng gói = SL hoa (trong các hạng mục đang chọn) × đơn giá, quy đổi
+  // sang đơn vị mua nếu có. Không làm tròn lên vì đây là ước tính, không phải đơn đặt hàng.
+  const amounts = db
+    .prepare(
+      `SELECT ep.id AS event_package_id,
+              SUM(itf.quantity * epi.quantity * ep.quantity *
+                  CASE WHEN itf.per_table = 1 THEN COALESCE(e.table_count, 0) ELSE 1 END
+                  / (CASE WHEN f.order_unit IS NOT NULL AND f.order_unit != f.unit AND f.order_factor > 1
+                          THEN f.order_factor ELSE 1 END)
+                  * f.price) AS amount
+         FROM event_packages ep
+         JOIN events e ON e.id = ep.event_id
+         JOIN event_package_items epi ON epi.event_package_id = ep.id AND epi.is_included = 1
+         JOIN item_flowers itf ON itf.package_item_id = epi.package_item_id
+         JOIN flowers f ON f.id = itf.flower_id
+        WHERE ep.event_id = ? AND itf.is_optional = 0
+        GROUP BY ep.id`,
+    )
+    .all(eventId) as { event_package_id: number; amount: number }[]
+  const amountByPkg = new Map(amounts.map((r) => [r.event_package_id, r.amount]))
+
   for (const ep of ev.packages) {
+    ep.estimated_amount = round(amountByPkg.get(ep.id) ?? 0, 0)
     ep.items = db
       .prepare('SELECT * FROM event_package_items WHERE event_package_id = ? ORDER BY sort_order, id')
       .all(ep.id) as any[]

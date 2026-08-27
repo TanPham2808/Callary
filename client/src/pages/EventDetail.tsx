@@ -92,12 +92,6 @@ export default function EventDetail() {
     onSuccess: refresh,
     onError,
   })
-  const updatePackage = useMutation({
-    mutationFn: ({ epId, quantity }: { epId: number; quantity: number }) =>
-      api.put(`/api/events/packages/${epId}`, { quantity }),
-    onSuccess: refresh,
-    onError,
-  })
   const removePackage = useMutation({
     mutationFn: (epId: number) => api.del(`/api/events/packages/${epId}`),
     onSuccess: refresh,
@@ -289,6 +283,11 @@ export default function EventDetail() {
             <div className="card-head">
               <h2 className="card-title">Gói trang trí đã gắn</h2>
               <div className="flex items-center gap-2">
+                {(ev.packages ?? []).length > 0 && (
+                  <span className="text-sm font-semibold text-brand-700">
+                    Tổng: {money((ev.packages ?? []).reduce((s, ep) => s + (ep.estimated_amount ?? 0), 0))}
+                  </span>
+                )}
                 <select
                   className="input input-sm max-w-52"
                   value=""
@@ -315,17 +314,7 @@ export default function EventDetail() {
                 <div key={ep.id} className="px-4 py-3">
                   <div className="mb-2 flex flex-wrap items-center gap-3">
                     <h3 className="font-semibold text-zinc-900">{ep.package_name}</h3>
-                    <label className="flex items-center gap-1.5 text-xs text-zinc-500">
-                      Số lần áp dụng
-                      <InlineInput
-                        type="number"
-                        min={0}
-                        step={1}
-                        className="input input-sm w-16 text-right"
-                        value={ep.quantity}
-                        onCommit={(v) => updatePackage.mutate({ epId: ep.id, quantity: Number(v) || 0 })}
-                      />
-                    </label>
+                    <span className="text-sm font-medium text-zinc-600">{money(ep.estimated_amount)}</span>
                     <Link className="text-xs text-brand-600 hover:underline" to={`/packages/${ep.package_id}`}>
                       Xem định lượng gói
                     </Link>
@@ -415,7 +404,7 @@ function AdjustmentsCard({
   onChanged: () => void
   onError: (e: Error) => void
 }) {
-  const [mode, setMode] = useState<'delta' | 'replace'>('delta')
+  const [mode, setMode] = useState<'delta' | 'replace' | 'package'>('delta')
 
   const [flowerId, setFlowerId] = useState<number | null>(null)
   const [delta, setDelta] = useState('')
@@ -425,6 +414,23 @@ function AdjustmentsCard({
   const [toId, setToId] = useState<number | null>(null)
   const [replaceQty, setReplaceQty] = useState('')
   const [replaceReason, setReplaceReason] = useState('')
+
+  const [pkgId, setPkgId] = useState<number | null>(null)
+  const [pkgQty, setPkgQty] = useState('1')
+  const [pkgReason, setPkgReason] = useState('')
+  const [pkgPreview, setPkgPreview] = useState<{ flower_id: number; name: string; unit: string; qty: string }[] | null>(
+    null,
+  )
+
+  const packages = useQuery({
+    queryKey: ['packages'],
+    queryFn: () => api.get<DecorPackage[]>('/api/packages'),
+  })
+  const pkgDetail = useQuery({
+    queryKey: ['packages', pkgId],
+    queryFn: () => api.get<DecorPackage>(`/api/packages/${pkgId}`),
+    enabled: pkgId !== null,
+  })
 
   const add = useMutation({
     mutationFn: () =>
@@ -469,11 +475,48 @@ function AdjustmentsCard({
     onSuccess: onChanged,
     onError,
   })
+  const bulkSubtract = useMutation({
+    mutationFn: () =>
+      api.post(`/api/events/${event.id}/adjustments/bulk`, {
+        items: (pkgPreview ?? [])
+          .filter((r) => Number(r.qty) > 0)
+          .map((r) => ({ flower_id: r.flower_id, delta: -Math.abs(Number(r.qty)), reason: pkgReason.trim() || null })),
+      }),
+    onSuccess: () => {
+      onChanged()
+      setPkgId(null)
+      setPkgQty('1')
+      setPkgReason('')
+      setPkgPreview(null)
+    },
+    onError,
+  })
+
+  /** Gộp định lượng hoa của gói đã chọn thành các dòng preview (bỏ hoa is_optional), sẵn sàng để sửa/xoá trước khi lưu. */
+  function buildPackagePreview() {
+    const detail = pkgDetail.data
+    if (!detail) return
+    const applyCount = Number(pkgQty) || 0
+    const map = new Map<number, { flower_id: number; name: string; unit: string; qty: number }>()
+    for (const item of detail.items ?? []) {
+      for (const f of item.flowers ?? []) {
+        if (f.is_optional) continue
+        const mult = (f.per_table ? event.table_count ?? 0 : 1) * applyCount
+        const qty = f.quantity * mult
+        if (qty <= 0) continue
+        const cur = map.get(f.flower_id)
+        if (cur) cur.qty += qty
+        else map.set(f.flower_id, { flower_id: f.flower_id, name: f.flower_name ?? '', unit: f.flower_unit ?? '', qty })
+      }
+    }
+    setPkgPreview([...map.values()].map((r) => ({ ...r, qty: String(Math.round(r.qty * 100) / 100) })))
+  }
 
   const rows = event.adjustments ?? []
   const canAdd = flowerId !== null && Number(delta) !== 0 && !Number.isNaN(Number(delta))
   const canReplace =
     fromId !== null && toId !== null && fromId !== toId && Number(replaceQty) > 0 && !Number.isNaN(Number(replaceQty))
+  const canBulkSubtract = (pkgPreview ?? []).some((r) => Number(r.qty) > 0)
 
   return (
     <div className="card">
@@ -547,9 +590,132 @@ function AdjustmentsCard({
         >
           Thay thế
         </button>
+        <button
+          className={`btn-sm rounded-full px-3 ${mode === 'package' ? 'btn-primary' : 'btn-ghost'}`}
+          onClick={() => setMode('package')}
+        >
+          Trừ theo gói
+        </button>
       </div>
 
-      {mode === 'delta' ? (
+      {mode === 'package' ? (
+        <>
+          <div className="flex flex-wrap items-end gap-2 px-4 py-3">
+            <div className="min-w-48 flex-1">
+              <label className="label">Gói trang trí</label>
+              <select
+                className="input input-sm"
+                value={pkgId ?? ''}
+                onChange={(e) => {
+                  setPkgId(e.target.value ? Number(e.target.value) : null)
+                  setPkgPreview(null)
+                }}
+              >
+                <option value="">— Chọn gói —</option>
+                {(packages.data ?? []).map((p) => (
+                  <option key={p.id} value={p.id}>
+                    {p.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="w-32">
+              <label className="label">Số lần áp dụng</label>
+              <input
+                className="input input-sm text-right"
+                type="number"
+                step={1}
+                min={0}
+                value={pkgQty}
+                onChange={(e) => {
+                  setPkgQty(e.target.value)
+                  setPkgPreview(null)
+                }}
+              />
+            </div>
+            <button
+              className="btn-ghost btn-sm"
+              disabled={pkgId === null || pkgDetail.isFetching}
+              onClick={buildPackagePreview}
+            >
+              Xem trước
+            </button>
+            <div className="min-w-48 flex-1">
+              <label className="label">Lý do</label>
+              <input
+                className="input input-sm"
+                value={pkgReason}
+                onChange={(e) => setPkgReason(e.target.value)}
+                placeholder="VD: khách huỷ bớt gói Cổng hoa"
+              />
+            </div>
+          </div>
+
+          {pkgPreview && (
+            <div className="px-4 pb-3">
+              <div className="overflow-x-auto rounded-lg border border-zinc-200">
+                <table className="table min-w-[420px]">
+                  <thead>
+                    <tr>
+                      <th>Loại hoa</th>
+                      <th className="w-32">Số lượng trừ</th>
+                      <th className="w-12"></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {pkgPreview.map((r, i) => (
+                      <tr key={r.flower_id}>
+                        <td className="font-medium">{r.name}</td>
+                        <td>
+                          <div className="flex items-center gap-1">
+                            <input
+                              className="input input-sm w-20 text-right"
+                              type="number"
+                              step={0.5}
+                              min={0}
+                              value={r.qty}
+                              onChange={(e) => {
+                                const v = e.target.value
+                                setPkgPreview((prev) => prev!.map((row, idx) => (idx === i ? { ...row, qty: v } : row)))
+                              }}
+                            />
+                            <span className="text-xs text-zinc-400">{r.unit}</span>
+                          </div>
+                        </td>
+                        <td className="text-right">
+                          <button
+                            className="btn-ghost btn-sm text-red-600"
+                            onClick={() => setPkgPreview((prev) => prev!.filter((_, idx) => idx !== i))}
+                            aria-label="Bỏ dòng"
+                          >
+                            <Trash2 className="h-3.5 w-3.5" />
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                    {pkgPreview.length === 0 && (
+                      <tr>
+                        <td colSpan={3} className="py-3 text-center text-xs text-zinc-400">
+                          Không có hoa nào để trừ (đã bỏ hết dòng, hoặc gói không có định lượng phù hợp)
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+              <div className="flex justify-end pt-2">
+                <button
+                  className="btn-primary btn-sm"
+                  disabled={!canBulkSubtract || bulkSubtract.isPending}
+                  onClick={() => bulkSubtract.mutate()}
+                >
+                  Lưu điều chỉnh
+                </button>
+              </div>
+            </div>
+          )}
+        </>
+      ) : mode === 'delta' ? (
         <div className="flex flex-wrap items-end gap-2 px-4 py-3">
           <div className="min-w-48 flex-1">
             <label className="label">Loại hoa</label>

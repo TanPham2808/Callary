@@ -2,10 +2,10 @@ import { useMemo, useState } from 'react'
 import { CalendarDays, CircleCheck, Download, FileText, Flower2, PackageCheck, Wallet } from 'lucide-react'
 import { useSearchParams } from 'react-router-dom'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { api, qs } from '../lib/api'
+import { api, ApiError, downloadFile, qs } from '../lib/api'
 import { addDays, endOfMonth, fmtDate, fmtDateTime, money, num, startOfMonth, startOfWeek, today } from '../lib/format'
 import { DateField } from '../components/DateField'
-import { Empty, ErrorBox, Loading, PageHeader, Stat } from '../components/ui'
+import { Empty, ErrorBox, Loading, PageHeader, Stat, useToast } from '../components/ui'
 import { CATEGORY_LABEL, CATEGORY_ORDER, type DailyStat, type OrderBatch, type RequirementResult } from '@shared/types'
 
 type Preset = 'today' | 'week' | 'month' | 'custom'
@@ -13,6 +13,7 @@ type Preset = 'today' | 'week' | 'month' | 'custom'
 export default function Reports() {
   const [params, setParams] = useSearchParams()
   const t = today()
+  const toast = useToast()
 
   const [from, setFrom] = useState(params.get('from') ?? t)
   const [to, setTo] = useState(params.get('to') ?? t)
@@ -88,6 +89,15 @@ export default function Reports() {
   const exportUrl = '/api/export' + qs(args)
   const exportWordUrl = '/api/export/word' + qs(args)
 
+  const exportExcel = useMutation({
+    mutationFn: () => downloadFile(exportUrl, 'BaoCaoHoa.xlsx'),
+    onError: (err) => toast.show(err instanceof ApiError ? err.message : 'Xuất file thất bại', 'error'),
+  })
+  const exportWord = useMutation({
+    mutationFn: () => downloadFile(exportWordUrl, 'DonHangHoa.docx'),
+    onError: (err) => toast.show(err instanceof ApiError ? err.message : 'Xuất file thất bại', 'error'),
+  })
+
   const totals = useMemo(() => {
     const src = report.data?.rows ?? []
     return {
@@ -124,24 +134,28 @@ export default function Reports() {
                 )}
               </button>
             )}
-            <a
+            <button
+              type="button"
               className="btn-primary"
-              href={exportUrl}
+              disabled={exportExcel.isPending}
               onClick={() => {
                 setParams({ from, to })
+                exportExcel.mutate()
               }}
             >
               <Download className="h-4 w-4" /> Xuất file Excel
-            </a>
-            <a
+            </button>
+            <button
+              type="button"
               className="btn-success"
-              href={exportWordUrl}
+              disabled={exportWord.isPending}
               onClick={() => {
                 setParams({ from, to })
+                exportWord.mutate()
               }}
             >
               <Download className="h-4 w-4" /> Xuất file Word
-            </a>
+            </button>
           </div>
         }
       />
@@ -421,6 +435,8 @@ export default function Reports() {
           </div>
         </div>
       )}
+
+      {toast.node}
     </>
   )
 }

@@ -50,7 +50,7 @@ export function parseQuantityText(raw: string): ParsedQuantity | null {
   }
 
   // <số><đơn vị tuỳ chọn> <tên>   — số có thể là 12 | 0.5 | 0,5 | 1/2
-  const m = text.match(/^(\d+(?:[.,]\d+)?(?:\/\d+)?)\s*(kg|g|bó|bo|cây|cay|mét|met|m|bịch|bich)?\s+(.*)$/i)
+  const m = text.match(/^(\d+(?:[.,]\d+)?(?:\/\d+)?)\s*(kg|g|bó|bo|cây|cay|mét|met|m|bịch|bich|thùng|thung)?\s+(.*)$/i)
   if (!m) {
     // Không có số → coi như số lượng 1 (VD "Chữ neon")
     return { quantity: 1, name: text, unit: null, isOptional, hadNoNumber: true }
@@ -87,6 +87,8 @@ function normalizeUnit(u: string): string {
     m: 'mét',
     bich: 'bịch',
     bịch: 'bịch',
+    thung: 'Thùng',
+    thùng: 'Thùng',
   }
   return map[u.toLowerCase()] ?? 'cành'
 }

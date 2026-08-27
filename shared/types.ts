@@ -126,6 +126,8 @@ export interface EventPackage {
   sort_order: number
   package_name?: string
   items?: EventPackageItem[]
+  /** Giá ước tính của gói = SL hoa (trong các hạng mục đang chọn) × đơn giá, tính sẵn ở server. */
+  estimated_amount?: number
 }
 
 export interface EventAdjustment {
