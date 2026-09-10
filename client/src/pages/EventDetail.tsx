@@ -854,8 +854,15 @@ function RequirementPanel({ data, loading }: { data?: RequirementResult; loading
                             </span>
                           )}
                         </td>
-                        <td className="w-24 whitespace-nowrap text-right text-sm tabular-nums">
-                          <strong>{num(r.need)}</strong> <span className="text-xs text-zinc-400">{r.unit}</span>
+                        <td className="w-28 whitespace-nowrap text-right text-sm tabular-nums">
+                          <div>
+                            <strong>{num(r.need)}</strong> <span className="text-xs text-zinc-400">{r.unit}</span>
+                          </div>
+                          {r.order_factor > 1 && (
+                            <div className="text-[11px] text-zinc-400">
+                              ≈ {num(r.need / r.order_factor)} {r.order_unit}
+                            </div>
+                          )}
                         </td>
                       </tr>
                     ))}
