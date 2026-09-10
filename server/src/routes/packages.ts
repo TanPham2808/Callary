@@ -2,6 +2,7 @@ import { Router } from 'express'
 import { z } from 'zod'
 import { db, tx } from '../db.ts'
 import { ah, id, notFound, parseBody } from '../lib/http.ts'
+import { assertPackagePerTableConsistent } from '../services/per-table.ts'
 import type { DecorPackage, ItemFlower, PackageItem } from '../../../shared/types.ts'
 
 const router = Router()
@@ -216,32 +217,47 @@ router.put(
 
 /* ------------------------------ ĐỊNH LƯỢNG ------------------------------- */
 
+/** Gói chứa hạng mục — cần để kiểm tra định lượng theo bàn trên phạm vi cả gói. */
+function packageIdOfItem(itemId: number): number {
+  const row = db.prepare('SELECT package_id FROM package_items WHERE id = ?').get(itemId) as
+    | { package_id: number }
+    | undefined
+  if (!row) throw notFound('Không tìm thấy hạng mục này')
+  return row.package_id
+}
+
 router.post(
   '/items/:itemId/flowers',
   ah((req, res) => {
     const itemId = id(req.params.itemId)
     const data = parseBody(itemFlowerSchema, req.body)
-    const maxOrder = (
-      db.prepare('SELECT COALESCE(MAX(sort_order), 0) AS m FROM item_flowers WHERE package_item_id = ?').get(itemId) as {
-        m: number
-      }
-    ).m
-    const info = db
-      .prepare(
-        `INSERT INTO item_flowers (package_item_id, flower_id, quantity, per_table, is_optional, alt_group, sort_order, note)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-      )
-      .run(
-        itemId,
-        data.flower_id,
-        data.quantity,
-        data.per_table ? 1 : 0,
-        data.is_optional ? 1 : 0,
-        data.alt_group ?? null,
-        data.sort_order ?? maxOrder + 10,
-        data.note ?? null,
-      )
-    res.status(201).json(db.prepare('SELECT * FROM item_flowers WHERE id = ?').get(info.lastInsertRowid))
+    // Ghi trước rồi mới kiểm tra: nếu định lượng theo bàn lệch với hạng mục
+    // khác trong cùng gói thì transaction rollback, dữ liệu không bị bẩn.
+    const row = tx(() => {
+      const maxOrder = (
+        db
+          .prepare('SELECT COALESCE(MAX(sort_order), 0) AS m FROM item_flowers WHERE package_item_id = ?')
+          .get(itemId) as { m: number }
+      ).m
+      const info = db
+        .prepare(
+          `INSERT INTO item_flowers (package_item_id, flower_id, quantity, per_table, is_optional, alt_group, sort_order, note)
+           VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+        )
+        .run(
+          itemId,
+          data.flower_id,
+          data.quantity,
+          data.per_table ? 1 : 0,
+          data.is_optional ? 1 : 0,
+          data.alt_group ?? null,
+          data.sort_order ?? maxOrder + 10,
+          data.note ?? null,
+        )
+      assertPackagePerTableConsistent(packageIdOfItem(itemId))
+      return db.prepare('SELECT * FROM item_flowers WHERE id = ?').get(info.lastInsertRowid)
+    })
+    res.status(201).json(row)
   }),
 )
 
@@ -252,21 +268,25 @@ router.put(
     const data = parseBody(itemFlowerSchema.partial(), req.body)
     const cur = db.prepare('SELECT * FROM item_flowers WHERE id = ?').get(rowId) as ItemFlower | undefined
     if (!cur) throw notFound('Không tìm thấy dòng định lượng này')
-    db.prepare(
-      `UPDATE item_flowers
-          SET flower_id = ?, quantity = ?, per_table = ?, is_optional = ?, alt_group = ?, sort_order = ?, note = ?
-        WHERE id = ?`,
-    ).run(
-      data.flower_id ?? cur.flower_id,
-      data.quantity ?? cur.quantity,
-      data.per_table !== undefined ? (data.per_table ? 1 : 0) : cur.per_table,
-      data.is_optional !== undefined ? (data.is_optional ? 1 : 0) : cur.is_optional,
-      data.alt_group !== undefined ? data.alt_group : cur.alt_group,
-      data.sort_order ?? cur.sort_order,
-      data.note !== undefined ? data.note : cur.note,
-      rowId,
-    )
-    res.json(db.prepare('SELECT * FROM item_flowers WHERE id = ?').get(rowId))
+    const row = tx(() => {
+      db.prepare(
+        `UPDATE item_flowers
+            SET flower_id = ?, quantity = ?, per_table = ?, is_optional = ?, alt_group = ?, sort_order = ?, note = ?
+          WHERE id = ?`,
+      ).run(
+        data.flower_id ?? cur.flower_id,
+        data.quantity ?? cur.quantity,
+        data.per_table !== undefined ? (data.per_table ? 1 : 0) : cur.per_table,
+        data.is_optional !== undefined ? (data.is_optional ? 1 : 0) : cur.is_optional,
+        data.alt_group !== undefined ? data.alt_group : cur.alt_group,
+        data.sort_order ?? cur.sort_order,
+        data.note !== undefined ? data.note : cur.note,
+        rowId,
+      )
+      assertPackagePerTableConsistent(packageIdOfItem(cur.package_item_id))
+      return db.prepare('SELECT * FROM item_flowers WHERE id = ?').get(rowId)
+    })
+    res.json(row)
   }),
 )
 

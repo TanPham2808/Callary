@@ -45,8 +45,16 @@ function orderFactor(orderUnit: string | null, factor: number, unit: string): nu
 }
 
 /**
- * Nhu cầu hoa = Σ (định lượng × số lượng hạng mục × số lượng gói × số bàn nếu
- * dòng đó tính theo bàn) + Σ điều chỉnh.
+ * Nhu cầu hoa = Σ dòng thường + Σ dòng tính theo bàn + Σ điều chỉnh, trong đó:
+ *
+ *   dòng thường   = định lượng × số lượng hạng mục × số lượng gói
+ *   dòng theo bàn = định lượng mỗi bàn × số bàn của tiệc — TÍNH MỘT LẦN CHO CẢ TIỆC
+ *
+ * Hoa tính theo bàn là thuộc tính của tiệc chứ không của hạng mục: Lan trắng
+ * 1 cành/bàn khai ở cả Lối đi, Cổng và Sảnh tiệc của một tiệc 95 bàn vẫn chỉ là
+ * 95 cành, không phải 3 × 95. Vì vậy phần này gộp theo (tiệc × loại hoa) trước
+ * rồi mới cộng qua các tiệc, và không nhân số lượng hạng mục hay số lượng gói.
+ * Xem services/per-table.ts để biết cách chặn dữ liệu khai lệch nhau.
  *
  * Sự kiện có trạng thái HUY luôn bị loại khỏi mọi phép tính.
  * Số cần mua được quy đổi sang đơn vị mua của nhà cung cấp ở bước cuối.
@@ -69,18 +77,39 @@ export function computeRequirement(from: string, to: string, opts: CalcOptions =
   }
   const eventWhere = where.join(' AND ')
 
-  // 1) Nhu cầu từ định lượng gói
+  const optionalWhere = includeOptional ? '' : 'AND itf.is_optional = 0'
+
+  // 1a) Nhu cầu từ các dòng định lượng thường — cộng dồn qua mọi hạng mục.
   const baseRows = db
     .prepare(
       `SELECT ${FLOWER_COLS},
-              SUM(itf.quantity * epi.quantity * ep.quantity *
-                  CASE WHEN itf.per_table = 1 THEN COALESCE(e.table_count, 0) ELSE 1 END) AS qty
+              SUM(itf.quantity * epi.quantity * ep.quantity) AS qty
          FROM events e
          JOIN event_packages      ep  ON ep.event_id = e.id
          JOIN event_package_items epi ON epi.event_package_id = ep.id AND epi.is_included = 1
          JOIN item_flowers        itf ON itf.package_item_id = epi.package_item_id
          JOIN flowers             f   ON f.id = itf.flower_id
-        WHERE ${eventWhere} ${includeOptional ? '' : 'AND itf.is_optional = 0'}
+        WHERE ${eventWhere} AND itf.per_table = 0 ${optionalWhere}
+        GROUP BY f.id`,
+    )
+    .all(...params) as RawRow[]
+
+  // 1b) Nhu cầu từ các dòng tính theo bàn — mỗi loại hoa chỉ tính một lần cho
+  // mỗi tiệc (truy vấn con gộp theo tiệc × hoa), rồi mới cộng qua các tiệc.
+  // MAX() chỉ là phòng hờ cho dữ liệu cũ khai lệch: per-table.ts đã chặn từ lúc
+  // nhập nên bình thường mọi hạng mục ghi cùng một số.
+  const perTableRows = db
+    .prepare(
+      `SELECT ${FLOWER_COLS}, SUM(t.qty) AS qty
+         FROM (SELECT e.id AS event_id, itf.flower_id,
+                      MAX(itf.quantity) * COALESCE(e.table_count, 0) AS qty
+                 FROM events e
+                 JOIN event_packages      ep  ON ep.event_id = e.id
+                 JOIN event_package_items epi ON epi.event_package_id = ep.id AND epi.is_included = 1
+                 JOIN item_flowers        itf ON itf.package_item_id = epi.package_item_id
+                WHERE ${eventWhere} AND itf.per_table = 1 ${optionalWhere}
+                GROUP BY e.id, itf.flower_id) t
+         JOIN flowers f ON f.id = t.flower_id
         GROUP BY f.id`,
     )
     .all(...params) as RawRow[]
@@ -128,7 +157,9 @@ export function computeRequirement(from: string, to: string, opts: CalcOptions =
     return row
   }
 
-  for (const r of baseRows) ensure(r).base = round(r.qty ?? 0)
+  // base gộp cả hai nguồn (dòng thường + dòng theo bàn) nên phải cộng dồn.
+  for (const r of baseRows) ensure(r).base = round(ensure(r).base + (r.qty ?? 0))
+  for (const r of perTableRows) ensure(r).base = round(ensure(r).base + (r.qty ?? 0))
   for (const r of adjRows) ensure(r).adjustment = round(r.qty ?? 0)
 
   const stock = useStock ? loadStock() : new Map<number, number>()
@@ -194,7 +225,14 @@ export interface EventBreakdown {
     items: {
       item_name: string
       item_quantity: number
-      flowers: { name: string; unit: string; quantity: number; per_table: number; is_optional: number }[]
+      flowers: {
+        flower_id: number
+        name: string
+        unit: string
+        quantity: number
+        per_table: number
+        is_optional: number
+      }[]
     }[]
   }[]
   adjustments: { name: string; unit: string; delta: number; reason: string | null }[]
@@ -246,11 +284,12 @@ export function loadEventBreakdown(from: string, to: string, hall?: string): Eve
           flowers: it.package_item_id
             ? (db
                 .prepare(
-                  `SELECT f.name, f.unit, i.quantity, i.per_table, i.is_optional
+                  `SELECT f.id AS flower_id, f.name, f.unit, i.quantity, i.per_table, i.is_optional
                      FROM item_flowers i JOIN flowers f ON f.id = i.flower_id
                     WHERE i.package_item_id = ? ORDER BY i.sort_order, i.id`,
                 )
                 .all(it.package_item_id) as {
+                flower_id: number
                 name: string
                 unit: string
                 quantity: number

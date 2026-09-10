@@ -492,24 +492,48 @@ function AdjustmentsCard({
     onError,
   })
 
-  /** Gộp định lượng hoa của gói đã chọn thành các dòng preview (bỏ hoa is_optional), sẵn sàng để sửa/xoá trước khi lưu. */
+  /**
+   * Gộp định lượng hoa của gói đã chọn thành các dòng preview (bỏ hoa is_optional),
+   * sẵn sàng để sửa/xoá trước khi lưu.
+   *
+   * Dòng tính theo bàn chỉ tính một lần cho cả tiệc (định lượng × số bàn), không
+   * cộng dồn giữa các hạng mục và không nhân số lần áp gói — giống hệt cách
+   * server tính trong services/calc.ts.
+   */
   function buildPackagePreview() {
     const detail = pkgDetail.data
     if (!detail) return
     const applyCount = Number(pkgQty) || 0
+    const tables = event.table_count ?? 0
     const map = new Map<number, { flower_id: number; name: string; unit: string; qty: number }>()
+    const perTable = new Map<number, number>()
     for (const item of detail.items ?? []) {
       for (const f of item.flowers ?? []) {
         if (f.is_optional) continue
-        const mult = (f.per_table ? event.table_count ?? 0 : 1) * applyCount
-        const qty = f.quantity * mult
-        if (qty <= 0) continue
-        const cur = map.get(f.flower_id)
-        if (cur) cur.qty += qty
-        else map.set(f.flower_id, { flower_id: f.flower_id, name: f.flower_name ?? '', unit: f.flower_unit ?? '', qty })
+        const entry = map.get(f.flower_id)
+        const row =
+          entry ??
+          { flower_id: f.flower_id, name: f.flower_name ?? '', unit: f.flower_unit ?? '', qty: 0 }
+        if (!entry) map.set(f.flower_id, row)
+        if (f.per_table) {
+          // Giữ định lượng lớn nhất thay vì cộng dồn; catalog đã bắt các hạng
+          // mục ghi giống nhau nên bình thường chỉ có một giá trị.
+          const prev = perTable.get(f.flower_id) ?? 0
+          const qty = f.quantity * tables
+          if (qty > prev) {
+            perTable.set(f.flower_id, qty)
+            row.qty += qty - prev
+          }
+        } else {
+          row.qty += f.quantity * applyCount
+        }
       }
     }
-    setPkgPreview([...map.values()].map((r) => ({ ...r, qty: String(Math.round(r.qty * 100) / 100) })))
+    setPkgPreview(
+      [...map.values()]
+        .filter((r) => r.qty > 0)
+        .map((r) => ({ ...r, qty: String(Math.round(r.qty * 100) / 100) })),
+    )
   }
 
   const rows = event.adjustments ?? []

@@ -138,8 +138,10 @@ chuyển thành **Đã xong**, không phải sửa tay.
 ## Cách tính toán
 
 ```
-Nhu cầu  = Σ (định lượng trong gói × số lượng hạng mục
-               × số bàn tiệc — nếu dòng đó đánh dấu "tính theo số bàn")
+Nhu cầu  = Σ (định lượng trong gói × số lượng hạng mục)      — dòng thường
+           + Σ (định lượng mỗi bàn × số bàn tiệc)            — dòng "tính theo số bàn",
+                                                               MỖI LOẠI HOA CHỈ TÍNH
+                                                               MỘT LẦN CHO CẢ TIỆC
            + Σ điều chỉnh linh động của sự kiện
 Cần mua  = max(0, Nhu cầu − Tồn kho)                     (theo đơn vị dùng)
 Đặt NCC  = làm tròn LÊN của (Cần mua ÷ quy đổi)           (theo đơn vị mua)
@@ -154,6 +156,9 @@ Thành tiền = Đặt NCC × đơn giá                            (giá theo �
   dấu dương để thêm.
 - Nếu gói đã gắn có dòng **tính theo số bàn** mà lịch tiệc chưa nhập số bàn, các dòng
   đó tính là 0 và trang chi tiết sự kiện hiện cảnh báo nhắc nhập.
+- Hoa **tính theo số bàn** chỉ được tính **một lần cho cả tiệc**: Lan trắng 1 cành/bàn khai
+  ở cả *Lối đi*, *Cổng* và *Sảnh tiệc* của tiệc 95 bàn vẫn là 95 cành, không phải 3 × 95.
+  Số lượng hạng mục và số lần áp gói cũng không nhân vào các dòng này.
 - Mỗi gói chỉ tính **một lần áp dụng** (không còn tuỳ chỉnh nhân thêm cho cả gói); muốn
   nhân đôi thì tăng số lượng ở từng hạng mục bên trong gói.
 - Ở mục **Gói trang trí đã gắn**, mỗi gói còn hiện thêm **giá tiền ước tính** = SL hoa
@@ -183,6 +188,15 @@ vẫn giữ nguyên số lẻ.
 Ở bảng định lượng của gói, tick **Theo số bàn** cho dòng nào là định lượng của *một bàn*
 (VD 1 cành Lan trắng / bàn). Khi lịch tiệc nhập **40 bàn**, dòng đó tự ra 40 cành →
 4 bịch. Tồn kho, điều chỉnh linh động và mọi con số khác vẫn ghi theo đơn vị dùng.
+
+Định lượng mỗi bàn là con số của **cả tiệc**, không phải của riêng hạng mục — nên hệ thống
+bắt mọi hạng mục trong cùng một gói ghi **cùng một số**, và mọi gói trong cùng một tiệc
+cũng phải ghi cùng số. Nhập lệch sẽ bị báo lỗi ngay (khi lưu dòng định lượng, hoặc khi gắn
+gói thứ hai vào tiệc) kèm chỉ rõ hạng mục / gói nào đang ghi bao nhiêu.
+
+Ở sheet **Chi tiết sự kiện** của file Excel, dòng theo bàn ghi đủ số ở hạng mục đầu tiên,
+các hạng mục sau ghi `0` kèm chú thích *"đã tính ở …"* — để cộng cột số lượng của sheet
+này ra đúng bằng số trong đơn mua.
 
 **Không còn ô "Tên tiệc"**
 Lịch tiệc được nhận diện bằng `Sảnh · Buổi · Số bàn` (VD *Lầu 3 · Sáng · 40 bàn*). Các

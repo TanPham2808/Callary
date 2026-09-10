@@ -62,13 +62,24 @@ sheet calls `computeRequirement()` rather than re-deriving numbers. The formula 
 Vietnamese business explanation):
 
 ```
-need   = Σ(item_flowers.quantity × event_package_items.quantity × event_packages.quantity
-            × table_count if per_table) + Σ event_adjustments.delta
+need   = Σ(item_flowers.quantity × event_package_items.quantity × event_packages.quantity)  // per_table = 0
+       + Σ_events(max per-table quantity per flower × table_count)                          // per_table = 1
+       + Σ event_adjustments.delta
 to_buy = max(0, need − inventory stock)                         // in "unit" (đơn vị dùng)
 order  = ceil(to_buy / order_factor)                             // in "order_unit" (đơn vị mua), only
                                                                   // rounded up when order_factor > 1
 amount = order × price                                           // price is always per order_unit
 ```
+**Per-table lines are counted once per event, never summed across items or packages** — a flower
+marked `per_table` is a property of the banquet ("1 cành mỗi bàn"), so listing it in three items of a
+95-table event still yields 95, not 285; `event_package_items.quantity` and `event_packages.quantity`
+don't multiply it either. `services/per-table.ts` holds the two guards that keep this unambiguous:
+`assertPackagePerTableConsistent()` (all items of one package must declare the same per-table
+quantity, called inside the write transaction in `routes/packages.ts`) and
+`assertEventPerTableCompatible()` (a package can't be attached to an event whose other packages
+declare a different quantity, called in `routes/events.ts` before attach and before resync). The
+`MAX()` in calc's per-table subquery is only a fallback for data that predates those guards.
+
 Cancelled events (`status = 'HUY'`) are excluded everywhere. Rows flagged `is_optional` (Excel's "Hoặc
 2 HOA HỒNG" alternative lines) are excluded from totals unless `includeOptional` is passed. Events past
 their date auto-flip `DU_KIEN`/`DA_CHOT` → `DA_XONG` via `services/event-status.ts`, invoked both at

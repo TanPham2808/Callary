@@ -4,6 +4,7 @@ import { db, tx } from '../db.ts'
 import { ah, badRequest, id, notFound, parseBody } from '../lib/http.ts'
 import { isPastDate, todayLocal } from '../lib/date.ts'
 import { computeRequirement } from '../services/calc.ts'
+import { assertEventPerTableCompatible } from '../services/per-table.ts'
 import { round } from '../lib/text.ts'
 import type { DecorEvent, EventPackage, PackageItem } from '../../../shared/types.ts'
 
@@ -237,6 +238,9 @@ router.post(
     )
     const pkg = db.prepare('SELECT id FROM packages WHERE id = ?').get(package_id)
     if (!pkg) throw notFound('Không tìm thấy gói trang trí này')
+    // Hoa tính theo bàn chỉ được tính một lần cho cả tiệc, nên các gói trong
+    // cùng một tiệc phải khai cùng định lượng mỗi bàn.
+    assertEventPerTableCompatible(eventId, package_id)
 
     tx(() => {
       const maxOrder = (
@@ -308,6 +312,9 @@ router.post(
     const epId = id(req.params.epId)
     const ep = db.prepare('SELECT * FROM event_packages WHERE id = ?').get(epId) as EventPackage | undefined
     if (!ep) throw notFound('Không tìm thấy gói trong lịch tiệc này')
+    // Đồng bộ có thể kéo về hạng mục mới của catalog, nên phải kiểm tra lại
+    // định lượng theo bàn với các gói khác trong tiệc.
+    assertEventPerTableCompatible(ep.event_id, ep.package_id)
 
     tx(() => {
       const items = db
@@ -464,23 +471,39 @@ export function loadEvent(eventId: number): DecorEvent {
 
   // Giá ước tính từng gói = SL hoa (trong các hạng mục đang chọn) × đơn giá, quy đổi
   // sang đơn vị mua nếu có. Không làm tròn lên vì đây là ước tính, không phải đơn đặt hàng.
+  //
+  // Dòng tính theo bàn được gộp một lần cho mỗi gói (giống cách calc.ts gộp một
+  // lần cho cả tiệc). Khi hai gói cùng dùng một loại hoa theo bàn thì tổng giá
+  // ước tính của các gói sẽ nhỉnh hơn tổng của tiệc — cố ý, vì đây là "gói này
+  // đáng bao nhiêu" chứ không phải số tiền phải trả cho nhà cung cấp.
+  const CONV = `(CASE WHEN f.order_unit IS NOT NULL AND f.order_unit != f.unit AND f.order_factor > 1
+                      THEN f.order_factor ELSE 1 END)`
   const amounts = db
     .prepare(
-      `SELECT ep.id AS event_package_id,
-              SUM(itf.quantity * epi.quantity * ep.quantity *
-                  CASE WHEN itf.per_table = 1 THEN COALESCE(e.table_count, 0) ELSE 1 END
-                  / (CASE WHEN f.order_unit IS NOT NULL AND f.order_unit != f.unit AND f.order_factor > 1
-                          THEN f.order_factor ELSE 1 END)
-                  * f.price) AS amount
-         FROM event_packages ep
-         JOIN events e ON e.id = ep.event_id
-         JOIN event_package_items epi ON epi.event_package_id = ep.id AND epi.is_included = 1
-         JOIN item_flowers itf ON itf.package_item_id = epi.package_item_id
-         JOIN flowers f ON f.id = itf.flower_id
-        WHERE ep.event_id = ? AND itf.is_optional = 0
-        GROUP BY ep.id`,
+      `SELECT event_package_id, SUM(amount) AS amount
+         FROM (SELECT ep.id AS event_package_id,
+                      SUM(itf.quantity * epi.quantity * ep.quantity / ${CONV} * f.price) AS amount
+                 FROM event_packages ep
+                 JOIN event_package_items epi ON epi.event_package_id = ep.id AND epi.is_included = 1
+                 JOIN item_flowers itf ON itf.package_item_id = epi.package_item_id
+                 JOIN flowers f ON f.id = itf.flower_id
+                WHERE ep.event_id = ? AND itf.is_optional = 0 AND itf.per_table = 0
+                GROUP BY ep.id
+               UNION ALL
+               SELECT t.event_package_id, SUM(t.qty / t.factor * t.price) AS amount
+                 FROM (SELECT ep.id AS event_package_id, f.price, ${CONV} AS factor,
+                              MAX(itf.quantity) * COALESCE(e.table_count, 0) AS qty
+                         FROM event_packages ep
+                         JOIN events e ON e.id = ep.event_id
+                         JOIN event_package_items epi ON epi.event_package_id = ep.id AND epi.is_included = 1
+                         JOIN item_flowers itf ON itf.package_item_id = epi.package_item_id
+                         JOIN flowers f ON f.id = itf.flower_id
+                        WHERE ep.event_id = ? AND itf.is_optional = 0 AND itf.per_table = 1
+                        GROUP BY ep.id, itf.flower_id) t
+                GROUP BY t.event_package_id)
+        GROUP BY event_package_id`,
     )
-    .all(eventId) as { event_package_id: number; amount: number }[]
+    .all(eventId, eventId) as { event_package_id: number; amount: number }[]
   const amountByPkg = new Map(amounts.map((r) => [r.event_package_id, r.amount]))
 
   for (const ep of ev.packages) {

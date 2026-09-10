@@ -199,6 +199,11 @@ function sheetBreakdown(wb: ExcelJS.Workbook, opts: ExportOptions) {
     })
     head.height = 22
 
+    // Hoa tính theo bàn chỉ tính một lần cho cả tiệc: hạng mục đầu tiên ghi đủ
+    // số, các hạng mục sau ghi 0 kèm chú thích, để cột số lượng của sheet này
+    // cộng lại đúng bằng số trong đơn mua. Khoá = flower_id → nơi đã tính.
+    const countedPerTable = new Map<number, string>()
+
     for (const pkg of ev.packages) {
       const pRow = ws.addRow([
         '',
@@ -221,22 +226,26 @@ function sheetBreakdown(wb: ExcelJS.Workbook, opts: ExportOptions) {
           continue
         }
         for (const f of item.flowers) {
-          // Dòng tính theo bàn: định lượng cho 1 bàn × số bàn của tiệc.
-          const tables = f.per_table ? (ev.table_count ?? 0) : 1
-          const total = f.quantity * tables * item.item_quantity * pkg.package_quantity
-          const row = ws.addRow([
-            '',
-            '',
-            '   ' + f.name,
-            total,
-            f.unit,
-            [
-              f.per_table ? `${f.quantity} /bàn × ${ev.table_count ?? 0} bàn` : '',
-              f.is_optional ? 'Phương án thay thế' : '',
-            ]
-              .filter(Boolean)
-              .join(' — '),
-          ])
+          const notes: string[] = []
+          let total: number
+          if (f.per_table) {
+            // Định lượng cho 1 bàn × số bàn của tiệc, nhưng cả tiệc chỉ tính một
+            // lần dù khai ở bao nhiêu hạng mục hay bao nhiêu gói.
+            const tables = ev.table_count ?? 0
+            const countedAt = f.is_optional ? undefined : countedPerTable.get(f.flower_id)
+            if (countedAt) {
+              total = 0
+              notes.push(`${f.quantity} /bàn — đã tính ở ${countedAt}`)
+            } else {
+              total = f.quantity * tables
+              notes.push(`${f.quantity} /bàn × ${tables} bàn — tính 1 lần cho cả tiệc`)
+              if (!f.is_optional) countedPerTable.set(f.flower_id, `${pkg.package_name} / ${item.item_name}`)
+            }
+          } else {
+            total = f.quantity * item.item_quantity * pkg.package_quantity
+          }
+          if (f.is_optional) notes.push('Phương án thay thế')
+          const row = ws.addRow(['', '', '   ' + f.name, total, f.unit, notes.join(' — ')])
           row.getCell(4).numFmt = NUM
           if (f.is_optional) row.font = { italic: true, color: { argb: 'FF71717A' } }
         }
