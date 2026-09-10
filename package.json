@@ -13,6 +13,7 @@
     "seed": "tsx server/src/seed/import-excel.ts",
     "seed:export": "tsx server/src/seed/export-snapshot.ts",
     "turso:push": "tsx server/src/turso/push.ts",
+    "turso:pull": "tsx server/src/turso/pull.ts",
     "turso:verify": "tsx server/src/turso/verify.ts",
     "typecheck": "tsc --noEmit"
   },
