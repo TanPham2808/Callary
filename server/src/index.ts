@@ -1,14 +1,9 @@
-try {
-  process.loadEnvFile()
-} catch {
-  /* không có .env — dùng biến môi trường đã set sẵn */
-}
-
+import './load-env.ts' // phải đứng trước mọi import khác — xem load-env.ts
 import express from 'express'
 import { existsSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { getSessionUser, seedAuthFromEnv } from './auth.ts'
-import { migrate, ROOT_DIR, DB_PATH, getSetting } from './db.ts'
+import { migrate, ROOT_DIR, DB_MODE, DB_TARGET, getSetting } from './db.ts'
 import { seedCatalogFromSnapshot } from './seed/seed-snapshot.ts'
 import authRouter from './routes/auth.ts'
 import flowersRouter from './routes/flowers.ts'
@@ -43,7 +38,7 @@ app.use('/api', (_req, _res, next) => {
 })
 
 app.get('/api/health', (_req, res) => {
-  res.json({ ok: true, db: DB_PATH })
+  res.json({ ok: true, db_mode: DB_MODE, db: DB_TARGET })
 })
 
 app.use('/api/auth', authRouter)
@@ -88,5 +83,5 @@ app.use((err: any, _req: express.Request, res: express.Response, _next: express.
 const PORT = Number(process.env.PORT ?? 3001)
 app.listen(PORT, () => {
   console.log(`[callary] API đang chạy tại http://localhost:${PORT}`)
-  console.log(`[callary] Database: ${DB_PATH}`)
+  console.log(`[callary] Database (${DB_MODE}): ${DB_TARGET}`)
 })

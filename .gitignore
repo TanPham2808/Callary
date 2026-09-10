@@ -4,6 +4,8 @@ data/*.db
 data/*.db-journal
 data/*.db-wal
 data/*.db-shm
+data/*.db-info
+data/*.bak*
 *.log
 .DS_Store
 .env
