@@ -62,12 +62,33 @@ const local = new Database(sourcePath, { readonly: true })
 console.log('→ Tạo schema trên Turso…')
 migrate()
 
-/** Cột dùng được = cột có ở CẢ hai bên, tránh lệch schema giữa nguồn và đích. */
+/**
+ * Cột sẽ ghi = mọi cột của nguồn, đối chiếu với đích KHÔNG phân biệt hoa thường.
+ *
+ * Bắt buộc so khớp kiểu này: libsql viết hoa tên cột nào trùng từ khoá SQL khi
+ * dựng lại DDL, nên `key` ở máy thành `KEY` trên Turso. So khớp phân biệt hoa
+ * thường sẽ lặng lẽ loại cột đó ra khỏi câu INSERT, và vì `TEXT PRIMARY KEY`
+ * trong SQLite vẫn cho phép NULL nên không có lỗi nào nổ ra — dữ liệu chỉ đơn
+ * giản là mất. Định danh trong SQL vốn không phân biệt hoa thường nên cứ dùng
+ * tên cột của nguồn trong câu lệnh là được.
+ *
+ * Cột nào không tìm thấy ở đích thì DỪNG HẲN, không ghi thiếu rồi báo thành công.
+ */
 function sharedColumns(table: string): string[] {
   const cols = (conn: typeof local) =>
     (conn.prepare(`PRAGMA table_info(${table})`).all() as { name: string }[]).map((c) => c.name)
-  const remote = new Set(cols(db as unknown as typeof local))
-  return cols(local).filter((c) => remote.has(c))
+
+  const localCols = cols(local)
+  const remoteLower = new Set(cols(db as unknown as typeof local).map((c) => c.toLowerCase()))
+  const missing = localCols.filter((c) => !remoteLower.has(c.toLowerCase()))
+
+  if (missing.length) {
+    throw new Error(
+      `Bảng ${table}: cột ${missing.join(', ')} không có trên Turso. ` +
+        'Dừng lại để không ghi thiếu dữ liệu — hãy kiểm tra schema hai bên.',
+    )
+  }
+  return localCols
 }
 
 console.log('→ Xoá dữ liệu cũ trên Turso (thứ tự ngược khoá ngoại)…')
@@ -100,20 +121,37 @@ for (const table of TABLES) {
   console.log(`   ${table}: ${rows.length} dòng`)
 }
 
-console.log('\n→ Đối chiếu số dòng hai bên…')
+console.log('\n→ Đối chiếu hai bên…')
 let mismatch = 0
+
 for (const table of TABLES) {
+  // 1) Số dòng
   const a = (local.prepare(`SELECT COUNT(*) AS n FROM ${table}`).get() as { n: number }).n
   const b = (db.prepare(`SELECT COUNT(*) AS n FROM ${table}`).get() as { n: number }).n
   if (a !== b) {
-    console.log(`   LỆCH ${table}: local=${a} turso=${b}`)
+    console.log(`   LỆCH SỐ DÒNG ${table}: local=${a} turso=${b}`)
     mismatch++
+  }
+
+  // 2) Khoá chính rỗng. Chỉ đếm số dòng thì không phát hiện được trường hợp
+  //    ghi đủ dòng nhưng thiếu cột khoá — đúng lỗi đã xảy ra với settings.KEY.
+  const pkCols = (db.prepare(`PRAGMA table_info(${table})`).all() as { name: string; pk: number }[]).filter(
+    (c) => c.pk > 0,
+  )
+  for (const c of pkCols) {
+    const nulls = (
+      db.prepare(`SELECT COUNT(*) AS n FROM ${table} WHERE "${c.name}" IS NULL`).get() as { n: number }
+    ).n
+    if (nulls > 0) {
+      console.log(`   KHOÁ CHÍNH RỖNG ${table}.${c.name}: ${nulls} dòng`)
+      mismatch++
+    }
   }
 }
 
 if (mismatch) {
-  console.error(`\nCó ${mismatch} bảng lệch số dòng — hãy chạy lại script.`)
+  console.error(`\nPhát hiện ${mismatch} vấn đề — dữ liệu trên Turso KHÔNG dùng được. Hãy chạy lại script.`)
   process.exit(1)
 }
 
-console.log(`\nXong. Đã đẩy ${totalRows} dòng, ${TABLES.length}/${TABLES.length} bảng khớp số dòng.`)
+console.log(`\nXong. Đã đẩy ${totalRows} dòng, ${TABLES.length} bảng khớp số dòng, không có khoá chính rỗng.`)
