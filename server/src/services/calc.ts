@@ -287,9 +287,11 @@ export function loadEventBreakdown(from: string, to: string, hall?: string): Eve
                 .prepare(
                   `SELECT f.id AS flower_id, f.name, f.unit, i.quantity, i.per_table, i.is_optional
                      FROM item_flowers i JOIN flowers f ON f.id = i.flower_id
-                    WHERE i.package_item_id = ? ORDER BY i.sort_order, i.id`,
+                    WHERE i.package_item_id = ?
+                      ${notExcludedSql('?', 'i.flower_id')}
+                    ORDER BY i.sort_order, i.id`,
                 )
-                .all(it.package_item_id) as {
+                .all(it.package_item_id, e.id) as {
                 flower_id: number
                 name: string
                 unit: string

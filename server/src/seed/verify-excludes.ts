@@ -18,7 +18,7 @@ process.env.CALLARY_DB = join(TMP_DIR, 'test.db')
 process.env.CALLARY_DB_MODE = 'local'
 
 const { db, migrate } = await import('../db.ts')
-const { computeRequirement } = await import('../services/calc.ts')
+const { computeRequirement, loadEventBreakdown } = await import('../services/calc.ts')
 const { todayLocal } = await import('../lib/date.ts')
 const { setEventFlowerExcluded } = await import('../services/event-flowers.ts')
 const { assertEventPerTableCompatible } = await import('../services/per-table.ts')
@@ -141,6 +141,15 @@ function excludeCount(): number {
   return (db.prepare('SELECT COUNT(*) AS n FROM event_flower_excludes').get() as { n: number }).n
 }
 
+/** Tên các loại hoa mà sheet "Chi tiết sự kiện" in ra cho một hạng mục. */
+function breakdownFlowers(itemName: string): string[] {
+  const item = loadEventBreakdown(TODAY, TODAY)
+    .flatMap((e) => e.packages)
+    .flatMap((p) => p.items)
+    .find((i) => i.item_name === itemName)
+  return (item?.flowers ?? []).map((f) => f.name)
+}
+
 /* --------------------------------- chạy ---------------------------------- */
 
 migrate()
@@ -221,6 +230,13 @@ exclude(fx.eventId, fx.flowerC)
 check('bỏ thêm Hoa C → còn 50.000', loadEvent(fx.eventId).packages?.[0].estimated_amount, 50000)
 unexclude(fx.eventId, fx.flowerB)
 unexclude(fx.eventId, fx.flowerC)
+
+console.log('\n— Sheet Chi tiết sự kiện —')
+check('nền: Cổng in đủ 3 loại', breakdownFlowers('Cổng'), ['Hoa A', 'Hoa B', 'Hoa C'])
+exclude(fx.eventId, fx.flowerA)
+check('bỏ Hoa A → Cổng không in Hoa A nữa', breakdownFlowers('Cổng'), ['Hoa B', 'Hoa C'])
+check('bỏ Hoa A → Lối đi cũng không in Hoa A', breakdownFlowers('Lối đi'), ['Hoa B'])
+unexclude(fx.eventId, fx.flowerA)
 
 console.log('\n— Cascade —')
 exclude(fx.eventId, fx.flowerA)
