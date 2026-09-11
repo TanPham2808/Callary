@@ -4,6 +4,7 @@ import { db, tx } from '../db.ts'
 import { ah, badRequest, id, notFound, parseBody } from '../lib/http.ts'
 import { isPastDate, todayLocal } from '../lib/date.ts'
 import { computeRequirement } from '../services/calc.ts'
+import { notExcludedSql } from '../services/event-flowers.ts'
 import { assertEventPerTableCompatible } from '../services/per-table.ts'
 import { round } from '../lib/text.ts'
 import type { DecorEvent, EventPackage, PackageItem } from '../../../shared/types.ts'
@@ -488,6 +489,7 @@ export function loadEvent(eventId: number): DecorEvent {
                  JOIN item_flowers itf ON itf.package_item_id = epi.package_item_id
                  JOIN flowers f ON f.id = itf.flower_id
                 WHERE ep.event_id = ? AND itf.is_optional = 0 AND itf.per_table = 0
+                  ${notExcludedSql('ep.event_id')}
                 GROUP BY ep.id
                UNION ALL
                SELECT t.event_package_id, SUM(t.qty / t.factor * t.price) AS amount
@@ -499,6 +501,7 @@ export function loadEvent(eventId: number): DecorEvent {
                          JOIN item_flowers itf ON itf.package_item_id = epi.package_item_id
                          JOIN flowers f ON f.id = itf.flower_id
                         WHERE ep.event_id = ? AND itf.is_optional = 0 AND itf.per_table = 1
+                          ${notExcludedSql('ep.event_id')}
                         GROUP BY ep.id, itf.flower_id) t
                 GROUP BY t.event_package_id)
         GROUP BY event_package_id`,
@@ -529,6 +532,7 @@ export function loadEvent(eventId: number): DecorEvent {
          JOIN event_package_items epi ON epi.event_package_id = ep.id AND epi.is_included = 1
          JOIN item_flowers        itf ON itf.package_item_id = epi.package_item_id
         WHERE ep.event_id = ? AND itf.per_table = 1
+          ${notExcludedSql('ep.event_id')}
         LIMIT 1`,
     )
     .get(eventId)

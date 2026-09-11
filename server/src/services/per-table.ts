@@ -1,4 +1,5 @@
 import { db } from '../db.ts'
+import { notExcludedSql } from './event-flowers.ts'
 import { badRequest } from '../lib/http.ts'
 import { round } from '../lib/text.ts'
 
@@ -49,6 +50,8 @@ function packageRows(packageId: number): PerTableRow[] {
  * Các dòng tính theo bàn đang thực sự có hiệu lực trong một tiệc, kèm tên gói.
  * Chỉ lấy hạng mục đang được chọn (is_included = 1) — đúng bằng phạm vi mà
  * calc.ts tính, để không chặn oan khi người dùng đã bỏ chọn hạng mục gây lệch.
+ * Loại hoa đã bị bỏ tick cho cả tiệc cũng bị loại khỏi đây, cùng lý do: calc.ts
+ * không tính chúng nữa nên chặn vì chúng là chặn oan.
  */
 function eventRows(eventId: number): PerTableRow[] {
   return db
@@ -60,6 +63,7 @@ function eventRows(eventId: number): PerTableRow[] {
          JOIN item_flowers        itf ON itf.package_item_id = epi.package_item_id
          JOIN flowers             f   ON f.id = itf.flower_id
         WHERE ep.event_id = ? AND itf.per_table = 1 AND itf.is_optional = 0
+          ${notExcludedSql('ep.event_id')}
         ORDER BY ep.sort_order, ep.id`,
     )
     .all(eventId) as PerTableRow[]

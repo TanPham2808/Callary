@@ -21,6 +21,8 @@ const { db, migrate } = await import('../db.ts')
 const { computeRequirement } = await import('../services/calc.ts')
 const { todayLocal } = await import('../lib/date.ts')
 const { setEventFlowerExcluded } = await import('../services/event-flowers.ts')
+const { assertEventPerTableCompatible } = await import('../services/per-table.ts')
+const { loadEvent } = await import('../routes/events.ts')
 
 /* ----------------------------- tiện ích assert ---------------------------- */
 
@@ -193,6 +195,32 @@ checkThrows(
   false,
 )
 check('không có bản ghi nào sót lại', excludeCount(), 0)
+
+console.log('\n— Hàm chặn, cờ nhắc số bàn, giá ước tính —')
+checkThrows(
+  'gói 2 khai Hoa B 2/bàn, lệch với 1/bàn đang có → bị chặn',
+  () => assertEventPerTableCompatible(fx.eventId, fx.package2Id),
+  true,
+)
+exclude(fx.eventId, fx.flowerB)
+checkThrows(
+  'đã bỏ Hoa B khỏi tiệc → KHÔNG chặn oan nữa',
+  () => assertEventPerTableCompatible(fx.eventId, fx.package2Id),
+  false,
+)
+check('bỏ hết dòng theo bàn → has_per_table = 0', loadEvent(fx.eventId).has_per_table, 0)
+unexclude(fx.eventId, fx.flowerB)
+check('tick lại → has_per_table = 1', loadEvent(fx.eventId).has_per_table, 1)
+
+// Giá ước tính của gói: dòng thường 3×10000 + 2×10000 + 5×5000 = 75.000
+// cộng dòng theo bàn 1×95×20000 = 1.900.000 → 1.975.000
+check('giá ước tính nền', loadEvent(fx.eventId).packages?.[0].estimated_amount, 1975000)
+exclude(fx.eventId, fx.flowerB)
+check('bỏ Hoa B → giá ước tính còn 75.000', loadEvent(fx.eventId).packages?.[0].estimated_amount, 75000)
+exclude(fx.eventId, fx.flowerC)
+check('bỏ thêm Hoa C → còn 50.000', loadEvent(fx.eventId).packages?.[0].estimated_amount, 50000)
+unexclude(fx.eventId, fx.flowerB)
+unexclude(fx.eventId, fx.flowerC)
 
 console.log('\n— Cascade —')
 exclude(fx.eventId, fx.flowerA)
