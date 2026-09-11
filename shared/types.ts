@@ -86,6 +86,17 @@ export interface ItemFlower {
   flower_price?: number
 }
 
+/** Một dòng định lượng của gói, nhìn từ góc độ một lịch tiệc cụ thể. */
+export interface EventItemFlower extends ItemFlower {
+  /** 1 = đã bị bỏ tick cho cả tiệc này */
+  is_excluded: number
+  /**
+   * Tên các hạng mục KHÁC của tiệc (đang được tick) cũng khai loại hoa này.
+   * UI dùng để nói trước rằng bỏ tick ở đây sẽ bỏ luôn ở những chỗ đó.
+   */
+  also_in: string[]
+}
+
 export interface PackageItem {
   id: number
   package_id: number
@@ -116,6 +127,8 @@ export interface EventPackageItem {
   quantity: number
   is_included: number
   sort_order: number
+  /** Định lượng hoa của hạng mục này, kèm trạng thái bỏ tick. Server tính sẵn. */
+  flowers?: EventItemFlower[]
 }
 
 export interface EventPackage {

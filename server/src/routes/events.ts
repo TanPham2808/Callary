@@ -4,7 +4,7 @@ import { db, tx } from '../db.ts'
 import { ah, badRequest, id, notFound, parseBody } from '../lib/http.ts'
 import { isPastDate, todayLocal } from '../lib/date.ts'
 import { computeRequirement } from '../services/calc.ts'
-import { notExcludedSql } from '../services/event-flowers.ts'
+import { loadEventItemFlowers, notExcludedSql, setEventFlowerExcluded } from '../services/event-flowers.ts'
 import { assertEventPerTableCompatible } from '../services/per-table.ts'
 import { round } from '../lib/text.ts'
 import type { DecorEvent, EventPackage, PackageItem } from '../../../shared/types.ts'
@@ -306,6 +306,31 @@ router.put(
   }),
 )
 
+/**
+ * Bỏ tick / tick lại một hay nhiều loại hoa cho CẢ tiệc.
+ *
+ * Một loại hoa thì gửi mảng một phần tử; nút "Chọn hết" / "Bỏ hết" trong modal
+ * gửi cả danh sách của hạng mục đang mở — một round trip thay vì hai chục.
+ */
+router.put(
+  '/:id/flower-excludes',
+  ah((req, res) => {
+    const eventId = id(req.params.id)
+    const data = parseBody(
+      z.object({
+        flower_ids: z.array(z.number().int().positive()).min(1, 'Phải chọn ít nhất một loại hoa'),
+        included: z.boolean(),
+      }),
+      req.body,
+    )
+    if (!db.prepare('SELECT 1 FROM events WHERE id = ?').get(eventId)) {
+      throw notFound('Không tìm thấy lịch tiệc này')
+    }
+    setEventFlowerExcluded(eventId, data.flower_ids, data.included)
+    res.json(loadEvent(eventId))
+  }),
+)
+
 /** Đồng bộ lại hạng mục của gói trong sự kiện với catalog hiện tại. */
 router.post(
   '/packages/:epId/resync',
@@ -509,11 +534,15 @@ export function loadEvent(eventId: number): DecorEvent {
     .all(eventId, eventId) as { event_package_id: number; amount: number }[]
   const amountByPkg = new Map(amounts.map((r) => [r.event_package_id, r.amount]))
 
+  // Định lượng hoa của mọi hạng mục lấy trong MỘT câu cho cả tiệc, rồi phân về
+  // từng hạng mục — giao diện cần đủ bộ này để hiện badge "4/6" trên chip.
+  const flowersByItem = loadEventItemFlowers(eventId)
   for (const ep of ev.packages) {
     ep.estimated_amount = round(amountByPkg.get(ep.id) ?? 0, 0)
     ep.items = db
       .prepare('SELECT * FROM event_package_items WHERE event_package_id = ? ORDER BY sort_order, id')
       .all(ep.id) as any[]
+    for (const item of ep.items ?? []) item.flowers = flowersByItem.get(item.id) ?? []
   }
 
   ev.adjustments = db

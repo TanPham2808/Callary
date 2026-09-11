@@ -20,7 +20,7 @@ process.env.CALLARY_DB_MODE = 'local'
 const { db, migrate } = await import('../db.ts')
 const { computeRequirement, loadEventBreakdown } = await import('../services/calc.ts')
 const { todayLocal } = await import('../lib/date.ts')
-const { setEventFlowerExcluded } = await import('../services/event-flowers.ts')
+const { setEventFlowerExcluded, loadEventItemFlowers } = await import('../services/event-flowers.ts')
 const { assertEventPerTableCompatible } = await import('../services/per-table.ts')
 const { loadEvent } = await import('../routes/events.ts')
 
@@ -236,6 +236,43 @@ check('nền: Cổng in đủ 3 loại', breakdownFlowers('Cổng'), ['Hoa A', '
 exclude(fx.eventId, fx.flowerA)
 check('bỏ Hoa A → Cổng không in Hoa A nữa', breakdownFlowers('Cổng'), ['Hoa B', 'Hoa C'])
 check('bỏ Hoa A → Lối đi cũng không in Hoa A', breakdownFlowers('Lối đi'), ['Hoa B'])
+unexclude(fx.eventId, fx.flowerA)
+
+console.log('\n— Danh sách hoa theo hạng mục —')
+const flowersOf = (epiId: number) => loadEventItemFlowers(fx.eventId).get(epiId) ?? []
+
+check('Cổng có 3 dòng', flowersOf(fx.epiCong).map((f) => f.flower_name), ['Hoa A', 'Hoa B', 'Hoa C'])
+check('Lối đi có 2 dòng', flowersOf(fx.epiLoiDi).map((f) => f.flower_name), ['Hoa A', 'Hoa B'])
+check(
+  'nền: chưa bỏ gì nên is_excluded toàn 0',
+  flowersOf(fx.epiCong).map((f) => f.is_excluded),
+  [0, 0, 0],
+)
+check(
+  'Hoa A của Cổng cũng có ở Lối đi',
+  flowersOf(fx.epiCong).find((f) => f.flower_id === fx.flowerA)?.also_in,
+  ['Lối đi'],
+)
+check(
+  'Hoa C chỉ có ở Cổng nên also_in rỗng',
+  flowersOf(fx.epiCong).find((f) => f.flower_id === fx.flowerC)?.also_in,
+  [],
+)
+
+exclude(fx.eventId, fx.flowerA)
+check(
+  'bỏ Hoa A → đánh dấu is_excluded ở CẢ hai hạng mục',
+  [
+    flowersOf(fx.epiCong).find((f) => f.flower_id === fx.flowerA)?.is_excluded,
+    flowersOf(fx.epiLoiDi).find((f) => f.flower_id === fx.flowerA)?.is_excluded,
+  ],
+  [1, 1],
+)
+check(
+  'loadEvent trả flowers cho từng hạng mục',
+  loadEvent(fx.eventId).packages?.[0].items?.map((i) => i.flowers?.length),
+  [3, 2],
+)
 unexclude(fx.eventId, fx.flowerA)
 
 console.log('\n— Cascade —')
