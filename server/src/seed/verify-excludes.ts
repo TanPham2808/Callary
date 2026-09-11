@@ -275,6 +275,57 @@ check(
 )
 unexclude(fx.eventId, fx.flowerA)
 
+// Hai hạng mục KHÁC nhau nhưng TRÙNG TÊN: catalog thật có 11 hạng mục tên
+// "Cổng hoa" ở 11 gói khác nhau. Nhận dạng theo tên sẽ làm hạng mục kia rơi
+// khỏi cảnh báo — người dùng bỏ hoa mà không biết mất thêm ở đâu.
+const tmpPkg = db.prepare('INSERT INTO packages (name, sort_order) VALUES (?, ?)')
+const tmpItem = db.prepare('INSERT INTO package_items (package_id, name, sort_order) VALUES (?, ?, 10)')
+const tmpLine = db.prepare(
+  `INSERT INTO item_flowers (package_item_id, flower_id, quantity, per_table, sort_order)
+   VALUES (?, ?, 4, 0, 10)`,
+)
+const pkgX = Number(tmpPkg.run('GÓI TRÙNG TÊN 1', 90).lastInsertRowid)
+const pkgY = Number(tmpPkg.run('GÓI TRÙNG TÊN 2', 91).lastInsertRowid)
+const itemX = Number(tmpItem.run(pkgX, 'Cổng hoa').lastInsertRowid)
+const itemY = Number(tmpItem.run(pkgY, 'Cổng hoa').lastInsertRowid)
+tmpLine.run(itemX, fx.flowerA)
+tmpLine.run(itemY, fx.flowerA)
+
+const evDup = Number(
+  db
+    .prepare(
+      `INSERT INTO events (event_date, title, hall, time_slot, table_count, status)
+       VALUES (?, '', 'Lầu 1', 'Sáng', 50, 'DU_KIEN')`,
+    )
+    .run(TODAY).lastInsertRowid,
+)
+const attach = (packageId: number, itemId: number, order: number): number => {
+  const epId = Number(
+    db
+      .prepare('INSERT INTO event_packages (event_id, package_id, quantity, sort_order) VALUES (?, ?, 1, ?)')
+      .run(evDup, packageId, order).lastInsertRowid,
+  )
+  return Number(
+    db
+      .prepare(
+        `INSERT INTO event_package_items (event_package_id, package_item_id, name_snapshot, quantity, is_included, sort_order)
+         VALUES (?, ?, 'Cổng hoa', 1, 1, 10)`,
+      )
+      .run(epId, itemId).lastInsertRowid,
+  )
+}
+const epiX = attach(pkgX, itemX, 10)
+attach(pkgY, itemY, 20)
+
+check(
+  'hai hạng mục trùng tên ở hai gói → also_in vẫn kể tên hạng mục kia',
+  loadEventItemFlowers(evDup).get(epiX)?.[0].also_in,
+  ['Cổng hoa'],
+)
+
+db.prepare('DELETE FROM events WHERE id = ?').run(evDup)
+db.prepare('DELETE FROM packages WHERE id IN (?, ?)').run(pkgX, pkgY)
+
 console.log('\n— Cascade —')
 exclude(fx.eventId, fx.flowerA)
 exclude(fx.eventId, fx.flowerC)

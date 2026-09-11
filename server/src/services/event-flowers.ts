@@ -113,21 +113,31 @@ export function loadEventItemFlowers(eventId: number): Map<number, EventItemFlow
     )
     .all(eventId) as RawItemFlowerRow[]
 
-  // Loại hoa → tên các hạng mục đang được tick có khai nó.
-  const itemsByFlower = new Map<number, string[]>()
+  // Loại hoa → các hạng mục đang được tick có khai nó (id kèm tên).
+  const itemsByFlower = new Map<number, { epiId: number; name: string }[]>()
   for (const r of rows) {
     if (!r.epi_is_included) continue
-    const names = itemsByFlower.get(r.flower_id)
-    if (!names) itemsByFlower.set(r.flower_id, [r.item_name])
-    else if (!names.includes(r.item_name)) names.push(r.item_name)
+    const items = itemsByFlower.get(r.flower_id)
+    const entry = { epiId: r.epi_id, name: r.item_name }
+    if (!items) itemsByFlower.set(r.flower_id, [entry])
+    else items.push(entry)
   }
 
   const byItem = new Map<number, EventItemFlower[]>()
   for (const { epi_id, epi_is_included, item_name, ...flower } of rows) {
     const entry: EventItemFlower = {
       ...flower,
-      // Bỏ chính hạng mục đang xét ra khỏi "cũng ở" — nó không phải chỗ khác.
-      also_in: (itemsByFlower.get(flower.flower_id) ?? []).filter((name) => name !== item_name),
+      // Lọc theo id hạng mục, KHÔNG theo tên: catalog thật có nhiều gói dùng
+      // hạng mục trùng tên (vd. 11 hạng mục tên "Cổng hoa" ở 11 gói khác
+      // nhau) — lọc theo tên sẽ làm hạng mục trùng tên khác rơi khỏi cảnh
+      // báo, đúng cái nhãn này sinh ra để chặn. Chỉ dedupe TÊN ở bước hiển thị.
+      also_in: [
+        ...new Set(
+          (itemsByFlower.get(flower.flower_id) ?? [])
+            .filter((it) => it.epiId !== epi_id)
+            .map((it) => it.name),
+        ),
+      ],
     }
     const list = byItem.get(epi_id)
     if (list) list.push(entry)
