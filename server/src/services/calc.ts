@@ -1,4 +1,5 @@
 import { db } from '../db.ts'
+import { notExcludedSql } from './event-flowers.ts'
 import { round } from '../lib/text.ts'
 import type {
   DailyStat,
@@ -89,7 +90,7 @@ export function computeRequirement(from: string, to: string, opts: CalcOptions =
          JOIN event_package_items epi ON epi.event_package_id = ep.id AND epi.is_included = 1
          JOIN item_flowers        itf ON itf.package_item_id = epi.package_item_id
          JOIN flowers             f   ON f.id = itf.flower_id
-        WHERE ${eventWhere} AND itf.per_table = 0 ${optionalWhere}
+        WHERE ${eventWhere} AND itf.per_table = 0 ${optionalWhere} ${notExcludedSql('e.id')}
         GROUP BY f.id`,
     )
     .all(...params) as RawRow[]
@@ -107,7 +108,7 @@ export function computeRequirement(from: string, to: string, opts: CalcOptions =
                  JOIN event_packages      ep  ON ep.event_id = e.id
                  JOIN event_package_items epi ON epi.event_package_id = ep.id AND epi.is_included = 1
                  JOIN item_flowers        itf ON itf.package_item_id = epi.package_item_id
-                WHERE ${eventWhere} AND itf.per_table = 1 ${optionalWhere}
+                WHERE ${eventWhere} AND itf.per_table = 1 ${optionalWhere} ${notExcludedSql('e.id')}
                 GROUP BY e.id, itf.flower_id) t
          JOIN flowers f ON f.id = t.flower_id
         GROUP BY f.id`,

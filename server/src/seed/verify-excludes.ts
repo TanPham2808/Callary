@@ -20,6 +20,7 @@ process.env.CALLARY_DB_MODE = 'local'
 const { db, migrate } = await import('../db.ts')
 const { computeRequirement } = await import('../services/calc.ts')
 const { todayLocal } = await import('../lib/date.ts')
+const { setEventFlowerExcluded } = await import('../services/event-flowers.ts')
 
 /* ----------------------------- tiện ích assert ---------------------------- */
 
@@ -126,16 +127,12 @@ function needOf(eventId: number, flowerId: number): number | null {
   return r.rows.find((x) => x.flower_id === flowerId)?.need ?? null
 }
 
-/** Ghi bản ghi loại trừ bằng SQL thô. Task 2 sẽ đổi sang gọi service. */
 function exclude(eventId: number, flowerId: number): void {
-  db.prepare('INSERT OR IGNORE INTO event_flower_excludes (event_id, flower_id) VALUES (?, ?)').run(
-    eventId,
-    flowerId,
-  )
+  setEventFlowerExcluded(eventId, [flowerId], false)
 }
 
 function unexclude(eventId: number, flowerId: number): void {
-  db.prepare('DELETE FROM event_flower_excludes WHERE event_id = ? AND flower_id = ?').run(eventId, flowerId)
+  setEventFlowerExcluded(eventId, [flowerId], true)
 }
 
 function excludeCount(): number {
@@ -166,6 +163,36 @@ console.log('\n— Số liệu nền (chưa bỏ gì) —')
 check('Hoa A = 3 (Cổng) + 2 (Lối đi)', needOf(fx.eventId, fx.flowerA), 5)
 check('Hoa B theo bàn = 1 × 95, tính một lần', needOf(fx.eventId, fx.flowerB), 95)
 check('Hoa C = 5', needOf(fx.eventId, fx.flowerC), 5)
+
+console.log('\n— Bỏ tick thì nhu cầu giảm đúng —')
+exclude(fx.eventId, fx.flowerA)
+check('bỏ Hoa A → biến mất khỏi cả tiệc, không chỉ một hạng mục', needOf(fx.eventId, fx.flowerA), null)
+check('Hoa B không bị ảnh hưởng', needOf(fx.eventId, fx.flowerB), 95)
+check('Hoa C không bị ảnh hưởng', needOf(fx.eventId, fx.flowerC), 5)
+
+unexclude(fx.eventId, fx.flowerA)
+check('tick lại Hoa A → về đúng 5', needOf(fx.eventId, fx.flowerA), 5)
+
+exclude(fx.eventId, fx.flowerB)
+check('bỏ hoa tính theo bàn → về 0 ngay, không cần bỏ từng hạng mục', needOf(fx.eventId, fx.flowerB), null)
+unexclude(fx.eventId, fx.flowerB)
+check('tick lại hoa theo bàn → về đúng 95', needOf(fx.eventId, fx.flowerB), 95)
+
+setEventFlowerExcluded(fx.eventId, [fx.flowerA, fx.flowerC], false)
+check('bỏ nhiều loại một lượt', [needOf(fx.eventId, fx.flowerA), needOf(fx.eventId, fx.flowerC)], [null, null])
+setEventFlowerExcluded(fx.eventId, [fx.flowerA, fx.flowerC], true)
+
+checkThrows(
+  'bỏ loại hoa không có trong tiệc → báo lỗi',
+  () => setEventFlowerExcluded(fx.eventId, [99999], false),
+  true,
+)
+checkThrows(
+  'tick lại loại hoa không có trong tiệc → KHÔNG báo lỗi (phải dọn được rác)',
+  () => setEventFlowerExcluded(fx.eventId, [99999], true),
+  false,
+)
+check('không có bản ghi nào sót lại', excludeCount(), 0)
 
 console.log('\n— Cascade —')
 exclude(fx.eventId, fx.flowerA)
