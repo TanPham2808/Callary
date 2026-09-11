@@ -3,7 +3,6 @@ import { computeRequirement } from './calc.ts'
 import { fmtDate, type ExportOptions } from './excel.ts'
 import { CATEGORY_ORDER } from '../../../shared/types.ts'
 
-const BRAND = '7C3AED'
 const qtyFmt = new Intl.NumberFormat('vi-VN', { maximumFractionDigits: 3 })
 
 /**
@@ -36,7 +35,7 @@ export async function buildSupplierOrderDoc(opts: ExportOptions): Promise<Buffer
           new Paragraph({
             alignment: AlignmentType.CENTER,
             spacing: { after: 240 },
-            children: [new TextRun({ text: 'TỔNG HỢP HOA CẦN MUA', bold: true, size: 36, color: BRAND })],
+            children: [new TextRun({ text: 'TỔNG HỢP HOA CẦN MUA', bold: true, size: 36 })],
           }),
           new Paragraph({
             alignment: AlignmentType.CENTER,
@@ -46,8 +45,6 @@ export async function buildSupplierOrderDoc(opts: ExportOptions): Promise<Buffer
                 text: dateLabel,
                 bold: true,
                 size: 28,
-                color: 'C00000',
-                highlight: 'yellow',
               }),
             ],
           }),
