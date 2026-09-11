@@ -126,6 +126,22 @@ CREATE TABLE IF NOT EXISTS event_adjustments (
 );
 CREATE INDEX IF NOT EXISTS idx_event_adj_event ON event_adjustments(event_id);
 
+-- Các loại hoa bị bỏ tick trong một tiệc. Chỉ ghi loại BỊ BỎ — không có bản ghi
+-- = vẫn lấy. Nhờ vậy "tick hạng mục là lấy hết" vẫn là mặc định, và catalog vẫn
+-- là nguồn duy nhất của định lượng.
+--
+-- Khoá là (tiệc × hoa), không phải (hạng mục × dòng định lượng): bỏ một loại hoa
+-- là bỏ khỏi cả tiệc, nên người dùng không phải mở từng hạng mục để bỏ cùng một
+-- loại. Đây cũng là lý do hoa "tính theo số bàn" không cần luật riêng ở đây —
+-- calc.ts gộp MAX(quantity) theo (tiệc × hoa), nên loại trừ lẻ một hạng mục sẽ
+-- không làm đổi con số nào.
+CREATE TABLE IF NOT EXISTS event_flower_excludes (
+  event_id   INTEGER NOT NULL REFERENCES events(id)  ON DELETE CASCADE,
+  flower_id  INTEGER NOT NULL REFERENCES flowers(id) ON DELETE CASCADE,
+  created_at TEXT    NOT NULL DEFAULT (datetime('now','localtime')),
+  PRIMARY KEY (event_id, flower_id)
+);
+
 -- ------------------------------------------------------------
 -- KHO HOA DƯ / TỒN
 -- ------------------------------------------------------------

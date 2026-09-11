@@ -22,6 +22,7 @@ export const TABLES = [
   'event_packages',
   'event_package_items',
   'event_adjustments',
+  'event_flower_excludes',
   'inventory',
   'inventory_moves',
   'requirement_order_batches',
