@@ -126,3 +126,40 @@ export function assertEventPerTableCompatible(eventId: number, packageId: number
     )
   }
 }
+
+/**
+ * Loại hoa theo bàn sắp được LẤY LẠI phải có đúng một định lượng mỗi bàn trong
+ * tiệc. Gọi TRƯỚC khi xoá bản ghi loại trừ.
+ *
+ * Cần cổng riêng ở đây vì `eventRows()` cố ý bỏ qua loại hoa đang bị loại trừ
+ * (để không chặn oan). Trong lúc một loại hoa bị bỏ, người dùng gắn được một gói
+ * khai định lượng/bàn lệch mà không bị chặn — đúng lúc tick lại là lúc hai con số
+ * mâu thuẫn cùng sống, và `MAX()` trong calc.ts sẽ âm thầm lấy số lớn hơn.
+ *
+ * Không lọc theo bảng loại trừ: đây là câu hỏi "nếu loại hoa này quay lại thì
+ * tiệc có mấy con số?", nên phải nhìn cả những khai báo đang bị che.
+ */
+export function assertEventPerTableFlowerConsistent(eventId: number, flowerId: number): void {
+  const rows = db
+    .prepare(
+      `SELECT itf.flower_id, itf.quantity, p.name AS place, f.name AS flower_name
+         FROM event_packages      ep
+         JOIN packages            p   ON p.id = ep.package_id
+         JOIN event_package_items epi ON epi.event_package_id = ep.id AND epi.is_included = 1
+         JOIN item_flowers        itf ON itf.package_item_id = epi.package_item_id
+         JOIN flowers             f   ON f.id = itf.flower_id
+        WHERE ep.event_id = ? AND itf.flower_id = ? AND itf.per_table = 1 AND itf.is_optional = 0
+        ORDER BY ep.sort_order, ep.id`,
+    )
+    .all(eventId, flowerId) as PerTableRow[]
+
+  const values = new Set(rows.map((r) => r.quantity))
+  if (values.size <= 1) return
+
+  const detail = rows.map((r) => `${r.place} = ${fmtQty(r.quantity)}`).join(', ')
+  throw badRequest(
+    `Không lấy lại được hoa "${rows[0].flower_name}": các gói trong tiệc đang ghi khác nhau (${detail}). ` +
+      `Cả tiệc chỉ tính loại hoa này một lần, nên phải sửa định lượng mỗi bàn cho khớp, ` +
+      `hoặc gỡ bớt một gói, rồi mới lấy lại được.`,
+  )
+}

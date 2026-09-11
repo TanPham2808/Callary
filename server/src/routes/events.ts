@@ -5,7 +5,7 @@ import { ah, badRequest, id, notFound, parseBody } from '../lib/http.ts'
 import { isPastDate, todayLocal } from '../lib/date.ts'
 import { computeRequirement } from '../services/calc.ts'
 import { copyFlowerExcludes, loadEventItemFlowers, notExcludedSql, setEventFlowerExcluded } from '../services/event-flowers.ts'
-import { assertEventPerTableCompatible } from '../services/per-table.ts'
+import { assertEventPerTableCompatible, assertEventPerTableFlowerConsistent } from '../services/per-table.ts'
 import { round } from '../lib/text.ts'
 import type { DecorEvent, EventPackage, PackageItem } from '../../../shared/types.ts'
 
@@ -330,6 +330,12 @@ router.put(
     )
     if (!db.prepare('SELECT 1 FROM events WHERE id = ?').get(eventId)) {
       throw notFound('Không tìm thấy lịch tiệc này')
+    }
+    // Lấy lại hoa theo bàn là lúc con số của nó sống lại — nếu các gói trong
+    // tiệc đang ghi lệch định lượng/bàn cho loại hoa này thì phải chặn ở đây,
+    // trước khi xoá bản ghi loại trừ, không thì tiệc nhận một con số mù mờ.
+    if (data.included) {
+      for (const flowerId of data.flower_ids) assertEventPerTableFlowerConsistent(eventId, flowerId)
     }
     setEventFlowerExcluded(eventId, data.flower_ids, data.included)
     res.json(loadEvent(eventId))

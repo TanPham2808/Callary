@@ -59,9 +59,9 @@ export function setEventFlowerExcluded(eventId: number, flowerIds: number[], inc
 /**
  * Mẩu SQL loại bỏ các dòng định lượng có loại hoa đã bị bỏ tick cho cả tiệc.
  *
- * Dùng chung cho mọi truy vấn tính toán — sáu chỗ, năm file. Để một bản duy
- * nhất ở đây vì file này sở hữu bảng: một bản sao lệch pha là đúng kiểu lỗi
- * "âm thầm thiếu hoa trong đơn đi chợ".
+ * Dùng chung cho mọi truy vấn tính toán có đụng tới định lượng của một tiệc.
+ * Để một bản duy nhất ở đây vì file này sở hữu bảng: một bản sao lệch pha là
+ * đúng kiểu lỗi "âm thầm thiếu hoa trong đơn đi chợ".
  *
  * `eventCol` là cột id tiệc đang có trong tầm của truy vấn gọi ('e.id',
  * 'ep.event_id'), hoặc '?' khi id được truyền bằng tham số.

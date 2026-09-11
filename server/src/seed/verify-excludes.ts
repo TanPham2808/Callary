@@ -22,7 +22,7 @@ const { computeRequirement, loadEventBreakdown } = await import('../services/cal
 const { todayLocal } = await import('../lib/date.ts')
 const { setEventFlowerExcluded, loadEventItemFlowers, copyFlowerExcludes, mergeFlowerExcludes } =
   await import('../services/event-flowers.ts')
-const { assertEventPerTableCompatible } = await import('../services/per-table.ts')
+const { assertEventPerTableCompatible, assertEventPerTableFlowerConsistent } = await import('../services/per-table.ts')
 const { loadEvent } = await import('../routes/events.ts')
 
 /* ----------------------------- tiện ích assert ---------------------------- */
@@ -376,6 +376,82 @@ check(
   [fx.flowerA],
 )
 unexclude(fx.eventId, fx.flowerA)
+
+console.log('\n— Không lấy lại được hoa theo bàn khi các gói ghi lệch —')
+{
+  // fx.flowerB đã bị xoá ở khối "Nhân bản và gộp hoa" phía trên (gộp vào
+  // flowerA) nên không dùng lại được — tạo riêng một loại hoa cho khối này để
+  // tự chứa, không phụ thuộc trạng thái các khối trước.
+  const flowerX = Number(
+    db
+      .prepare(`INSERT INTO flowers (name, slug, unit, category, price) VALUES (?, ?, 'cành', 'HOA', 0)`)
+      .run('Hoa Lệch', 'hoa-lech').lastInsertRowid,
+  )
+
+  const pkgA = Number(
+    db.prepare('INSERT INTO packages (name, sort_order) VALUES (?, ?)').run('GÓI LỆCH 1', 92).lastInsertRowid,
+  )
+  const pkgB = Number(
+    db.prepare('INSERT INTO packages (name, sort_order) VALUES (?, ?)').run('GÓI LỆCH 2', 93).lastInsertRowid,
+  )
+  const itemA = Number(
+    db.prepare('INSERT INTO package_items (package_id, name, sort_order) VALUES (?, ?, 10)').run(pkgA, 'Cổng').lastInsertRowid,
+  )
+  const itemB = Number(
+    db.prepare('INSERT INTO package_items (package_id, name, sort_order) VALUES (?, ?, 10)').run(pkgB, 'Sảnh').lastInsertRowid,
+  )
+  const line = db.prepare(
+    `INSERT INTO item_flowers (package_item_id, flower_id, quantity, per_table, sort_order)
+     VALUES (?, ?, ?, 1, 10)`,
+  )
+  line.run(itemA, flowerX, 1)
+  line.run(itemB, flowerX, 2)
+
+  const evX = Number(
+    db
+      .prepare(
+        `INSERT INTO events (event_date, title, hall, time_slot, table_count, status)
+         VALUES (?, '', 'Lầu 9', 'Sáng', 95, 'DU_KIEN')`,
+      )
+      .run(TODAY).lastInsertRowid,
+  )
+  const attachX = (packageId: number, itemId: number, name: string, order: number): void => {
+    const epId = Number(
+      db
+        .prepare('INSERT INTO event_packages (event_id, package_id, quantity, sort_order) VALUES (?, ?, 1, ?)')
+        .run(evX, packageId, order).lastInsertRowid,
+    )
+    db.prepare(
+      `INSERT INTO event_package_items (event_package_id, package_item_id, name_snapshot, quantity, is_included, sort_order)
+       VALUES (?, ?, ?, 1, 1, 10)`,
+    ).run(epId, itemId, name)
+  }
+
+  attachX(pkgA, itemA, 'Cổng', 10)
+  checkThrows(
+    'gói ghi 2/bàn lệch với 1/bàn đang có → bị chặn lúc gắn',
+    () => assertEventPerTableCompatible(evX, pkgB),
+    true,
+  )
+
+  exclude(evX, flowerX)
+  checkThrows(
+    'bỏ tick rồi thì gắn gói lệch không còn bị chặn (đúng ý: không chặn oan)',
+    () => assertEventPerTableCompatible(evX, pkgB),
+    false,
+  )
+  attachX(pkgB, itemB, 'Sảnh', 20)
+
+  checkThrows(
+    'nhưng LẤY LẠI hoa theo bàn khi hai gói ghi lệch → phải bị chặn',
+    () => assertEventPerTableFlowerConsistent(evX, flowerX),
+    true,
+  )
+
+  db.prepare('DELETE FROM events WHERE id = ?').run(evX)
+  db.prepare('DELETE FROM packages WHERE id IN (?, ?)').run(pkgA, pkgB)
+  db.prepare('DELETE FROM flowers WHERE id = ?').run(flowerX)
+}
 
 console.log('\n— Cascade —')
 exclude(fx.eventId, fx.flowerA)
