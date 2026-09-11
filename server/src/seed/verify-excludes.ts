@@ -20,7 +20,8 @@ process.env.CALLARY_DB_MODE = 'local'
 const { db, migrate } = await import('../db.ts')
 const { computeRequirement, loadEventBreakdown } = await import('../services/calc.ts')
 const { todayLocal } = await import('../lib/date.ts')
-const { setEventFlowerExcluded, loadEventItemFlowers } = await import('../services/event-flowers.ts')
+const { setEventFlowerExcluded, loadEventItemFlowers, copyFlowerExcludes, mergeFlowerExcludes } =
+  await import('../services/event-flowers.ts')
 const { assertEventPerTableCompatible } = await import('../services/per-table.ts')
 const { loadEvent } = await import('../routes/events.ts')
 
@@ -325,6 +326,50 @@ check(
 
 db.prepare('DELETE FROM events WHERE id = ?').run(evDup)
 db.prepare('DELETE FROM packages WHERE id IN (?, ?)').run(pkgX, pkgY)
+
+console.log('\n— Nhân bản và gộp hoa —')
+exclude(fx.eventId, fx.flowerA)
+const cloneId = Number(
+  db
+    .prepare(
+      `INSERT INTO events (event_date, title, hall, time_slot, table_count, status)
+       VALUES (?, '', 'Lầu 3', 'Chiều', 95, 'DU_KIEN')`,
+    )
+    .run(TODAY).lastInsertRowid,
+)
+copyFlowerExcludes(fx.eventId, cloneId)
+check(
+  'bản sao giữ nguyên loại hoa đã bỏ',
+  (
+    db.prepare('SELECT flower_id FROM event_flower_excludes WHERE event_id = ?').all(cloneId) as {
+      flower_id: number
+    }[]
+  ).map((r) => r.flower_id),
+  [fx.flowerA],
+)
+db.prepare('DELETE FROM events WHERE id = ?').run(cloneId)
+
+// Gộp Hoa B vào Hoa A khi CẢ HAI đang bị bỏ trong cùng một tiệc: dồn thẳng
+// bằng UPDATE sẽ vỡ khoá chính (event_id, flower_id).
+exclude(fx.eventId, fx.flowerB)
+check('cả hai loại đang bị bỏ', excludeCount(), 2)
+checkThrows(
+  'gộp hai loại đều đang bị bỏ → không vỡ khoá chính',
+  () => mergeFlowerExcludes(fx.flowerB, fx.flowerA),
+  false,
+)
+db.prepare('DELETE FROM flowers WHERE id = ?').run(fx.flowerB)
+check('sau khi gộp và xoá loại nguồn, còn đúng 1 bản ghi', excludeCount(), 1)
+check(
+  'bản ghi còn lại là của loại giữ lại',
+  (
+    db.prepare('SELECT flower_id FROM event_flower_excludes WHERE event_id = ?').all(fx.eventId) as {
+      flower_id: number
+    }[]
+  ).map((r) => r.flower_id),
+  [fx.flowerA],
+)
+unexclude(fx.eventId, fx.flowerA)
 
 console.log('\n— Cascade —')
 exclude(fx.eventId, fx.flowerA)

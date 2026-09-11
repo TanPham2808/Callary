@@ -145,3 +145,31 @@ export function loadEventItemFlowers(eventId: number): Map<number, EventItemFlow
   }
   return byItem
 }
+
+/**
+ * Chép danh sách loại hoa đã bỏ sang một tiệc khác — dùng khi nhân bản tiệc.
+ *
+ * Vì khoá là (tiệc × hoa), một câu INSERT … SELECT là đủ; không cần biết id
+ * hạng mục mới của bản sao.
+ */
+export function copyFlowerExcludes(sourceEventId: number, targetEventId: number): void {
+  db.prepare(
+    `INSERT OR IGNORE INTO event_flower_excludes (event_id, flower_id)
+     SELECT ?, flower_id FROM event_flower_excludes WHERE event_id = ?`,
+  ).run(targetEventId, sourceEventId)
+}
+
+/**
+ * Dồn bản ghi của loại hoa bị gộp sang loại giữ lại — gọi TRƯỚC khi xoá loại
+ * nguồn trong lúc gộp hoa.
+ *
+ * Phải là INSERT OR IGNORE chứ không phải UPDATE: nếu cùng một tiệc đang bỏ CẢ
+ * HAI loại thì UPDATE sẽ vỡ khoá chính (event_id, flower_id). Bản ghi của loại
+ * nguồn tự mất theo khoá ngoại khi loại đó bị xoá.
+ */
+export function mergeFlowerExcludes(sourceFlowerId: number, targetFlowerId: number): void {
+  db.prepare(
+    `INSERT OR IGNORE INTO event_flower_excludes (event_id, flower_id)
+     SELECT event_id, ? FROM event_flower_excludes WHERE flower_id = ?`,
+  ).run(targetFlowerId, sourceFlowerId)
+}

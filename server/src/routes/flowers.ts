@@ -3,6 +3,7 @@ import { z } from 'zod'
 import { db, tx } from '../db.ts'
 import { ah, badRequest, id, notFound, parseBody } from '../lib/http.ts'
 import { slugify } from '../lib/text.ts'
+import { mergeFlowerExcludes } from '../services/event-flowers.ts'
 import type { Flower } from '../../../shared/types.ts'
 
 const router = Router()
@@ -246,6 +247,9 @@ router.post(
       db.prepare('UPDATE item_flowers SET flower_id = ? WHERE flower_id = ?').run(target_id, source_id)
       db.prepare('UPDATE event_adjustments SET flower_id = ? WHERE flower_id = ?').run(target_id, source_id)
       db.prepare('UPDATE inventory_moves SET flower_id = ? WHERE flower_id = ?').run(target_id, source_id)
+
+      // Không dùng UPDATE: nếu một tiệc đang bỏ cả hai loại thì sẽ vỡ khoá chính.
+      mergeFlowerExcludes(source_id, target_id)
 
       const srcStock = db.prepare('SELECT quantity FROM inventory WHERE flower_id = ?').get(source_id) as
         | { quantity: number }

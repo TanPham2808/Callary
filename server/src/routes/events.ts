@@ -4,7 +4,7 @@ import { db, tx } from '../db.ts'
 import { ah, badRequest, id, notFound, parseBody } from '../lib/http.ts'
 import { isPastDate, todayLocal } from '../lib/date.ts'
 import { computeRequirement } from '../services/calc.ts'
-import { loadEventItemFlowers, notExcludedSql, setEventFlowerExcluded } from '../services/event-flowers.ts'
+import { copyFlowerExcludes, loadEventItemFlowers, notExcludedSql, setEventFlowerExcluded } from '../services/event-flowers.ts'
 import { assertEventPerTableCompatible } from '../services/per-table.ts'
 import { round } from '../lib/text.ts'
 import type { DecorEvent, EventPackage, PackageItem } from '../../../shared/types.ts'
@@ -150,7 +150,8 @@ router.delete(
 
 /**
  * Nhân bản sự kiện sang ngày khác — giữ nguyên mọi tuỳ chỉnh riêng của tiệc gốc:
- * các gói đã gắn, số lần áp dụng, và trạng thái từng hạng mục (đã bỏ chọn / đã nhân đôi).
+ * các gói đã gắn, số lần áp dụng, trạng thái từng hạng mục (đã bỏ chọn / đã nhân
+ * đôi), và những loại hoa đã bỏ tick cho cả tiệc.
  *
  * Bản sao luôn ở trạng thái "Dự kiến" vì chưa được chốt với khách.
  * Điều chỉnh linh động mặc định KHÔNG chép theo, vì nó gắn với lượng hoa dư
@@ -208,6 +209,10 @@ router.post(
              FROM event_package_items WHERE event_package_id = ?`,
         ).run(Number(newEp.lastInsertRowid), ep.id)
       }
+
+      // Loại hoa đã bỏ là tuỳ chỉnh của tiệc, cùng loại với hạng mục đã bỏ chọn
+      // — README đã hứa bản sao giữ nguyên những thứ này.
+      copyFlowerExcludes(sourceId, targetId)
 
       if (data.copy_adjustments) {
         db.prepare(
