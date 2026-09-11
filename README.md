@@ -72,7 +72,7 @@ vào bằng địa chỉ IP của máy chủ, ví dụ `http://192.168.1.50:3001
 |---|---|
 | **Tổng quan** | Sự kiện 7 ngày tới, hoa cần mua trong tuần, hoa đang tồn kho |
 | **Lịch sự kiện** | Xem theo **tháng hoặc tuần**, bấm ô ngày để thêm tiệc (sảnh · buổi · số bàn), **kéo thả tiệc sang ngày khác** |
-| **Chi tiết sự kiện** | Nhập **số bàn tiệc**, gắn gói trang trí (hiện **giá tiền từng gói và tổng**), bỏ/nhân đôi từng hạng mục, điều chỉnh +/- · thay thế · **trừ theo gói** từng loại hoa, **nhân bản sang ngày khác** |
+| **Chi tiết sự kiện** | Nhập **số bàn tiệc**, gắn gói trang trí (hiện **giá tiền từng gói và tổng**), bỏ/nhân đôi từng hạng mục, **bỏ từng loại hoa trong hạng mục**, điều chỉnh +/- · thay thế · **trừ theo gói** từng loại hoa, **nhân bản sang ngày khác** |
 | **Gói trang trí** | Tạo/sửa/xoá gói, hạng mục và bảng định lượng. Đánh dấu dòng **tính theo số bàn**. Có nút **Nhân bản gói** |
 | **Danh mục hoa** | Sửa tên, nhóm, đơn giá, **đơn vị dùng / đơn vị mua và quy đổi**. Có chức năng **Gộp** hai loại hoa trùng nhau |
 | **Kho hoa dư** | Ghi nhận hoa còn lại sau tiệc để trừ vào lần mua sau |
@@ -89,9 +89,24 @@ Gõ tên tiệc, tên gói hoặc tên hoa để nhảy thẳng tới. **Gõ kh�
 
 **Nhân bản sự kiện**
 Tiệc tuần này giống tuần trước thì mở tiệc cũ → bấm **Nhân bản** → chọn ngày (mặc định
-gợi ý đúng 7 ngày sau). Bản sao giữ nguyên các gói đã gắn cùng những hạng mục bạn đã bỏ
-chọn hoặc nhân đôi, và luôn ở trạng thái **Dự kiến**. Điều chỉnh linh động mặc định
-không chép theo vì nó gắn với lượng hoa dư của đúng ngày hôm đó.
+gợi ý đúng 7 ngày sau). Bản sao giữ nguyên các gói đã gắn, những hạng mục bạn đã bỏ chọn
+hoặc nhân đôi, và những loại hoa bạn đã bỏ tick. Bản sao luôn ở trạng thái **Dự kiến**.
+Điều chỉnh linh động mặc định không chép theo vì nó gắn với lượng hoa dư của đúng ngày
+hôm đó.
+
+**Bỏ bớt từng loại hoa trong hạng mục**
+Tick hạng mục là lấy hết định lượng của nó — đó vẫn là mặc định. Tiệc nào không lấy một
+loại hoa nào đó thì bấm badge `6/6` trên chip hạng mục để mở danh sách định lượng, rồi bỏ
+tick loại cần bỏ. Có nút **Chọn hết** / **Bỏ hết** cho nhanh.
+
+Lưu ý: **bỏ một loại hoa là bỏ khỏi cả tiệc**, không riêng hạng mục đang mở. Hoa hồng đỏ
+khai ở cả *Cổng* và *Lối đi* thì bỏ ở một chỗ là hai chỗ đều không lấy — đỡ phải mở từng
+hạng mục bỏ lại. Mỗi dòng có ghi sẵn *"cũng ở: Lối đi"* để biết trước chỗ nào bị ảnh hưởng.
+Tiệc gắn nhiều gói thường có vài hạng mục trùng tên — *Cổng hoa* của gói này và *Cổng hoa*
+của gói kia. Khi đó nhãn ghi kèm tên gói cho khỏi lẫn: *cũng ở: WONDERLAND · Cổng hoa*.
+Badge chuyển vàng khi đã bỏ bớt, đỏ khi bỏ hết.
+
+Muốn **giảm số lượng** chứ không bỏ hẳn thì dùng **Điều chỉnh linh động** như trước.
 
 **Thay thế hoa trong điều chỉnh linh động**
 Ở tab **Thay thế** (thay vì **Điều chỉnh**) trong phần điều chỉnh linh động của sự kiện,
@@ -165,6 +180,11 @@ Thành tiền = Đặt NCC × đơn giá                            (giá theo �
   (trong các hạng mục đang chọn, cũng loại trừ **Phương án thay thế**) × đơn giá, quy đổi
   theo đơn vị mua; cộng dồn thành **tổng** cho cả sự kiện. Đây là số tham khảo nhanh, tính
   theo phép chia thường (không làm tròn lên như **Đặt NCC** ở trang Báo cáo).
+- Loại hoa đã **bỏ tick** trong một tiệc không được tính vào tiệc đó ở bất kỳ đâu: tổng
+  hợp trong trang chi tiết, giá ước tính của gói, bảng báo cáo, và cả sheet *Chi tiết sự
+  kiện* của file Excel (dòng đó không được in ra, để cộng cột số lượng vẫn ra đúng bằng số
+  trong đơn mua). Bỏ tick áp cho **cả tiệc**, nên hoa tính theo số bàn cũng về 0 ngay,
+  không cần bỏ ở từng hạng mục.
 
 ---
 
@@ -246,6 +266,7 @@ server/src/
   db.ts  schema.sql        kết nối SQLite và định nghĩa bảng
   routes/                  flowers · packages · events · inventory · reports · export · search
   services/calc.ts         ★ logic tính nhu cầu — dùng chung cho mọi màn hình và mọi sheet
+  services/event-flowers.ts  loại hoa bị bỏ tick cho riêng một tiệc
   services/excel.ts        dựng file Excel 4 sheet bằng ExcelJS
   services/word.ts         dựng file Word đơn giản (đơn mua hàng gửi nhà cung cấp) bằng docx
   services/event-status.ts tự chuyển tiệc quá ngày sang "Đã xong"
@@ -253,6 +274,7 @@ server/src/
   seed/import-excel.ts     đọc .xlsx và nạp vào DB
   seed/catalog-map.ts      bảng ánh xạ tên hoa + bố cục các khối trong sheet gốc
   seed/verify.ts           tiện ích in dữ liệu đã nạp để đối chiếu với Excel
+  seed/verify-excludes.ts  kiểm chứng số liệu khi bỏ tick định lượng (chạy trên DB tạm)
 
 client/src/
   pages/                   Dashboard · Calendar · EventDetail · Packages · PackageDetail
@@ -281,4 +303,10 @@ Tạo sẵn vài tiệc ở ngày đã qua để thử cơ chế tự chuyển "
 
 ```bash
 npx tsx server/src/seed/make-past-events.ts
+```
+
+Kiểm chứng tính năng bỏ tick định lượng (chạy trên DB tạm, không đụng `data/callary.db`):
+
+```bash
+npx tsx server/src/seed/verify-excludes.ts
 ```
