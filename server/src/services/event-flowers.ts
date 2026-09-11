@@ -72,11 +72,12 @@ export function notExcludedSql(eventCol: string, flowerCol = 'itf.flower_id'): s
                            WHERE x.event_id = ${eventCol} AND x.flower_id = ${flowerCol})`
 }
 
-/** Dòng thô từ truy vấn: chưa có `also_in` (tính ở JS), có thêm 3 cột của hạng mục. */
+/** Dòng thô từ truy vấn: chưa có `also_in` (tính ở JS), có thêm 4 cột của hạng mục/gói. */
 type RawItemFlowerRow = Omit<EventItemFlower, 'also_in'> & {
   epi_id: number
   epi_is_included: number
   item_name: string
+  package_name: string
 }
 
 /**
@@ -95,6 +96,7 @@ export function loadEventItemFlowers(eventId: number): Map<number, EventItemFlow
       `SELECT epi.id                AS epi_id,
               epi.is_included       AS epi_is_included,
               epi.name_snapshot     AS item_name,
+              p.name                AS package_name,
               itf.id, itf.package_item_id, itf.flower_id, itf.quantity, itf.per_table,
               itf.is_optional, itf.alt_group, itf.sort_order, itf.note,
               f.name     AS flower_name,
@@ -103,6 +105,7 @@ export function loadEventItemFlowers(eventId: number): Map<number, EventItemFlow
               f.price    AS flower_price,
               CASE WHEN x.flower_id IS NULL THEN 0 ELSE 1 END AS is_excluded
          FROM event_packages      ep
+         JOIN packages             p   ON p.id = ep.package_id
          JOIN event_package_items epi ON epi.event_package_id = ep.id
          JOIN item_flowers        itf ON itf.package_item_id = epi.package_item_id
          JOIN flowers             f   ON f.id = itf.flower_id
@@ -113,29 +116,44 @@ export function loadEventItemFlowers(eventId: number): Map<number, EventItemFlow
     )
     .all(eventId) as RawItemFlowerRow[]
 
-  // Loại hoa → các hạng mục đang được tick có khai nó (id kèm tên).
-  const itemsByFlower = new Map<number, { epiId: number; name: string }[]>()
+  // Tên hạng mục không phải khoá: một tiệc gắn nhiều gói thường có vài hạng mục
+  // trùng tên ("Cổng hoa" xuất hiện ở cả DAISY, WONDERLAND và TWISTING). Tên nào
+  // đụng nhau thì phải kèm tên gói, không thì nhãn "cũng ở: …" sẽ kể ra chính
+  // hạng mục người dùng đang mở và trông như lỗi. Tính trên MỌI dòng (không lọc
+  // epi_is_included) — sự nhập nhằng của cái tên không phụ thuộc hạng mục đang
+  // tick hay không.
+  const epiIdsByName = new Map<string, Set<number>>()
+  for (const r of rows) {
+    const ids = epiIdsByName.get(r.item_name)
+    if (ids) ids.add(r.epi_id)
+    else epiIdsByName.set(r.item_name, new Set([r.epi_id]))
+  }
+  const label = (itemName: string, packageName: string): string =>
+    (epiIdsByName.get(itemName)?.size ?? 0) > 1 ? `${packageName} · ${itemName}` : itemName
+
+  // Loại hoa → các hạng mục đang được tick có khai nó (id kèm nhãn đã tính).
+  const itemsByFlower = new Map<number, { epiId: number; label: string }[]>()
   for (const r of rows) {
     if (!r.epi_is_included) continue
-    const items = itemsByFlower.get(r.flower_id)
-    const entry = { epiId: r.epi_id, name: r.item_name }
-    if (!items) itemsByFlower.set(r.flower_id, [entry])
-    else items.push(entry)
+    const list = itemsByFlower.get(r.flower_id)
+    const entry = { epiId: r.epi_id, label: label(r.item_name, r.package_name) }
+    if (list) list.push(entry)
+    else itemsByFlower.set(r.flower_id, [entry])
   }
 
   const byItem = new Map<number, EventItemFlower[]>()
-  for (const { epi_id, epi_is_included, item_name, ...flower } of rows) {
+  for (const { epi_id, epi_is_included, item_name, package_name, ...flower } of rows) {
     const entry: EventItemFlower = {
       ...flower,
       // Lọc theo id hạng mục, KHÔNG theo tên: catalog thật có nhiều gói dùng
       // hạng mục trùng tên (vd. 11 hạng mục tên "Cổng hoa" ở 11 gói khác
       // nhau) — lọc theo tên sẽ làm hạng mục trùng tên khác rơi khỏi cảnh
-      // báo, đúng cái nhãn này sinh ra để chặn. Chỉ dedupe TÊN ở bước hiển thị.
+      // báo, đúng cái nhãn này sinh ra để chặn. Chỉ dedupe NHÃN ở bước hiển thị.
       also_in: [
         ...new Set(
           (itemsByFlower.get(flower.flower_id) ?? [])
             .filter((it) => it.epiId !== epi_id)
-            .map((it) => it.name),
+            .map((it) => it.label),
         ),
       ],
     }

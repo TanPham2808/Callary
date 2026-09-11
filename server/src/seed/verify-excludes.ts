@@ -276,6 +276,12 @@ check(
 )
 unexclude(fx.eventId, fx.flowerA)
 
+check(
+  'tên hạng mục không trùng thì also_in vẫn để trần, không kèm tên gói',
+  loadEventItemFlowers(fx.eventId).get(fx.epiCong)?.find((f) => f.flower_id === fx.flowerA)?.also_in,
+  ['Lối đi'],
+)
+
 // Hai hạng mục KHÁC nhau nhưng TRÙNG TÊN: catalog thật có 11 hạng mục tên
 // "Cổng hoa" ở 11 gói khác nhau. Nhận dạng theo tên sẽ làm hạng mục kia rơi
 // khỏi cảnh báo — người dùng bỏ hoa mà không biết mất thêm ở đâu.
@@ -319,9 +325,9 @@ const epiX = attach(pkgX, itemX, 10)
 attach(pkgY, itemY, 20)
 
 check(
-  'hai hạng mục trùng tên ở hai gói → also_in vẫn kể tên hạng mục kia',
+  'hai hạng mục trùng tên ở hai gói → also_in kèm tên gói để phân biệt',
   loadEventItemFlowers(evDup).get(epiX)?.[0].also_in,
-  ['Cổng hoa'],
+  ['GÓI TRÙNG TÊN 2 · Cổng hoa'],
 )
 
 db.prepare('DELETE FROM events WHERE id = ?').run(evDup)
