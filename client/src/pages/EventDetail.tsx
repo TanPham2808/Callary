@@ -9,6 +9,7 @@ import FlowerPicker from '../components/FlowerPicker'
 import { ConflictWarning } from '../components/ConflictWarning'
 import { DateField } from '../components/DateField'
 import { DuplicateEventModal } from '../components/DuplicateEventModal'
+import { ItemFlowersModal } from '../components/ItemFlowersModal'
 import {
   ConfirmButton,
   Empty,
@@ -26,6 +27,7 @@ import {
   STATUS_LABEL,
   type DecorEvent,
   type DecorPackage,
+  type EventPackageItem,
   type EventStatus,
   type RequirementResult,
 } from '@shared/types'
@@ -37,6 +39,8 @@ export default function EventDetail() {
   const toast = useToast()
   const navigate = useNavigate()
   const [duplicating, setDuplicating] = useState<DecorEvent | null>(null)
+  // Hạng mục đang mở modal định lượng; giữ id để lấy bản mới nhất sau mỗi lần lưu.
+  const [flowersOfItem, setFlowersOfItem] = useState<number | null>(null)
 
   const query = useQuery({
     queryKey: ['events', eventId],
@@ -334,33 +338,55 @@ export default function EventDetail() {
                     </ConfirmButton>
                   </div>
 
-                  <div className="grid gap-1.5 sm:grid-cols-2 xl:grid-cols-3">
-                    {(ep.items ?? []).map((item) => (
-                      <div
-                        key={item.id}
-                        className={`flex items-center gap-2 rounded-lg border px-2.5 py-2 text-sm transition
-                                    ${item.is_included ? 'border-zinc-200 bg-white' : 'border-zinc-100 bg-zinc-50 text-zinc-400'}`}
-                      >
-                        <input
-                          type="checkbox"
-                          className="h-4 w-4 shrink-0 rounded border-zinc-300 accent-brand-600"
-                          checked={item.is_included === 1}
-                          onChange={(e) => updateItem.mutate({ epiId: item.id, patch: { is_included: e.target.checked } })}
-                        />
-                        <span className="flex-1 truncate" title={item.name_snapshot}>
-                          {item.name_snapshot}
-                        </span>
-                        <InlineInput
-                          type="number"
-                          min={0}
-                          step={1}
-                          className="input input-sm w-14 shrink-0 text-right"
-                          value={item.quantity}
-                          disabled={item.is_included === 0}
-                          onCommit={(v) => updateItem.mutate({ epiId: item.id, patch: { quantity: Number(v) || 0 } })}
-                        />
-                      </div>
-                    ))}
+                  <div className="grid items-start gap-1.5 sm:grid-cols-2 xl:grid-cols-3">
+                    {(ep.items ?? []).map((item) => {
+                      const flowers = item.flowers ?? []
+                      const kept = flowers.filter((f) => !f.is_excluded).length
+                      const badgeTone =
+                        kept === flowers.length
+                          ? 'bg-zinc-100 text-zinc-500 hover:bg-zinc-200'
+                          : kept === 0
+                            ? 'bg-red-100 text-red-700 hover:bg-red-200'
+                            : 'bg-amber-100 text-amber-800 hover:bg-amber-200'
+                      return (
+                        <div
+                          key={item.id}
+                          className={`flex items-center gap-2 rounded-lg border px-2.5 py-2 text-sm transition
+                                      ${item.is_included ? 'border-zinc-200 bg-white' : 'border-zinc-100 bg-zinc-50 text-zinc-400'}`}
+                        >
+                          <input
+                            type="checkbox"
+                            className="h-4 w-4 shrink-0 rounded border-zinc-300 accent-brand-600"
+                            checked={item.is_included === 1}
+                            onChange={(e) =>
+                              updateItem.mutate({ epiId: item.id, patch: { is_included: e.target.checked } })
+                            }
+                          />
+                          <span className="flex-1 truncate" title={item.name_snapshot}>
+                            {item.name_snapshot}
+                          </span>
+                          {flowers.length > 0 && (
+                            <button
+                              className={`shrink-0 rounded px-1.5 py-0.5 text-xs font-medium tabular-nums transition ${badgeTone}`}
+                              title="Chọn / bỏ từng loại hoa của hạng mục này"
+                              disabled={item.is_included === 0}
+                              onClick={() => setFlowersOfItem(item.id)}
+                            >
+                              {kept}/{flowers.length}
+                            </button>
+                          )}
+                          <InlineInput
+                            type="number"
+                            min={0}
+                            step={1}
+                            className="input input-sm w-14 shrink-0 text-right"
+                            value={item.quantity}
+                            disabled={item.is_included === 0}
+                            onCommit={(v) => updateItem.mutate({ epiId: item.id, patch: { quantity: Number(v) || 0 } })}
+                          />
+                        </div>
+                      )
+                    })}
                     {(ep.items ?? []).length === 0 && (
                       <p className="text-sm text-zinc-400">Gói này chưa có hạng mục nào.</p>
                     )}
@@ -379,6 +405,22 @@ export default function EventDetail() {
           <RequirementPanel data={requirement.data} loading={requirement.isFetching} />
         </aside>
       </div>
+
+      <ItemFlowersModal
+        eventId={eventId}
+        item={
+          ((ev.packages ?? []).flatMap((ep) => ep.items ?? []) as EventPackageItem[]).find(
+            (i) => i.id === flowersOfItem,
+          ) ?? null
+        }
+        eventTitle={eventLabel(ev)}
+        onClose={() => setFlowersOfItem(null)}
+        onChanged={(message) => {
+          refresh()
+          toast.show(message)
+        }}
+        onError={onError}
+      />
 
       <DuplicateEventModal
         source={duplicating}
