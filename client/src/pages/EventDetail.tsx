@@ -344,10 +344,10 @@ export default function EventDetail() {
                       const kept = flowers.filter((f) => !f.is_excluded).length
                       const badgeTone =
                         kept === flowers.length
-                          ? 'bg-zinc-100 text-zinc-500 hover:bg-zinc-200'
+                          ? 'bg-zinc-100 text-zinc-500 enabled:hover:bg-zinc-200'
                           : kept === 0
-                            ? 'bg-red-100 text-red-700 hover:bg-red-200'
-                            : 'bg-amber-100 text-amber-800 hover:bg-amber-200'
+                            ? 'bg-red-100 text-red-700 enabled:hover:bg-red-200'
+                            : 'bg-amber-100 text-amber-800 enabled:hover:bg-amber-200'
                       return (
                         <div
                           key={item.id}
@@ -367,7 +367,7 @@ export default function EventDetail() {
                           </span>
                           {flowers.length > 0 && (
                             <button
-                              className={`shrink-0 rounded px-1.5 py-0.5 text-xs font-medium tabular-nums transition ${badgeTone}`}
+                              className={`shrink-0 rounded px-1.5 py-0.5 text-xs font-medium tabular-nums transition disabled:cursor-default disabled:opacity-50 ${badgeTone}`}
                               title="Chọn / bỏ từng loại hoa của hạng mục này"
                               disabled={item.is_included === 0}
                               onClick={() => setFlowersOfItem(item.id)}
